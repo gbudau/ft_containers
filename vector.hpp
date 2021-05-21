@@ -23,12 +23,12 @@ public:
 
 	// constructor/copy/destroy
 	explicit vector(const Allocator& = Allocator());
-//	explicit vector(size_type n, const T& value = T(),
-//			const Allocator& = Allocator());
+	explicit vector(size_type n, const T& value = T(),
+			const Allocator& = Allocator());
 //	template <class InputIterator>
 //		vector(InputIterator first, InputIterator last,
 //				const Allocator& = Allocator());
-//	~vector();
+	~vector();
 //	vector<T, Allocator>& operator=(const vector<T, Allocator>& x);
 //	template <class InputIterator>
 //		void assign(InputIterator first, InputIterator last);
@@ -75,12 +75,12 @@ public:
 //	iterator	erase(iterator position);
 //	iterator	erase(iterator first, iterator last);
 //	void		swap(vector<T, Allocator>&);
-//	void		clear();
+	void		clear();
 
 protected:
 	allocator_type	m_allocator;
-	iterator		m_front;
-	iterator		m_back;
+	iterator		m_begin;
+	iterator		m_end;
 	iterator		m_end_of_storage;
 };
 
@@ -113,8 +113,32 @@ protected:
 //void	swap(vector<T, Allocator>& x, vector<T, Allocator>& y);
 
 template <class T, class Allocator>
-vector<T, Allocator>::vector(const Allocator& alloc)
-	: m_allocator(alloc), m_front(0), m_back(0), m_end_of_storage(0) {
+vector<T, Allocator>::vector(const Allocator& allocator)
+	: m_allocator(allocator), m_begin(0), m_end(0), m_end_of_storage(0) {
+}
+
+template <class T, class Allocator>
+vector<T, Allocator>::vector(size_type n, const T& value,
+							const Allocator& allocator)
+	: m_allocator(allocator), m_begin(m_allocator.allocate(n, this)),
+	m_end(m_begin + n), m_end_of_storage(m_end) {
+	for (size_type i = 0; i < n; i++) {
+		m_allocator.construct(m_begin + i, value);
+	}
+}
+
+template <class T, class Allocator>
+vector<T, Allocator>::~vector() {
+	clear();
+	m_allocator.deallocate(m_begin, m_end_of_storage - m_begin);
+}
+
+template <class T, class Allocator>
+void	vector<T, Allocator>::clear() {
+	for (pointer tmp = m_begin; tmp != m_end; tmp++) {
+		m_allocator.destroy(tmp);
+	}
+	m_end = m_begin;
 }
 
 }  // namespace ft

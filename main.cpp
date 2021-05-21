@@ -4,5 +4,5 @@ int	main() {
 	ft::vector<int> v;
 
 	(void)v;
-	return 0;
+	ft::vector<int> v2(3, 42);
 }
