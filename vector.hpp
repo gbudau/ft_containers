@@ -49,7 +49,7 @@ public:
 	size_type	size() const;
 	size_type	max_size() const;
 //	void		resize(size_type sz, T c = T());
-//	size_type	capacity() const;
+	size_type	capacity() const;
 //	bool		empty() const;
 //	void		reserve(size_type n);
 //
@@ -169,6 +169,11 @@ typename vector<T, Allocator>::size_type	vector<T, Allocator>::size() const {
 template <class T, class Allocator>
 typename vector<T, Allocator>::size_type	vector<T, Allocator>::max_size() const {
 	return m_allocator.max_size();
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::size_type	vector<T, Allocator>::capacity() const {
+	return m_end_of_storage - begin();
 }
 
 }  // namespace ft
