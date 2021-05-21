@@ -33,7 +33,7 @@ public:
 //	template <class InputIterator>
 //		void assign(InputIterator first, InputIterator last);
 //	void assign(size_type n, const T& u);
-//	allocator_type	get_allocator() const;
+	allocator_type	get_allocator() const;
 //
 //	// iterators
 	iterator				begin();
@@ -179,6 +179,11 @@ typename vector<T, Allocator>::size_type	vector<T, Allocator>::capacity() const 
 template <class T, class Allocator>
 bool	vector<T, Allocator>::empty() const {
 	return begin() == end();
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::allocator_type	vector<T, Allocator>::get_allocator() const {
+	return m_allocator;
 }
 
 }  // namespace ft
