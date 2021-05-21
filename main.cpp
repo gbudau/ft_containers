@@ -14,4 +14,6 @@ int	main() {
 	std::cout << "v2 Capacity: " << v2.capacity() << "\n";
 	std::cout << "v1 Max Size: " << v1.max_size() << "\n";
 	std::cout << "v Max Size: " << v.max_size() << "\n";
+	std::cout << "v1 empty()?: " << v1.empty() << "\n";
+	std::cout << "v2 empty()?: " << v2.empty() << "\n";
 }
