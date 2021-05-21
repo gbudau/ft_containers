@@ -47,7 +47,7 @@ public:
 //
 //	// capacity
 	size_type	size() const;
-//	size_type	max_size() const;
+	size_type	max_size() const;
 //	void		resize(size_type sz, T c = T());
 //	size_type	capacity() const;
 //	bool		empty() const;
@@ -164,6 +164,11 @@ typename vector<T, Allocator>::const_iterator	vector<T, Allocator>::end() const 
 template <class T, class Allocator>
 typename vector<T, Allocator>::size_type	vector<T, Allocator>::size() const {
 	return end() - begin();
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::size_type	vector<T, Allocator>::max_size() const {
+	return m_allocator.max_size();
 }
 
 }  // namespace ft
