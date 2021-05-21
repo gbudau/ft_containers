@@ -36,17 +36,17 @@ public:
 //	allocator_type	get_allocator() const;
 //
 //	// iterators
-//	iterator				begin();
-//	const_iterator			begin() const;
-//	iterator				end();
-//	const_iterator			end() const;
+	iterator				begin();
+	const_iterator			begin() const;
+	iterator				end();
+	const_iterator			end() const;
 //	reverse_iterator		rbegin();
 //	const_reverse_iterator	rbegin() const;
 //	reverse_iterator		rend();
 //	const_reverse_iterator	rend() const;
 //
 //	// capacity
-//	size_type	size() const;
+	size_type	size() const;
 //	size_type	max_size() const;
 //	void		resize(size_type sz, T c = T());
 //	size_type	capacity() const;
@@ -139,6 +139,31 @@ void	vector<T, Allocator>::clear() {
 		m_allocator.destroy(tmp);
 	}
 	m_end = m_begin;
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::iterator	vector<T, Allocator>::begin() {
+	return m_begin;
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::const_iterator	vector<T, Allocator>::begin() const {
+	return m_begin;
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::iterator	vector<T, Allocator>::end() {
+	return m_end;
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::const_iterator	vector<T, Allocator>::end() const {
+	return m_end;
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::size_type	vector<T, Allocator>::size() const {
+	return end() - begin();
 }
 
 }  // namespace ft
