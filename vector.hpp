@@ -4,7 +4,7 @@
 
 namespace ft {
 
-template <class T, class Allocator = std::allocator<T>>
+template <class T, class Allocator = std::allocator<T> >
 class vector {
 public:
 	// types
@@ -72,8 +72,8 @@ public:
 //	template <class InputIterator>
 //		void insert(iterator position,
 //				InputIterator first, InputIterator last);
-//	iterator	erase(iterator position);
-//	iterator	erase(iterator first, iterator last);
+	iterator	erase(iterator position);
+	iterator	erase(iterator first, iterator last);
 //	void		swap(vector<T, Allocator>&);
 	void		clear();
 
@@ -184,6 +184,31 @@ bool	vector<T, Allocator>::empty() const {
 template <class T, class Allocator>
 typename vector<T, Allocator>::allocator_type	vector<T, Allocator>::get_allocator() const {
 	return m_allocator;
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::iterator	vector<T, Allocator>::erase(iterator position) {
+	iterator ret = position;
+	for (;position + 1 != end(); position++) {
+		*position = *(position + 1);
+	}
+	m_allocator.destroy(m_end);
+	--m_end;
+	return ret;
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::iterator vector<T, Allocator>::erase(iterator first, iterator last) {
+	iterator src = last;
+	iterator dst = first;
+	for (; src != end(); dst++, src++) {
+		*dst = *src;
+	}
+	for (iterator it = dst; it != end(); it++) {
+		m_allocator.destroy(&*it);
+	}
+	m_end = &*dst;
+	return first;
 }
 
 }  // namespace ft

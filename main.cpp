@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <cassert>
 #include "vector.hpp"
 
 int	main() {
@@ -26,4 +27,11 @@ int	main() {
 		v1.get_allocator().destroy(p + i);
 	}
 	v1.get_allocator().deallocate(p, N);
+	v2.erase(v2.begin());
+	v2.erase(v2.begin());
+	std::cout << "v2 Size: " << v2.size() << "\n";
+	ft::vector<int> v3(5, 42);
+	std::cout << "v3 Size: " << v3.size() << "\n";
+	v3.erase(v3.begin(), v3.end());
+	std::cout << "v3 Size after erase(begin(), end()): " << v3.size() << "\n";
 }
