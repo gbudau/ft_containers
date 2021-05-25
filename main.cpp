@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cassert>
+#include <list>
 #include "vector.hpp"
 
 int	main() {
@@ -65,8 +66,17 @@ int	main() {
 	std::cout << "v6 size: " << v6.size() << ", capacity: " << v6.capacity() << "\n";
 	v6.insert(v6.begin(), 1);
 	std::cout << "v6 size: " << v6.size() << ", capacity: " << v6.capacity() << "\n";
-	ft::vector<int>::iterator it = v6.begin();
-	for (; it != v6.end(); it++) {
+	for (ft::vector<int>::iterator it = v6.begin(); it != v6.end(); it++) {
+		std::cout << *it << " ";
+	}
+	std::cout << "\n";
+
+	std::list<int>	l;
+	l.push_back(1);
+	l.push_back(2);
+	l.push_back(3);
+	ft::vector<int>	v7(l.begin(), l.end());
+	for (ft::vector<int>::iterator it = v7.begin(); it != v7.end(); it++) {
 		std::cout << *it << " ";
 	}
 	std::cout << "\n";

@@ -1,8 +1,17 @@
 #pragma once
 #include <memory>
 #include <iterator>
+#include <limits>
 
 namespace ft {
+
+// enable_if
+template<bool B, class T = void>
+struct enable_if {};
+ 
+template<class T>
+struct enable_if<true, T> { typedef T type; };
+
 
 template <class T, class Allocator = std::allocator<T> >
 class vector {
@@ -25,9 +34,10 @@ public:
 	explicit vector(const Allocator& = Allocator());
 	explicit vector(size_type n, const T& value = T(),
 			const Allocator& = Allocator());
-//	template <class InputIterator>
-//		vector(InputIterator first, InputIterator last,
-//				const Allocator& = Allocator());
+	template <class InputIterator>
+		vector(typename enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first,
+				InputIterator last,
+				const Allocator& = Allocator());
 	~vector();
 //	vector<T, Allocator>& operator=(const vector<T, Allocator>& x);
 //	template <class InputIterator>
@@ -124,6 +134,25 @@ vector<T, Allocator>::vector(size_type n, const T& value,
 	m_end(m_begin + n), m_end_of_storage(m_end) {
 	for (size_type i = 0; i < n; i++) {
 		m_allocator.construct(m_begin + i, value);
+	}
+}
+
+template <class T, class Allocator>
+template <class InputIterator>
+vector<T, Allocator>::vector(
+		typename enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first,
+		InputIterator last,
+		const Allocator& allocator) {
+	size_type	n = 0;
+	for (InputIterator it = first; it != last; it++) {
+		n++;
+	}
+	m_allocator = allocator;
+	m_begin = m_allocator.allocate(n, this);
+	m_end = m_begin + n;
+	m_end_of_storage = m_end;
+	for (iterator dst = begin(); first != last; dst++, first++) {
+		m_allocator.construct(dst, *first);
 	}
 }
 
