@@ -81,5 +81,10 @@ int	main() {
 	}
 	std::cout << "\n";
 
+	v7.clear();
+	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity() << "\n";
+	ft::vector<int> v8(v7);
+	std::cout << "v8 size: " << v8.size() << ", capacity: " << v8.capacity() << "\n";
+
 	return 0;
 }

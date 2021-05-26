@@ -38,6 +38,7 @@ public:
 		vector(typename enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first,
 				InputIterator last,
 				const Allocator& = Allocator());
+	vector(const vector<T,Allocator>& x);
 	~vector();
 //	vector<T, Allocator>& operator=(const vector<T, Allocator>& x);
 //	template <class InputIterator>
@@ -153,6 +154,18 @@ vector<T, Allocator>::vector(
 	m_end_of_storage = m_end;
 	for (iterator dst = begin(); first != last; dst++, first++) {
 		m_allocator.construct(dst, *first);
+	}
+}
+
+template <class T, class Allocator>
+vector<T, Allocator>::vector(const vector<T, Allocator>& x) {
+	m_allocator = x.get_allocator();
+	m_begin = m_allocator.allocate(x.end() - x.begin(), this);
+	m_end = m_begin + (x.end() - x.begin());
+	m_end_of_storage = m_end;
+	const_iterator src = x.begin();
+	for (iterator dst = begin(); src != x.end(); dst++, src++) {
+		m_allocator.construct(dst, *src);
 	}
 }
 
