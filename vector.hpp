@@ -77,7 +77,7 @@ public:
 //
 //	// modifiers
 	void		push_back(const T& x);
-//	void		pop_back();
+	void		pop_back();
 	iterator	insert(iterator position, const T& x);
 //	void		insert(iterator position, size_type n, const T& x);
 //	template <class InputIterator>
@@ -262,6 +262,14 @@ bool	vector<T, Allocator>::empty() const {
 template <class T, class Allocator>
 void	vector<T, Allocator>::push_back(const T& x) {
 	insert(end(), x);
+}
+
+template <class T, class Allocator>
+void	vector<T, Allocator>::pop_back() {
+	if (size()) {
+		m_end--;
+		m_allocator.destroy(m_end);
+	}
 }
 
 template <class T, class Allocator>

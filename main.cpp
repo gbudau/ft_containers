@@ -107,5 +107,8 @@ int	main() {
 	v7.push_back(0);
 	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity() << "\n";
 
+	v7.pop_back();
+	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity() << "\n";
+
 	return 0;
 }
