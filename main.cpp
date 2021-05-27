@@ -95,6 +95,17 @@ int	main() {
 	v9 = v7;
 	std::cout << "v9 size: " << v9.size() << ", capacity: " << v9.capacity() << "\n";
 	v7.insert(v7.end(), 2);
+	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity() << "\n";
+
+	v7.push_back(3);
+	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity() << "\n";
+	v7.push_back(4);
+	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity() << "\n";
+	v7.push_back(5);
+	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity() << "\n";
+	v7.clear();
+	v7.push_back(0);
+	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity() << "\n";
 
 	return 0;
 }

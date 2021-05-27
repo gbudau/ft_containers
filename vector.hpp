@@ -76,7 +76,7 @@ public:
 //	const_reference	back() const;
 //
 //	// modifiers
-//	void		push_back(const T& x);
+	void		push_back(const T& x);
 //	void		pop_back();
 	iterator	insert(iterator position, const T& x);
 //	void		insert(iterator position, size_type n, const T& x);
@@ -215,11 +215,8 @@ vector<T, Allocator>&	vector<T, Allocator>::operator=(const vector<T, Allocator>
 }
 
 template <class T, class Allocator>
-void	vector<T, Allocator>::clear() {
-	for (pointer tmp = m_begin; tmp != m_end; tmp++) {
-		m_allocator.destroy(tmp);
-	}
-	m_end = m_begin;
+typename vector<T, Allocator>::allocator_type	vector<T, Allocator>::get_allocator() const {
+	return m_allocator;
 }
 
 template <class T, class Allocator>
@@ -262,15 +259,9 @@ bool	vector<T, Allocator>::empty() const {
 	return begin() == end();
 }
 
-/*
 template <class T, class Allocator>
-void	vector<T, Allocator>::resize(size_type sz, T val) {
-}
-*/
-
-template <class T, class Allocator>
-typename vector<T, Allocator>::allocator_type	vector<T, Allocator>::get_allocator() const {
-	return m_allocator;
+void	vector<T, Allocator>::push_back(const T& x) {
+	insert(end(), x);
 }
 
 template <class T, class Allocator>
@@ -330,6 +321,14 @@ typename vector<T, Allocator>::iterator vector<T, Allocator>::erase(iterator fir
 	}
 	m_end = dst;
 	return first;
+}
+
+template <class T, class Allocator>
+void	vector<T, Allocator>::clear() {
+	for (pointer tmp = m_begin; tmp != m_end; tmp++) {
+		m_allocator.destroy(tmp);
+	}
+	m_end = m_begin;
 }
 
 }  // namespace ft
