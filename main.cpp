@@ -110,5 +110,8 @@ int	main() {
 	v7.pop_back();
 	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity() << "\n";
 
+	std::cout << "v9 size: " << v9.size() << ", capacity: " << v9.capacity() << "\n";
+	v7.swap(v9);
+	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity() << "\n";
 	return 0;
 }

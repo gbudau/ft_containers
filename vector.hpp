@@ -5,11 +5,19 @@
 
 namespace ft {
 
+// swap
+template <typename T>
+void	swap(T& a, T& b) {
+	T tmp = a;
+	a = b;
+	b = tmp;
+}
+
 // enable_if
-template<bool B, class T = void>
+template <bool B, class T = void>
 struct enable_if {};
  
-template<class T>
+template <class T>
 struct enable_if<true, T> { typedef T type; };
 
 
@@ -85,7 +93,7 @@ public:
 //				InputIterator first, InputIterator last);
 	iterator	erase(iterator position);
 	iterator	erase(iterator first, iterator last);
-//	void		swap(vector<T, Allocator>&);
+	void		swap(vector<T, Allocator>&);
 	void		clear();
 
 protected:
@@ -329,6 +337,14 @@ typename vector<T, Allocator>::iterator vector<T, Allocator>::erase(iterator fir
 	}
 	m_end = dst;
 	return first;
+}
+
+template <class T, class Allocator>
+void	vector<T, Allocator>::swap(vector<T, Allocator>& x) {
+	ft::swap(m_allocator, x.m_allocator);
+	ft::swap(m_begin, x.m_begin);
+	ft::swap(m_end, x.m_end);
+	ft::swap(m_end_of_storage, x.m_end_of_storage);
 }
 
 template <class T, class Allocator>
