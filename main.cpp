@@ -4,6 +4,7 @@
 #include <list>
 #include "vector.hpp"
 
+// TODO Create proper Unit Tests
 int	main() {
 	std::vector<int> v;
 	ft::vector<int> v1;
@@ -85,6 +86,15 @@ int	main() {
 	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity() << "\n";
 	ft::vector<int> v8(v7);
 	std::cout << "v8 size: " << v8.size() << ", capacity: " << v8.capacity() << "\n";
+	v7.insert(v7.end(), 1);
+	v7.insert(v7.begin(), 0);
+	v7.insert(v7.end(), 2);
+	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity() << "\n";
+	ft::vector<int> v9;
+
+	v9 = v7;
+	std::cout << "v9 size: " << v9.size() << ", capacity: " << v9.capacity() << "\n";
+	v7.insert(v7.end(), 2);
 
 	return 0;
 }

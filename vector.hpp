@@ -40,10 +40,10 @@ public:
 				const Allocator& = Allocator());
 	vector(const vector<T,Allocator>& x);
 	~vector();
-//	vector<T, Allocator>& operator=(const vector<T, Allocator>& x);
+	vector<T, Allocator>& operator=(const vector<T, Allocator>& x);
+//	void assign(size_type n, const T& u);
 //	template <class InputIterator>
 //		void assign(InputIterator first, InputIterator last);
-//	void assign(size_type n, const T& u);
 	allocator_type	get_allocator() const;
 //
 //	// iterators
@@ -176,6 +176,45 @@ vector<T, Allocator>::~vector() {
 }
 
 template <class T, class Allocator>
+vector<T, Allocator>&	vector<T, Allocator>::operator=(const vector<T, Allocator>& x) {
+	if (this == &x) {
+		return *this;
+	}
+	if (capacity() < x.size()) {
+		clear();
+		m_allocator.deallocate(m_begin, m_end_of_storage - m_begin);
+		m_begin = m_allocator.allocate(x.end() - x.begin(), this);
+		m_end = m_begin + (x.end() - x.begin());
+		m_end_of_storage = m_end;
+		const_iterator src = x.begin();
+		for (iterator dst = begin(); src != x.end(); dst++, src++) {
+			m_allocator.construct(dst, *src);
+		}
+	} else if (size() >= x.size()) {
+		const_iterator src = x.begin();
+		iterator	dst = begin();
+		while (src != x.end()) {
+			*dst++ = *src++;
+		}
+		while (dst != end()) {
+			m_allocator.destroy(dst);
+		}
+		m_end = m_begin + x.size();
+	} else {
+		const_iterator	src = x.begin();
+		iterator	dst = begin();
+		while (dst != end()) {
+			*dst++ = *src++;
+		}
+		while (src != x.end()) {
+			m_allocator.construct(dst, *src++);
+		}
+		m_end = m_begin + x.size();;
+	}
+	return *this;
+}
+
+template <class T, class Allocator>
 void	vector<T, Allocator>::clear() {
 	for (pointer tmp = m_begin; tmp != m_end; tmp++) {
 		m_allocator.destroy(tmp);
@@ -236,12 +275,17 @@ typename vector<T, Allocator>::allocator_type	vector<T, Allocator>::get_allocato
 
 template <class T, class Allocator>
 typename vector<T, Allocator>::iterator	vector<T, Allocator>::insert(iterator position, const T& x) {
+	size_type	n = end() - position;
 	if (size() < capacity()) {
-		m_allocator.construct(m_end, *(m_end - 1));
-		for (iterator it = end(); it != position; it--) {
-			*it = *(it - 1);
+		if (!size()) {
+			m_allocator.construct(m_begin, x);
+		} else {
+			m_allocator.construct(m_end, *(m_end - 1));
+			for (iterator it = end(); it != position; it--) {
+				*it = *(it - 1);
+			}
+			*position = x;
 		}
-		*position = x;
 		m_end++;
 	} else {
 		size_type new_capacity = capacity() ? capacity() * 2 : 1;
@@ -260,7 +304,7 @@ typename vector<T, Allocator>::iterator	vector<T, Allocator>::insert(iterator po
 		m_end = dst;
 		m_end_of_storage = m_begin + new_capacity;
 	}
-	return position;
+	return begin() + n;
 }
 
 template <class T, class Allocator>
