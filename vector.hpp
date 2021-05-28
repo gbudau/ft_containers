@@ -2,24 +2,10 @@
 #include <memory>
 #include <iterator>
 #include <limits>
+#include "type_traits.hpp"
+#include "algorithm.hpp"
 
 namespace ft {
-
-// swap
-template <typename T>
-void	swap(T& a, T& b) {
-	T tmp = a;
-	a = b;
-	b = tmp;
-}
-
-// enable_if
-template <bool B, class T = void>
-struct enable_if {};
- 
-template <class T>
-struct enable_if<true, T> { typedef T type; };
-
 
 template <class T, class Allocator = std::allocator<T> >
 class vector {
