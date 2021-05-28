@@ -53,7 +53,7 @@ public:
 //	// capacity
 	size_type	size() const;
 	size_type	max_size() const;
-//	void		resize(size_type sz, T c = T());
+	void		resize(size_type n, T val = T());
 	size_type	capacity() const;
 	bool		empty() const;
 //	void		reserve(size_type n);
@@ -241,6 +241,36 @@ typename vector<T, Allocator>::size_type	vector<T, Allocator>::size() const {
 template <class T, class Allocator>
 typename vector<T, Allocator>::size_type	vector<T, Allocator>::max_size() const {
 	return m_allocator.max_size();
+}
+
+template <class T, class Allocator>
+void	vector<T, Allocator>::resize(size_type n, T val) {
+	if (n > capacity()) {
+		iterator new_begin = m_allocator.allocate(n, this);
+		const_iterator	src = begin();
+		iterator	dst = new_begin;
+		while (src != end()) {
+			m_allocator.construct(dst++, *src++);
+		}
+		clear();
+		m_allocator.deallocate(begin(), capacity());
+		m_begin = new_begin;
+		m_end = new_begin + n;
+		m_end_of_storage = m_end;
+		while (dst != end()) {
+			m_allocator.construct(dst++, val);
+		}
+	} else if (n < size()) {
+		for (iterator it = begin() + n; it != end(); it++) {
+			m_allocator.destroy(it);
+		}
+		m_end = begin() + n;
+	} else {
+		for (iterator it = end(); it != begin() + n; it++) {
+			m_allocator.construct(it, val);
+		}
+		m_end = begin() + n;
+	}
 }
 
 template <class T, class Allocator>

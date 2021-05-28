@@ -4,6 +4,14 @@
 #include <list>
 #include "vector.hpp"
 
+void    print_vector(ft::vector<int>& v) {
+    std::cout << "Vector size: " << v.size() << ", capacity: " << v.capacity() << '\n';
+    for (ft::vector<int>::iterator it = v.begin(); it != v.end(); it++) {
+        std::cout << ' ' << *it;
+    }
+    std::cout << '\n';
+}
+
 // TODO Create proper Unit Tests
 int	main() {
 	std::vector<int> v;
@@ -113,5 +121,20 @@ int	main() {
 	std::cout << "v9 size: " << v9.size() << ", capacity: " << v9.capacity() << "\n";
 	v7.swap(v9);
 	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity() << "\n";
+
+	ft::vector<int> v10;
+	for (std::size_t i = 1; i < 10; i++) {
+		v10.push_back(i);
+	}
+	print_vector(v10);
+	v10.resize(5);
+	print_vector(v10);
+	v10.resize(8,100);
+	print_vector(v10);
+	v10.resize(12);
+	print_vector(v10);
+	v10.resize(24);
+	print_vector(v10);
+
 	return 0;
 }
