@@ -56,7 +56,7 @@ public:
 	void		resize(size_type n, T val = T());
 	size_type	capacity() const;
 	bool		empty() const;
-//	void		reserve(size_type n);
+	void		reserve(size_type n);
 //
 //
 //	// element access
@@ -281,6 +281,24 @@ typename vector<T, Allocator>::size_type	vector<T, Allocator>::capacity() const 
 template <class T, class Allocator>
 bool	vector<T, Allocator>::empty() const {
 	return begin() == end();
+}
+
+template <class T, class Allocator>
+void	vector<T, Allocator>::reserve(size_type n) {
+	if (n <= capacity()) {
+		return;
+	}
+	iterator		new_begin = m_allocator.allocate(n, this);
+	const_iterator	src = begin();
+	iterator		dst = new_begin;
+	while (src != end()) {
+		m_allocator.construct(dst++, *src++);
+	}
+	clear();
+	m_allocator.deallocate(begin(), capacity());
+	m_begin = new_begin;
+	m_end = dst;
+	m_end_of_storage = m_begin + n;
 }
 
 template <class T, class Allocator>

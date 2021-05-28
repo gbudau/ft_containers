@@ -135,6 +135,19 @@ int	main() {
 	print_vector(v10);
 	v10.resize(24);
 	print_vector(v10);
+	v10.resize(0);
+	print_vector(v10);
+	v10.resize(10);
+	print_vector(v10);
+
+	v10.reserve(10);
+	print_vector(v10);
+	v10.reserve(v10.size());
+	print_vector(v10);
+	v10.reserve(v10.capacity());
+	print_vector(v10);
+	v10.reserve(v10.capacity() * 2);
+	print_vector(v10);
 
 	return 0;
 }
