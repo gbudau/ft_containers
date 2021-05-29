@@ -187,5 +187,21 @@ int main() {
 	v11.assign(15, 3);
 	print_vector(v11);
 
+	ft::vector<int> v12;
+	for (std::size_t i = 0; i < 10; i++) {
+		v12.push_back(i);
+	}
+
+	ft::vector<int> v13;
+	v13.assign(v12.begin(), v12.end());
+	print_vector(v13);
+	v13.assign(v12.begin(), v12.begin() + 5);
+	print_vector(v13);
+	for (std::size_t i = 10; i < 15; i++) {
+		v12.push_back(i);
+	}
+	v13.assign(v12.begin(), v12.end());
+	print_vector(v13);
+
 	return 0;
 }

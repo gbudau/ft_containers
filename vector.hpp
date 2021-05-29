@@ -37,8 +37,11 @@ class vector {
 	~vector();
 	vector<T, Allocator> &operator=(const vector<T, Allocator> &x);
 	void                  assign(size_type n, const T &u);
-	//	template <class InputIterator>
-	//		void assign(InputIterator first, InputIterator last);
+	template <class InputIterator>
+	void           assign(typename enable_if<
+                            !std::numeric_limits<InputIterator>::is_integer,
+                            InputIterator>::type first,
+	                      InputIterator                last);
 	allocator_type get_allocator() const;
 	//
 	//	// iterators
@@ -76,8 +79,8 @@ class vector {
 	iterator insert(iterator position, const T &x);
 	//	void		insert(iterator position, size_type n, const T&
 	// x); 	template <class InputIterator> 		void insert(iterator
-	// position, 				InputIterator first, InputIterator
-	// last);
+	// position, 				InputIterator first,
+	// InputIterator last);
 	iterator erase(iterator position);
 	iterator erase(iterator first, iterator last);
 	void     swap(vector<T, Allocator> &);
@@ -237,6 +240,46 @@ void vector<T, Allocator>::assign(size_type n, const T &u) {
 		}
 		while (dst != begin() + n) {
 			m_allocator.construct(dst++, u);
+		}
+		m_end = begin() + n;
+	}
+}
+
+template <class T, class Allocator>
+template <class InputIterator>
+void vector<T, Allocator>::assign(
+        typename enable_if<!std::numeric_limits<InputIterator>::is_integer,
+                           InputIterator>::type first,
+        InputIterator                           last) {
+	size_type n = 0;
+	for (iterator it = first; it != last; it++) {
+		n++;
+	}
+	if (capacity() < n) {
+		clear();
+		m_allocator.deallocate(begin(), capacity());
+		m_begin = m_allocator.allocate(n, this);
+		m_end = begin() + n;
+		m_end_of_storage = m_end;
+		for (iterator it = begin(); first != last; it++, first++) {
+			m_allocator.construct(it, *first);
+		}
+	} else if (size() > n) {
+		iterator dst = begin();
+		while (dst != begin() + n) {
+			*dst++ = *first++;
+		}
+		while (dst != end()) {
+			m_allocator.destroy(dst++);
+		}
+		m_end = begin() + n;
+	} else {
+		iterator dst = begin();
+		while (dst != end()) {
+			*dst++ = *first++;
+		}
+		while (dst != begin() + n) {
+			m_allocator.construct(dst++, *first++);
 		}
 		m_end = begin() + n;
 	}
