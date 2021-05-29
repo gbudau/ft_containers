@@ -36,7 +36,7 @@ class vector {
 	vector(const vector<T, Allocator> &x);
 	~vector();
 	vector<T, Allocator> &operator=(const vector<T, Allocator> &x);
-	//	void assign(size_type n, const T& u);
+	void                  assign(size_type n, const T &u);
 	//	template <class InputIterator>
 	//		void assign(InputIterator first, InputIterator last);
 	allocator_type get_allocator() const;
@@ -76,7 +76,8 @@ class vector {
 	iterator insert(iterator position, const T &x);
 	//	void		insert(iterator position, size_type n, const T&
 	// x); 	template <class InputIterator> 		void insert(iterator
-	// position, 				InputIterator first, InputIterator last);
+	// position, 				InputIterator first, InputIterator
+	// last);
 	iterator erase(iterator position);
 	iterator erase(iterator first, iterator last);
 	void     swap(vector<T, Allocator> &);
@@ -207,6 +208,38 @@ vector<T, Allocator>::operator=(const vector<T, Allocator> &x) {
 		;
 	}
 	return *this;
+}
+
+template <class T, class Allocator>
+void vector<T, Allocator>::assign(size_type n, const T &u) {
+	if (capacity() < n) {
+		clear();
+		m_allocator.deallocate(begin(), capacity());
+		m_begin = m_allocator.allocate(n, this);
+		m_end = begin() + n;
+		m_end_of_storage = m_end;
+		for (iterator it = begin(); it != end(); it++) {
+			m_allocator.construct(it, u);
+		}
+	} else if (size() > n) {
+		iterator dst = begin();
+		while (dst != begin() + n) {
+			*dst++ = u;
+		}
+		while (dst != end()) {
+			m_allocator.destroy(dst++);
+		}
+		m_end = begin() + n;
+	} else {
+		iterator dst = begin();
+		while (dst != end()) {
+			*dst++ = u;
+		}
+		while (dst != begin() + n) {
+			m_allocator.construct(dst++, u);
+		}
+		m_end = begin() + n;
+	}
 }
 
 template <class T, class Allocator>

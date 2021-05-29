@@ -176,5 +176,16 @@ int main() {
 	v10.reserve(v10.capacity() * 2);
 	print_vector(v10);
 
+	ft::vector<int> v11;
+
+	v11.assign(0, 42);
+	print_vector(v11);
+	v11.assign(20, 1);
+	print_vector(v11);
+	v11.assign(10, 2);
+	print_vector(v11);
+	v11.assign(15, 3);
+	print_vector(v11);
+
 	return 0;
 }
