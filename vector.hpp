@@ -3,6 +3,7 @@
 #include <limits>
 #include <memory>
 #include "algorithm.hpp"
+#include "memory.hpp"
 #include "type_traits.hpp"
 
 namespace ft {
@@ -130,9 +131,7 @@ vector<T, Allocator>::vector(size_type n, const T &value,
                              const Allocator &allocator)
         : m_allocator(allocator), m_begin(m_allocator.allocate(n, this)),
           m_end(m_begin + n), m_end_of_storage(m_end) {
-	for (size_type i = 0; i < n; i++) {
-		m_allocator.construct(m_begin + i, value);
-	}
+	ft::uninitialized_fill_n(begin(), n, value, get_allocator());
 }
 
 template <class T, class Allocator>
@@ -221,9 +220,7 @@ void vector<T, Allocator>::assign(size_type n, const T &u) {
 		m_begin = m_allocator.allocate(n, this);
 		m_end = begin() + n;
 		m_end_of_storage = m_end;
-		for (iterator it = begin(); it != end(); it++) {
-			m_allocator.construct(it, u);
-		}
+		ft::uninitialized_fill(begin(), end(), u, get_allocator());
 	} else if (size() > n) {
 		iterator dst = begin();
 		while (dst != begin() + n) {
@@ -238,9 +235,7 @@ void vector<T, Allocator>::assign(size_type n, const T &u) {
 		while (dst != end()) {
 			*dst++ = u;
 		}
-		while (dst != begin() + n) {
-			m_allocator.construct(dst++, u);
-		}
+		ft::uninitialized_fill(dst, begin() + n, u, get_allocator());
 		m_end = begin() + n;
 	}
 }
@@ -338,18 +333,15 @@ void vector<T, Allocator>::resize(size_type n, T val) {
 		m_begin = new_begin;
 		m_end = new_begin + n;
 		m_end_of_storage = m_end;
-		while (dst != end()) {
-			m_allocator.construct(dst++, val);
-		}
+		ft::uninitialized_fill(dst, end(), val, get_allocator());
 	} else if (n < size()) {
 		for (iterator it = begin() + n; it != end(); it++) {
 			m_allocator.destroy(it);
 		}
 		m_end = begin() + n;
 	} else {
-		for (iterator it = end(); it != begin() + n; it++) {
-			m_allocator.construct(it, val);
-		}
+		ft::uninitialized_fill(end(), begin() + n, val,
+		                       get_allocator());
 		m_end = begin() + n;
 	}
 }
