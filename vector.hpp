@@ -148,9 +148,7 @@ vector<T, Allocator>::vector(
 	m_begin = m_allocator.allocate(n, this);
 	m_end = m_begin + n;
 	m_end_of_storage = m_end;
-	for (iterator dst = begin(); first != last; dst++, first++) {
-		m_allocator.construct(dst, *first);
-	}
+	ft::uninitialized_copy(first, last, begin(), get_allocator());
 }
 
 template <class T, class Allocator>
@@ -159,10 +157,7 @@ vector<T, Allocator>::vector(const vector<T, Allocator> &x) {
 	m_begin = m_allocator.allocate(x.end() - x.begin(), this);
 	m_end = m_begin + (x.end() - x.begin());
 	m_end_of_storage = m_end;
-	const_iterator src = x.begin();
-	for (iterator dst = begin(); src != x.end(); dst++, src++) {
-		m_allocator.construct(dst, *src);
-	}
+	ft::uninitialized_copy(x.begin(), x.end(), begin(), get_allocator());
 }
 
 template <class T, class Allocator>
@@ -183,10 +178,8 @@ vector<T, Allocator>::operator=(const vector<T, Allocator> &x) {
 		m_begin = m_allocator.allocate(x.end() - x.begin(), this);
 		m_end = m_begin + (x.end() - x.begin());
 		m_end_of_storage = m_end;
-		const_iterator src = x.begin();
-		for (iterator dst = begin(); src != x.end(); dst++, src++) {
-			m_allocator.construct(dst, *src);
-		}
+		ft::uninitialized_copy(x.begin(), x.end(), begin(),
+		                       get_allocator());
 	} else if (size() >= x.size()) {
 		const_iterator src = x.begin();
 		iterator       dst = begin();
@@ -203,11 +196,8 @@ vector<T, Allocator>::operator=(const vector<T, Allocator> &x) {
 		while (dst != end()) {
 			*dst++ = *src++;
 		}
-		while (src != x.end()) {
-			m_allocator.construct(dst, *src++);
-		}
+		ft::uninitialized_copy(src, x.end(), dst, get_allocator());
 		m_end = m_begin + x.size();
-		;
 	}
 	return *this;
 }
@@ -256,9 +246,7 @@ void vector<T, Allocator>::assign(
 		m_begin = m_allocator.allocate(n, this);
 		m_end = begin() + n;
 		m_end_of_storage = m_end;
-		for (iterator it = begin(); first != last; it++, first++) {
-			m_allocator.construct(it, *first);
-		}
+		ft::uninitialized_copy(first, last, begin(), get_allocator());
 	} else if (size() > n) {
 		iterator dst = begin();
 		while (dst != begin() + n) {
@@ -322,12 +310,9 @@ vector<T, Allocator>::max_size() const {
 template <class T, class Allocator>
 void vector<T, Allocator>::resize(size_type n, T val) {
 	if (n > capacity()) {
-		iterator       new_begin = m_allocator.allocate(n, this);
-		const_iterator src = begin();
-		iterator       dst = new_begin;
-		while (src != end()) {
-			m_allocator.construct(dst++, *src++);
-		}
+		iterator new_begin = m_allocator.allocate(n, this);
+		iterator dst = ft::uninitialized_copy(begin(), end(), new_begin,
+		                                      get_allocator());
 		clear();
 		m_allocator.deallocate(begin(), capacity());
 		m_begin = new_begin;
@@ -362,16 +347,13 @@ void vector<T, Allocator>::reserve(size_type n) {
 	if (n <= capacity()) {
 		return;
 	}
-	iterator       new_begin = m_allocator.allocate(n, this);
-	const_iterator src = begin();
-	iterator       dst = new_begin;
-	while (src != end()) {
-		m_allocator.construct(dst++, *src++);
-	}
+	iterator new_begin = m_allocator.allocate(n, this);
+	iterator new_end = ft::uninitialized_copy(begin(), end(), new_begin,
+	                                          get_allocator());
 	clear();
 	m_allocator.deallocate(begin(), capacity());
 	m_begin = new_begin;
-	m_end = dst;
+	m_end = new_end;
 	m_end_of_storage = m_begin + n;
 }
 
@@ -406,14 +388,11 @@ vector<T, Allocator>::insert(iterator position, const T &x) {
 	} else {
 		size_type new_capacity = capacity() ? capacity() * 2 : 1;
 		iterator  new_begin = m_allocator.allocate(new_capacity, this);
-		iterator  dst = new_begin;
-		for (iterator src = begin(); src != position; dst++, src++) {
-			m_allocator.construct(dst, *src);
-		}
+		iterator  dst = ft::uninitialized_copy(
+		         begin(), position, new_begin, get_allocator());
 		m_allocator.construct(dst++, x);
-		for (iterator src = position; src != end(); dst++, src++) {
-			m_allocator.construct(dst, *src);
-		}
+		dst = ft::uninitialized_copy(position, end(), dst,
+		                             get_allocator());
 		clear();
 		m_allocator.deallocate(m_begin, m_end_of_storage - m_begin);
 		m_begin = new_begin;
