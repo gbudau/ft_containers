@@ -237,7 +237,7 @@ void vector<T, Allocator>::assign(
                            InputIterator>::type first,
         InputIterator                           last) {
 	size_type n = 0;
-	for (iterator it = first; it != last; it++) {
+	for (InputIterator it = first; it != last; it++) {
 		n++;
 	}
 	if (capacity() < n) {
