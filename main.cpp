@@ -1,207 +1,321 @@
 #include <cassert>
-#include <iostream>
-#include <list>
+#include <string>
 #include <vector>
 #include "vector.hpp"
 
-void print_vector(ft::vector<int> &v) {
-	std::cout << "Vector size: " << v.size()
-	          << ", capacity: " << v.capacity() << '\n';
-	for (ft::vector<int>::iterator it = v.begin(); it != v.end(); it++) {
-		std::cout << ' ' << *it;
-	}
-	std::cout << '\n';
+template <class Container1, class Container2>
+static void assert_equal_size_and_capacity(const Container1 &c1,
+                                           const Container2 &c2) {
+
+	assert(c1.size() == c2.size());
+	assert(c1.capacity() == c2.capacity());
 }
 
-// TODO Create proper Unit Tests
+template <class Container1, class Container2>
+static void assert_equal_content(const Container1 &c1, const Container2 &c2) {
+	typename Container1::const_iterator it1 = c1.begin();
+	typename Container2::const_iterator it2 = c2.begin();
+
+	while (it1 != c1.end() && it2 != c2.end()) {
+		assert(*it1++ == *it2++);
+	}
+	assert(it1 == c1.end() && it2 == c2.end());
+}
+
+template <class Container1, class Container2>
+static void assert_equal_container(const Container1 &c1, const Container2 &c2) {
+	assert_equal_size_and_capacity(c1, c2);
+	assert_equal_content(c1, c2);
+}
+
+template <class Container1, class Container2>
+static void test_container_default_constructor(const Container1 &,
+                                               const Container2 &) {
+	Container1 c1;
+	Container2 c2;
+
+	assert_equal_size_and_capacity(c1, c2);
+}
+
+template <class Container1, class Container2>
+static void test_container_count_constructor(const Container1 &c1,
+                                             const Container2 &c2) {
+	assert_equal_size_and_capacity(c1, c2);
+}
+
+template <class Container1, class Container2>
+static void test_container_range_constructor(const Container1 &c1,
+                                             const Container2 &c2) {
+	Container1 c;
+
+	for (typename Container1::const_iterator it = c1.begin();
+	     it != c1.end(); it++) {
+		c.push_back(*it);
+	}
+	for (typename Container2::const_iterator it = c2.begin();
+	     it != c2.end(); it++) {
+		c.push_back(*it);
+	}
+
+	Container1 c_a(c.begin(), c.end());
+	Container2 c_b(c.begin(), c.end());
+	assert_equal_container(c_a, c_b);
+}
+
+template <class Container1>
+static void test_container_copy_constructor(const Container1 &c1) {
+	Container1 c2(c1);
+
+	assert_equal_container(c1, c2);
+}
+
+template <class Container1>
+static void test_container_assignment_operator(const Container1 &c1) {
+	Container1 c2 = c1;
+
+	assert_equal_container(c1, c2);
+}
+
+template <class Container1, class Container2, typename T>
+static void test_container_assign_count(const Container1 &, const Container2 &,
+                                        const T &v) {
+	Container1 c1;
+	Container2 c2;
+
+	c1.assign(10, v);
+	c2.assign(10, v);
+	assert_equal_container(c1, c2);
+}
+
+template <class Container1, class Container2>
+static void test_container_assign_range(const Container1 &c1,
+                                        const Container2 &c2) {
+	Container1 c_a;
+	Container2 c_b;
+	c_a.assign(c1.begin(), c1.end());
+	c_b.assign(c2.begin(), c2.end());
+	assert_equal_container(c_a, c_b);
+}
+
+template <class Container1, class Container2>
+static void test_container_get_allocator(const Container1 &c1,
+                                         const Container2 &c2) {
+	assert(c1.get_allocator() == c2.get_allocator());
+}
+
+template <class Container1, class Container2>
+static void test_container_begin(const Container1 &c1, const Container2 &c2) {
+	assert(c1.size() && c2.size());
+	assert_equal_container(c1, c2);
+	assert(*c1.begin() == *c2.begin());
+}
+
+template <class Container1, class Container2>
+static void test_container_end(const Container1 &, const Container2 &) {
+	Container1 c1(1);
+	Container2 c2(1);
+	assert(c1.size() && c2.size());
+	assert_equal_container(c1, c2);
+	typename Container1::iterator it1 = c1.end();
+	typename Container2::iterator it2 = c2.end();
+	assert(*(--it1) == *(--it2));
+}
+
+template <class Container1, class Container2>
+static void test_container_max_size(const Container1 &c1,
+                                    const Container2 &c2) {
+	assert(c1.max_size() == c2.max_size());
+}
+
+template <class Container1, class Container2>
+static void test_container_resize(const Container1 &c1, const Container2 &c2) {
+	Container1 c_a(c1);
+	Container2 c_b(c2);
+
+	assert_equal_container(c_b, c_a);
+	c_a.resize(5);
+	c_b.resize(5);
+	assert_equal_container(c_b, c_a);
+	c_a.resize(2);
+	c_b.resize(2);
+	assert_equal_container(c_b, c_a);
+	c_a.resize(12);
+	c_b.resize(12);
+	assert_equal_container(c_b, c_a);
+}
+
+template <class Container1, class Container2>
+static void test_container_empty(const Container1 &c1, const Container2 &c2) {
+	assert(c1.empty() == c2.empty());
+}
+
+template <class Container1, class Container2>
+static void test_container_not_empty(const Container1 &c1,
+                                     const Container2 &c2) {
+	assert(c1.empty() == c2.empty());
+}
+template <class Container1, class Container2>
+static void test_container_reserve(const Container1 &c1, const Container2 &c2) {
+	Container1 c_a(c1);
+	Container2 c_b(c2);
+
+	assert_equal_container(c_b, c_a);
+	c_a.reserve(0);
+	c_b.reserve(0);
+	assert_equal_container(c_b, c_a);
+	c_a.reserve(c_a.size());
+	c_b.reserve(c_b.size());
+	assert_equal_container(c_b, c_a);
+	c_a.reserve(c_a.size() * 2);
+	c_b.reserve(c_b.size() * 2);
+	assert_equal_container(c_b, c_a);
+}
+
+template <class T, class Container1, class Container2>
+static void test_container_push_back(const Container1 &, const Container2 &,
+                                     const T &val) {
+	Container1 c1;
+	Container2 c2;
+
+	assert_equal_container(c1, c2);
+	for (int i = 0; i < 10; i++) {
+		c1.push_back(val);
+		c2.push_back(val);
+		assert_equal_container(c1, c2);
+	}
+	assert_equal_container(c1, c2);
+}
+
+template <class Container1, class Container2>
+static void test_container_pop_back(const Container1 &, const Container2 &) {
+	Container1 c1(10);
+	Container2 c2(10);
+
+	assert_equal_container(c1, c2);
+	for (std::size_t i = 0; i < c1.size() && i < c2.size(); i++) {
+		c1.pop_back();
+		c2.pop_back();
+		assert_equal_container(c1, c2);
+	}
+	assert_equal_container(c1, c2);
+}
+
+template <class T, class Container1, class Container2>
+static void test_container_insert_one(const Container1 &, const Container2 &,
+                                      const T &val) {
+	Container1 c1;
+	Container2 c2;
+
+	assert_equal_container(c1, c2);
+	c1.insert(c1.end(), val);
+	c2.insert(c2.end(), val);
+	assert_equal_container(c1, c2);
+	c1.insert(c1.begin(), val);
+	c2.insert(c2.begin(), val);
+	assert_equal_container(c1, c2);
+}
+
+template <class Container1, class Container2>
+static void test_container_erase_position(const Container1 &,
+                                          const Container2 &) {
+	Container1                    c1(10);
+	Container2                    c2(10);
+	typename Container1::iterator c1_it;
+	typename Container2::iterator c2_it;
+
+	assert_equal_container(c1, c2);
+	for (std::size_t i = 0; i < c1.size(); i++) {
+		c1_it = c1.erase(c1.begin());
+		c2_it = c2.erase(c2.begin());
+		assert(*c1_it == *c2_it);
+		assert_equal_container(c1, c2);
+	}
+	assert_equal_container(c1, c2);
+}
+
+template <class Container1, class Container2>
+static void test_container_erase_range(const Container1 &, const Container2 &) {
+	Container1 c1;
+	Container2 c2;
+
+	assert_equal_container(c1, c2);
+	typename Container1::iterator c1_it = c1.erase(c1.begin(), c1.end());
+	typename Container2::iterator c2_it = c2.erase(c2.begin(), c2.end());
+	assert(c1_it == c1.end() && c2_it == c2.end());
+	assert_equal_container(c1, c2);
+	c1 = Container1(5);
+	c2 = Container2(5);
+	c1_it = c1.erase(c1.begin(), c1.end());
+	c2_it = c2.erase(c2.begin(), c2.end());
+	assert(c1_it == c1.end() && c2_it == c2.end());
+	assert_equal_container(c1, c2);
+}
+
+template <class Container1, class Container2>
+static void test_container_swap(const Container1 &, const Container2 &) {
+	Container1 c1_empty;
+	Container2 c2_empty;
+	Container1 c1(5);
+	Container2 c2(5);
+
+	assert_equal_container(c1_empty, c2_empty);
+	assert_equal_container(c1, c2);
+	c1.swap(c1_empty);
+	c2.swap(c2_empty);
+	assert_equal_container(c1_empty, c2_empty);
+	assert_equal_container(c1, c2);
+}
+
+template <class Container1, class Container2>
+static void test_container_clear(const Container1 &, const Container2 &) {
+	Container1 c1;
+	Container2 c2;
+
+	assert_equal_container(c1, c2);
+	c1.clear();
+	c2.clear();
+	assert_equal_container(c1, c2);
+	c1 = Container1(5);
+	c2 = Container2(5);
+	assert_equal_container(c1, c2);
+	c1.clear();
+	c2.clear();
+	assert_equal_container(c1, c2);
+}
+
+static void test_vector() {
+	test_container_default_constructor(ft::vector<int>(),
+	                                   std::vector<int>());
+	test_container_count_constructor(ft::vector<int>(5),
+	                                 std::vector<int>(5));
+	test_container_range_constructor(ft::vector<int>(1, 1),
+	                                 std::vector<int>(1, 1));
+	test_container_copy_constructor(ft::vector<int>(42));
+	test_container_assignment_operator(ft::vector<std::string>(1, "hello"));
+	test_container_assign_count(ft::vector<int>(), std::vector<int>(), 42);
+	test_container_assign_range(ft::vector<float>(10, 100.0f),
+	                            std::vector<float>(10, 100.0f));
+	test_container_get_allocator(ft::vector<char>(), std::vector<char>());
+	test_container_begin(ft::vector<double>(1, 1.0),
+	                     std::vector<double>(1, 1.0));
+	test_container_end(ft::vector<std::string>(),
+	                   std::vector<std::string>());
+	test_container_max_size(ft::vector<int>(), std::vector<int>());
+	test_container_resize(ft::vector<char>(1, 'a'),
+	                      std::vector<char>(1, 'a'));
+	test_container_empty(ft::vector<int>(), std::vector<int>());
+	test_container_not_empty(ft::vector<int>(1, 1), std::vector<int>(1, 1));
+	test_container_reserve(ft::vector<int>(10, 42),
+	                       std::vector<int>(10, 42));
+	test_container_push_back(ft::vector<int>(), std::vector<int>(), 123);
+	test_container_pop_back(ft::vector<int>(), std::vector<int>());
+	test_container_insert_one(ft::vector<int>(), std::vector<int>(), 1);
+	test_container_erase_position(ft::vector<int>(), std::vector<int>());
+	test_container_erase_range(ft::vector<int>(), std::vector<int>());
+	test_container_swap(ft::vector<int>(), std::vector<int>());
+	test_container_clear(ft::vector<int>(), std::vector<int>());
+}
+
 int main() {
-	std::vector<int> v;
-	ft::vector<int>  v1;
-	const int        N = 5;
-
-	(void)v;
-	ft::vector<int> v2(3, 42);
-
-	std::cout << "v1 Size: " << v1.size() << "\n";
-	std::cout << "v2 Size: " << v2.size() << "\n";
-	std::cout << "v2 Capacity: " << v2.capacity() << "\n";
-	std::cout << "v1 Max Size: " << v1.max_size() << "\n";
-	std::cout << "v Max Size: " << v.max_size() << "\n";
-	std::cout << "v1 empty()?: " << v1.empty() << "\n";
-	std::cout << "v2 empty()?: " << v2.empty() << "\n";
-
-	std::cout << "Testing allocator with " << N << " values\n";
-	int *p = v1.get_allocator().allocate(N);
-	for (int i = 0; i < N; i++) {
-		v1.get_allocator().construct(p + i, i);
-		std::cout << p[i] << "\n";
-		v1.get_allocator().destroy(p + i);
-	}
-	v1.get_allocator().deallocate(p, N);
-	v2.erase(v2.begin());
-	v2.erase(v2.begin());
-	std::cout << "v2 Size: " << v2.size() << "\n";
-	ft::vector<int> v3(5, 42);
-	std::cout << "v3 Size: " << v3.size() << "\n";
-	v3.erase(v3.begin(), v3.end());
-	std::cout << "v3 Size after erase(begin(), end()): " << v3.size()
-	          << "\n";
-	v3.insert(v3.begin(), 123);
-	std::cout << "v3 Size after insert(): " << v3.size() << "\n";
-
-	ft::vector<int> v4;
-	std::cout << "v4 after default construct, size: " << v4.size()
-	          << " ,capacity: " << v4.capacity() << "\n";
-	v4.insert(v4.begin(), 1);
-	std::cout << "v4 after insert, size: " << v4.size()
-	          << " ,capacity: " << v4.capacity() << "\n";
-	v4.insert(v4.end(), 2);
-	std::cout << "v4 after insert, size: " << v4.size()
-	          << " ,capacity: " << v4.capacity() << "\n";
-	v4.insert(v4.begin(), 3);
-	std::cout << "v4 after insert, size: " << v4.size()
-	          << " ,capacity: " << v4.capacity() << "\n";
-	v4.insert(v4.begin(), 4);
-	std::cout << "v4 after insert, size: " << v4.size()
-	          << " ,capacity: " << v4.capacity() << "\n";
-
-	std::vector<int> v5;
-	std::cout << "v5 after default construct, size: " << v5.size()
-	          << " ,capacity: " << v5.capacity() << "\n";
-	v5.insert(v5.begin(), 1);
-	std::cout << "v5 after insert, size: " << v5.size()
-	          << " ,capacity: " << v5.capacity() << "\n";
-	v5.insert(v5.end(), 2);
-	std::cout << "v5 after insert, size: " << v5.size()
-	          << " ,capacity: " << v5.capacity() << "\n";
-	v5.insert(v5.begin(), 3);
-	std::cout << "v5 after insert, size: " << v5.size()
-	          << " ,capacity: " << v5.capacity() << "\n";
-	v5.insert(v5.begin(), 4);
-	std::cout << "v5 after insert, size: " << v5.size()
-	          << " ,capacity: " << v5.capacity() << "\n";
-
-	ft::vector<int> v6(5, 42);
-	std::cout << "v6 size: " << v6.size() << ", capacity: " << v6.capacity()
-	          << "\n";
-	v6.insert(v6.end(), 1);
-	std::cout << "v6 size: " << v6.size() << ", capacity: " << v6.capacity()
-	          << "\n";
-	v6.insert(v6.begin(), 1);
-	std::cout << "v6 size: " << v6.size() << ", capacity: " << v6.capacity()
-	          << "\n";
-	for (ft::vector<int>::iterator it = v6.begin(); it != v6.end(); it++) {
-		std::cout << *it << " ";
-	}
-	std::cout << "\n";
-
-	std::list<int> l;
-	l.push_back(1);
-	l.push_back(2);
-	l.push_back(3);
-	ft::vector<int> v7(l.begin(), l.end());
-	for (ft::vector<int>::iterator it = v7.begin(); it != v7.end(); it++) {
-		std::cout << *it << " ";
-	}
-	std::cout << "\n";
-
-	v7.clear();
-	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity()
-	          << "\n";
-	ft::vector<int> v8(v7);
-	std::cout << "v8 size: " << v8.size() << ", capacity: " << v8.capacity()
-	          << "\n";
-	v7.insert(v7.end(), 1);
-	v7.insert(v7.begin(), 0);
-	v7.insert(v7.end(), 2);
-	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity()
-	          << "\n";
-	ft::vector<int> v9;
-
-	v9 = v7;
-	std::cout << "v9 size: " << v9.size() << ", capacity: " << v9.capacity()
-	          << "\n";
-	v7.insert(v7.end(), 2);
-	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity()
-	          << "\n";
-
-	v7.push_back(3);
-	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity()
-	          << "\n";
-	v7.push_back(4);
-	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity()
-	          << "\n";
-	v7.push_back(5);
-	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity()
-	          << "\n";
-	v7.clear();
-	v7.push_back(0);
-	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity()
-	          << "\n";
-
-	v7.pop_back();
-	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity()
-	          << "\n";
-
-	std::cout << "v9 size: " << v9.size() << ", capacity: " << v9.capacity()
-	          << "\n";
-	v7.swap(v9);
-	std::cout << "v7 size: " << v7.size() << ", capacity: " << v7.capacity()
-	          << "\n";
-
-	ft::vector<int> v10;
-	for (std::size_t i = 1; i < 10; i++) {
-		v10.push_back(i);
-	}
-	print_vector(v10);
-	v10.resize(5);
-	print_vector(v10);
-	v10.resize(8, 100);
-	print_vector(v10);
-	v10.resize(12);
-	print_vector(v10);
-	v10.resize(24);
-	print_vector(v10);
-	v10.resize(0);
-	print_vector(v10);
-	v10.resize(10);
-	print_vector(v10);
-
-	v10.reserve(10);
-	print_vector(v10);
-	v10.reserve(v10.size());
-	print_vector(v10);
-	v10.reserve(v10.capacity());
-	print_vector(v10);
-	v10.reserve(v10.capacity() * 2);
-	print_vector(v10);
-
-	ft::vector<int> v11;
-
-	v11.assign(0, 42);
-	print_vector(v11);
-	v11.assign(20, 1);
-	print_vector(v11);
-	v11.assign(10, 2);
-	print_vector(v11);
-	v11.assign(15, 3);
-	print_vector(v11);
-
-	ft::vector<int> v12;
-	for (std::size_t i = 0; i < 10; i++) {
-		v12.push_back(i);
-	}
-
-	ft::vector<int> v13;
-	v13.assign(v12.begin(), v12.end());
-	print_vector(v13);
-	v13.assign(v12.begin(), v12.begin() + 5);
-	print_vector(v13);
-	for (std::size_t i = 10; i < 15; i++) {
-		v12.push_back(i);
-	}
-	v13.assign(v12.begin(), v12.end());
-	print_vector(v13);
-
-	return 0;
+	test_vector();
 }
