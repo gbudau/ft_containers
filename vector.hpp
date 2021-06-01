@@ -10,7 +10,7 @@ namespace ft {
 
 template <class T, class Allocator = std::allocator<T> >
 class vector {
-      public:
+  public:
 	// types
 	typedef typename Allocator::reference         reference;
 	typedef typename Allocator::const_reference   const_referenct;
@@ -26,26 +26,25 @@ class vector {
 	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
 	// constructor/copy/destroy
-	explicit vector(const Allocator & = Allocator());
-	explicit vector(size_type n, const T &value = T(),
-	                const Allocator & = Allocator());
+	explicit vector(const Allocator &= Allocator());
+	explicit vector(
+		size_type n, const T &value = T(), const Allocator &= Allocator());
 	template <class InputIterator>
-	vector(typename enable_if<
-	               !std::numeric_limits<InputIterator>::is_integer,
-	               InputIterator>::type first,
-	       InputIterator last, const Allocator & = Allocator());
+	vector(typename enable_if<!std::numeric_limits<InputIterator>::is_integer,
+			   InputIterator>::type first,
+		InputIterator               last, const Allocator &= Allocator());
 	vector(const vector<T, Allocator> &x);
 	~vector();
 	vector<T, Allocator> &operator=(const vector<T, Allocator> &x);
 	void                  assign(size_type n, const T &u);
 	template <class InputIterator>
-	void           assign(typename enable_if<
-                            !std::numeric_limits<InputIterator>::is_integer,
-                            InputIterator>::type first,
-	                      InputIterator                last);
+	void assign(
+		typename enable_if<!std::numeric_limits<InputIterator>::is_integer,
+			InputIterator>::type first,
+		InputIterator            last);
 	allocator_type get_allocator() const;
-	//
-	//	// iterators
+
+	// iterators
 	iterator       begin();
 	const_iterator begin() const;
 	iterator       end();
@@ -55,16 +54,15 @@ class vector {
 	//	reverse_iterator		rend();
 	//	const_reverse_iterator	rend() const;
 	//
-	//	// capacity
-	size_type size() const;
-	size_type max_size() const;
-	void      resize(size_type n, T val = T());
-	size_type capacity() const;
-	bool      empty() const;
-	void      reserve(size_type n);
-	//
-	//
-	//	// element access
+	// capacity
+	size_type      size() const;
+	size_type      max_size() const;
+	void           resize(size_type n, T val = T());
+	size_type      capacity() const;
+	bool           empty() const;
+	void           reserve(size_type n);
+
+	// element access
 	//	reference		operator[](size_type n);
 	//	const_reference	operator[](size_type n) const;
 	//	reference		at(size_type n);
@@ -73,21 +71,21 @@ class vector {
 	//	const_reference	front() const;
 	//	reference		back();
 	//	const_reference	back() const;
-	//
-	//	// modifiers
-	void     push_back(const T &x);
-	void     pop_back();
-	iterator insert(iterator position, const T &x);
-	//	void		insert(iterator position, size_type n, const T&
-	// x); 	template <class InputIterator> 		void insert(iterator
+
+	// modifiers
+	void           push_back(const T &x);
+	void           pop_back();
+	iterator       insert(iterator position, const T &x);
+	// void	 insert(iterator position, size_type n, const T& x);
+	// template <class InputIterator> 		void insert(iterator
 	// position, 				InputIterator first,
 	// InputIterator last);
-	iterator erase(iterator position);
-	iterator erase(iterator first, iterator last);
-	void     swap(vector<T, Allocator> &);
-	void     clear();
+	iterator       erase(iterator position);
+	iterator       erase(iterator first, iterator last);
+	void           swap(vector<T, Allocator> &);
+	void           clear();
 
-      protected:
+  protected:
 	allocator_type m_allocator;
 	iterator       m_begin;
 	iterator       m_end;
@@ -124,22 +122,22 @@ class vector {
 
 template <class T, class Allocator>
 vector<T, Allocator>::vector(const Allocator &allocator)
-        : m_allocator(allocator), m_begin(0), m_end(0), m_end_of_storage(0) {}
+	: m_allocator(allocator), m_begin(0), m_end(0), m_end_of_storage(0) {}
 
 template <class T, class Allocator>
-vector<T, Allocator>::vector(size_type n, const T &value,
-                             const Allocator &allocator)
-        : m_allocator(allocator), m_begin(m_allocator.allocate(n, this)),
-          m_end(m_begin + n), m_end_of_storage(m_end) {
+vector<T, Allocator>::vector(
+	size_type n, const T &value, const Allocator &allocator)
+	: m_allocator(allocator), m_begin(m_allocator.allocate(n, this)),
+	  m_end(m_begin + n), m_end_of_storage(m_end) {
 	ft::uninitialized_fill_n(begin(), n, value, get_allocator());
 }
 
 template <class T, class Allocator>
 template <class InputIterator>
 vector<T, Allocator>::vector(
-        typename enable_if<!std::numeric_limits<InputIterator>::is_integer,
-                           InputIterator>::type first,
-        InputIterator last, const Allocator &allocator) {
+	typename enable_if<!std::numeric_limits<InputIterator>::is_integer,
+		InputIterator>::type first,
+	InputIterator last, const Allocator &allocator) {
 	size_type n = 0;
 	for (InputIterator it = first; it != last; it++) {
 		n++;
@@ -167,8 +165,8 @@ vector<T, Allocator>::~vector() {
 }
 
 template <class T, class Allocator>
-vector<T, Allocator> &
-vector<T, Allocator>::operator=(const vector<T, Allocator> &x) {
+vector<T, Allocator> &vector<T, Allocator>::operator=(
+	const vector<T, Allocator> &x) {
 	if (this == &x) {
 		return *this;
 	}
@@ -178,8 +176,7 @@ vector<T, Allocator>::operator=(const vector<T, Allocator> &x) {
 		m_begin = m_allocator.allocate(x.end() - x.begin(), this);
 		m_end = m_begin + (x.end() - x.begin());
 		m_end_of_storage = m_end;
-		ft::uninitialized_copy(x.begin(), x.end(), begin(),
-		                       get_allocator());
+		ft::uninitialized_copy(x.begin(), x.end(), begin(), get_allocator());
 	} else if (size() >= x.size()) {
 		const_iterator src = x.begin();
 		iterator       dst = begin();
@@ -233,9 +230,9 @@ void vector<T, Allocator>::assign(size_type n, const T &u) {
 template <class T, class Allocator>
 template <class InputIterator>
 void vector<T, Allocator>::assign(
-        typename enable_if<!std::numeric_limits<InputIterator>::is_integer,
-                           InputIterator>::type first,
-        InputIterator                           last) {
+	typename enable_if<!std::numeric_limits<InputIterator>::is_integer,
+		InputIterator>::type first,
+	InputIterator            last) {
 	size_type n = 0;
 	for (InputIterator it = first; it != last; it++) {
 		n++;
@@ -311,8 +308,8 @@ template <class T, class Allocator>
 void vector<T, Allocator>::resize(size_type n, T val) {
 	if (n > capacity()) {
 		iterator new_begin = m_allocator.allocate(n, this);
-		iterator dst = ft::uninitialized_copy(begin(), end(), new_begin,
-		                                      get_allocator());
+		iterator dst =
+			ft::uninitialized_copy(begin(), end(), new_begin, get_allocator());
 		clear();
 		m_allocator.deallocate(begin(), capacity());
 		m_begin = new_begin;
@@ -325,8 +322,7 @@ void vector<T, Allocator>::resize(size_type n, T val) {
 		}
 		m_end = begin() + n;
 	} else {
-		ft::uninitialized_fill(end(), begin() + n, val,
-		                       get_allocator());
+		ft::uninitialized_fill(end(), begin() + n, val, get_allocator());
 		m_end = begin() + n;
 	}
 }
@@ -348,8 +344,8 @@ void vector<T, Allocator>::reserve(size_type n) {
 		return;
 	}
 	iterator new_begin = m_allocator.allocate(n, this);
-	iterator new_end = ft::uninitialized_copy(begin(), end(), new_begin,
-	                                          get_allocator());
+	iterator new_end =
+		ft::uninitialized_copy(begin(), end(), new_begin, get_allocator());
 	clear();
 	m_allocator.deallocate(begin(), capacity());
 	m_begin = new_begin;
@@ -371,8 +367,8 @@ void vector<T, Allocator>::pop_back() {
 }
 
 template <class T, class Allocator>
-typename vector<T, Allocator>::iterator
-vector<T, Allocator>::insert(iterator position, const T &x) {
+typename vector<T, Allocator>::iterator vector<T, Allocator>::insert(
+	iterator position, const T &x) {
 	size_type n = end() - position;
 	if (size() < capacity()) {
 		if (!size()) {
@@ -389,10 +385,9 @@ vector<T, Allocator>::insert(iterator position, const T &x) {
 		size_type new_capacity = capacity() ? capacity() * 2 : 1;
 		iterator  new_begin = m_allocator.allocate(new_capacity, this);
 		iterator  dst = ft::uninitialized_copy(
-		         begin(), position, new_begin, get_allocator());
+			 begin(), position, new_begin, get_allocator());
 		m_allocator.construct(dst++, x);
-		dst = ft::uninitialized_copy(position, end(), dst,
-		                             get_allocator());
+		dst = ft::uninitialized_copy(position, end(), dst, get_allocator());
 		clear();
 		m_allocator.deallocate(m_begin, m_end_of_storage - m_begin);
 		m_begin = new_begin;
@@ -403,8 +398,8 @@ vector<T, Allocator>::insert(iterator position, const T &x) {
 }
 
 template <class T, class Allocator>
-typename vector<T, Allocator>::iterator
-vector<T, Allocator>::erase(iterator position) {
+typename vector<T, Allocator>::iterator vector<T, Allocator>::erase(
+	iterator position) {
 	iterator ret = position;
 	for (; position + 1 != end(); position++) {
 		*position = *(position + 1);
@@ -415,8 +410,8 @@ vector<T, Allocator>::erase(iterator position) {
 }
 
 template <class T, class Allocator>
-typename vector<T, Allocator>::iterator
-vector<T, Allocator>::erase(iterator first, iterator last) {
+typename vector<T, Allocator>::iterator vector<T, Allocator>::erase(
+	iterator first, iterator last) {
 	iterator src = last;
 	iterator dst = first;
 	for (; src != end(); dst++, src++) {

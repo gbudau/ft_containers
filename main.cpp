@@ -4,8 +4,8 @@
 #include "vector.hpp"
 
 template <class Container1, class Container2>
-static void assert_equal_size_and_capacity(const Container1 &c1,
-                                           const Container2 &c2) {
+static void assert_equal_size_and_capacity(
+	const Container1 &c1, const Container2 &c2) {
 
 	assert(c1.size() == c2.size());
 	assert(c1.capacity() == c2.capacity());
@@ -29,8 +29,8 @@ static void assert_equal_container(const Container1 &c1, const Container2 &c2) {
 }
 
 template <class Container1, class Container2>
-static void test_container_default_constructor(const Container1 &,
-                                               const Container2 &) {
+static void test_container_default_constructor(
+	const Container1 &, const Container2 &) {
 	Container1 c1;
 	Container2 c2;
 
@@ -38,22 +38,22 @@ static void test_container_default_constructor(const Container1 &,
 }
 
 template <class Container1, class Container2>
-static void test_container_count_constructor(const Container1 &c1,
-                                             const Container2 &c2) {
+static void test_container_count_constructor(
+	const Container1 &c1, const Container2 &c2) {
 	assert_equal_size_and_capacity(c1, c2);
 }
 
 template <class Container1, class Container2>
-static void test_container_range_constructor(const Container1 &c1,
-                                             const Container2 &c2) {
+static void test_container_range_constructor(
+	const Container1 &c1, const Container2 &c2) {
 	Container1 c;
 
-	for (typename Container1::const_iterator it = c1.begin();
-	     it != c1.end(); it++) {
+	for (typename Container1::const_iterator it = c1.begin(); it != c1.end();
+		 it++) {
 		c.push_back(*it);
 	}
-	for (typename Container2::const_iterator it = c2.begin();
-	     it != c2.end(); it++) {
+	for (typename Container2::const_iterator it = c2.begin(); it != c2.end();
+		 it++) {
 		c.push_back(*it);
 	}
 
@@ -77,8 +77,8 @@ static void test_container_assignment_operator(const Container1 &c1) {
 }
 
 template <class Container1, class Container2, typename T>
-static void test_container_assign_count(const Container1 &, const Container2 &,
-                                        const T &v) {
+static void test_container_assign_count(
+	const Container1 &, const Container2 &, const T &v) {
 	Container1 c1;
 	Container2 c2;
 
@@ -88,8 +88,8 @@ static void test_container_assign_count(const Container1 &, const Container2 &,
 }
 
 template <class Container1, class Container2>
-static void test_container_assign_range(const Container1 &c1,
-                                        const Container2 &c2) {
+static void test_container_assign_range(
+	const Container1 &c1, const Container2 &c2) {
 	Container1 c_a;
 	Container2 c_b;
 	c_a.assign(c1.begin(), c1.end());
@@ -98,8 +98,8 @@ static void test_container_assign_range(const Container1 &c1,
 }
 
 template <class Container1, class Container2>
-static void test_container_get_allocator(const Container1 &c1,
-                                         const Container2 &c2) {
+static void test_container_get_allocator(
+	const Container1 &c1, const Container2 &c2) {
 	assert(c1.get_allocator() == c2.get_allocator());
 }
 
@@ -122,8 +122,8 @@ static void test_container_end(const Container1 &, const Container2 &) {
 }
 
 template <class Container1, class Container2>
-static void test_container_max_size(const Container1 &c1,
-                                    const Container2 &c2) {
+static void test_container_max_size(
+	const Container1 &c1, const Container2 &c2) {
 	assert(c1.max_size() == c2.max_size());
 }
 
@@ -150,8 +150,8 @@ static void test_container_empty(const Container1 &c1, const Container2 &c2) {
 }
 
 template <class Container1, class Container2>
-static void test_container_not_empty(const Container1 &c1,
-                                     const Container2 &c2) {
+static void test_container_not_empty(
+	const Container1 &c1, const Container2 &c2) {
 	assert(c1.empty() == c2.empty());
 }
 template <class Container1, class Container2>
@@ -172,8 +172,8 @@ static void test_container_reserve(const Container1 &c1, const Container2 &c2) {
 }
 
 template <class T, class Container1, class Container2>
-static void test_container_push_back(const Container1 &, const Container2 &,
-                                     const T &val) {
+static void test_container_push_back(
+	const Container1 &, const Container2 &, const T &val) {
 	Container1 c1;
 	Container2 c2;
 
@@ -201,8 +201,8 @@ static void test_container_pop_back(const Container1 &, const Container2 &) {
 }
 
 template <class T, class Container1, class Container2>
-static void test_container_insert_one(const Container1 &, const Container2 &,
-                                      const T &val) {
+static void test_container_insert_one(
+	const Container1 &, const Container2 &, const T &val) {
 	Container1 c1;
 	Container2 c2;
 
@@ -216,8 +216,8 @@ static void test_container_insert_one(const Container1 &, const Container2 &,
 }
 
 template <class Container1, class Container2>
-static void test_container_erase_position(const Container1 &,
-                                          const Container2 &) {
+static void test_container_erase_position(
+	const Container1 &, const Container2 &) {
 	Container1                    c1(10);
 	Container2                    c2(10);
 	typename Container1::iterator c1_it;
@@ -284,29 +284,24 @@ static void test_container_clear(const Container1 &, const Container2 &) {
 }
 
 static void test_vector() {
-	test_container_default_constructor(ft::vector<int>(),
-	                                   std::vector<int>());
-	test_container_count_constructor(ft::vector<int>(5),
-	                                 std::vector<int>(5));
-	test_container_range_constructor(ft::vector<int>(1, 1),
-	                                 std::vector<int>(1, 1));
+	test_container_default_constructor(ft::vector<int>(), std::vector<int>());
+	test_container_count_constructor(ft::vector<int>(5), std::vector<int>(5));
+	test_container_range_constructor(
+		ft::vector<int>(1, 1), std::vector<int>(1, 1));
 	test_container_copy_constructor(ft::vector<int>(42));
 	test_container_assignment_operator(ft::vector<std::string>(1, "hello"));
 	test_container_assign_count(ft::vector<int>(), std::vector<int>(), 42);
-	test_container_assign_range(ft::vector<float>(10, 100.0f),
-	                            std::vector<float>(10, 100.0f));
+	test_container_assign_range(
+		ft::vector<float>(10, 100.0f), std::vector<float>(10, 100.0f));
 	test_container_get_allocator(ft::vector<char>(), std::vector<char>());
-	test_container_begin(ft::vector<double>(1, 1.0),
-	                     std::vector<double>(1, 1.0));
-	test_container_end(ft::vector<std::string>(),
-	                   std::vector<std::string>());
+	test_container_begin(
+		ft::vector<double>(1, 1.0), std::vector<double>(1, 1.0));
+	test_container_end(ft::vector<std::string>(), std::vector<std::string>());
 	test_container_max_size(ft::vector<int>(), std::vector<int>());
-	test_container_resize(ft::vector<char>(1, 'a'),
-	                      std::vector<char>(1, 'a'));
+	test_container_resize(ft::vector<char>(1, 'a'), std::vector<char>(1, 'a'));
 	test_container_empty(ft::vector<int>(), std::vector<int>());
 	test_container_not_empty(ft::vector<int>(1, 1), std::vector<int>(1, 1));
-	test_container_reserve(ft::vector<int>(10, 42),
-	                       std::vector<int>(10, 42));
+	test_container_reserve(ft::vector<int>(10, 42), std::vector<int>(10, 42));
 	test_container_push_back(ft::vector<int>(), std::vector<int>(), 123);
 	test_container_pop_back(ft::vector<int>(), std::vector<int>());
 	test_container_insert_one(ft::vector<int>(), std::vector<int>(), 1);
