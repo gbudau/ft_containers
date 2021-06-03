@@ -242,6 +242,43 @@ static void test_container_insert_count(
 }
 
 template <class Container1, class Container2>
+static void test_container_insert_range(
+	const Container1 &, const Container2 &) {
+	Container1 c1;
+	Container2 c2;
+	Container1 t1(10);
+	Container2 t2(10);
+
+	c1.insert(c1.begin(), t1.begin(), t1.end());
+	c2.insert(c2.begin(), t2.begin(), t2.end());
+	assert_equal_container(c1, c2);
+	c1.insert(c1.end(), t1.begin(), t1.end());
+	c2.insert(c2.end(), t2.begin(), t2.end());
+	assert_equal_container(c1, c2);
+	typename Container1::iterator it1 = c1.begin();
+	typename Container2::iterator it2 = c2.begin();
+	for (std::size_t i = 0; i < c1.size() / 2 && i < c2.size() / 2; i++) {
+		it1++;
+		it2++;
+	}
+	c1.insert(it1, t1.begin(), t1.end());
+	c2.insert(it2, t2.begin(), t2.end());
+	assert_equal_container(c1, c2);
+
+	Container1 ta(100);
+	Container2 tb(100);
+	it1 = c1.begin();
+	it2 = c2.begin();
+	for (std::size_t i = 0; i < c1.size() / 2 && i < c2.size() / 2; i++) {
+		it1++;
+		it2++;
+	}
+	c1.insert(it1, ta.begin(), ta.end());
+	c2.insert(it2, tb.begin(), tb.end());
+	assert_equal_container(c1, c2);
+}
+
+template <class Container1, class Container2>
 static void test_container_erase_position(
 	const Container1 &, const Container2 &) {
 	Container1                    c1(10);
@@ -332,6 +369,7 @@ static void test_vector() {
 	test_container_pop_back(ft::vector<int>(), std::vector<int>());
 	test_container_insert_one(ft::vector<int>(), std::vector<int>(), 1);
 	test_container_insert_count(ft::vector<int>(), std::vector<int>(), 42);
+	test_container_insert_range(ft::vector<int>(), std::vector<int>());
 	test_container_erase_position(ft::vector<int>(), std::vector<int>());
 	test_container_erase_range(ft::vector<int>(), std::vector<int>());
 	test_container_swap(ft::vector<int>(), std::vector<int>());
