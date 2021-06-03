@@ -207,11 +207,37 @@ static void test_container_insert_one(
 	Container2 c2;
 
 	assert_equal_container(c1, c2);
-	c1.insert(c1.end(), val);
-	c2.insert(c2.end(), val);
+	typename Container1::iterator it1 = c1.insert(c1.end(), val);
+	typename Container2::iterator it2 = c2.insert(c2.end(), val);
+	assert(*it1 == *it2);
 	assert_equal_container(c1, c2);
-	c1.insert(c1.begin(), val);
-	c2.insert(c2.begin(), val);
+	it1 = c1.insert(c1.begin(), val);
+	it2 = c2.insert(c2.begin(), val);
+	assert(*it1 == *it2);
+	assert_equal_container(c1, c2);
+}
+
+template <class T, class Container1, class Container2>
+static void test_container_insert_count(
+	const Container1 &, const Container2 &, const T &val) {
+	Container1 c1;
+	Container2 c2;
+
+	assert_equal_container(c1, c2);
+	c1.insert(c1.end(), 0, val);
+	c2.insert(c2.end(), 0, val);
+	assert_equal_container(c1, c2);
+	c1.insert(c1.begin(), 1, val);
+	c2.insert(c2.begin(), 1, val);
+	assert_equal_container(c1, c2);
+	c1.insert(c1.begin(), 10, val);
+	c2.insert(c2.begin(), 10, val);
+	assert_equal_container(c1, c2);
+	c1.insert(c1.begin(), 1, val);
+	c2.insert(c2.begin(), 1, val);
+	assert_equal_container(c1, c2);
+	c1.insert(c1.begin(), 5, val);
+	c2.insert(c2.begin(), 5, val);
 	assert_equal_container(c1, c2);
 }
 
@@ -305,6 +331,7 @@ static void test_vector() {
 	test_container_push_back(ft::vector<int>(), std::vector<int>(), 123);
 	test_container_pop_back(ft::vector<int>(), std::vector<int>());
 	test_container_insert_one(ft::vector<int>(), std::vector<int>(), 1);
+	test_container_insert_count(ft::vector<int>(), std::vector<int>(), 42);
 	test_container_erase_position(ft::vector<int>(), std::vector<int>());
 	test_container_erase_range(ft::vector<int>(), std::vector<int>());
 	test_container_swap(ft::vector<int>(), std::vector<int>());
