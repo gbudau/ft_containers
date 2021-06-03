@@ -14,4 +14,11 @@ typename std::iterator_traits<InputIterator>::difference_type distance(
 	return result;
 }
 
+template <class InputIterator, class Distance>
+void advance(InputIterator& it, Distance n) {
+	while (n--) {
+		++it;
+	}
+}
+
 }  // namespace ft
