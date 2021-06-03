@@ -104,21 +104,69 @@ static void test_container_get_allocator(
 }
 
 template <class Container1, class Container2>
-static void test_container_begin(const Container1 &c1, const Container2 &c2) {
-	assert(c1.size() && c2.size());
+static void test_container_begin(const Container1 &, const Container2 &) {
+	Container1 c1(5);
+	Container2 c2(5);
+
 	assert_equal_container(c1, c2);
-	assert(*c1.begin() == *c2.begin());
+	typename Container1::iterator it1 = c1.begin();
+	typename Container2::iterator it2 = c2.begin();
+	assert(*it1 == *it2);
+
+	typename Container1::const_iterator it1c = c1.begin();
+	typename Container2::const_iterator it2c = c2.begin();
+	assert(*it1c == *it2c);
 }
 
 template <class Container1, class Container2>
 static void test_container_end(const Container1 &, const Container2 &) {
 	Container1 c1(1);
 	Container2 c2(1);
+
 	assert(c1.size() && c2.size());
 	assert_equal_container(c1, c2);
 	typename Container1::iterator it1 = c1.end();
 	typename Container2::iterator it2 = c2.end();
+	// This works only for the containers that have bidirectional_iterator+
 	assert(*(--it1) == *(--it2));
+
+	typename Container1::const_iterator it1c = c1.end();
+	typename Container2::const_iterator it2c = c2.end();
+	// This works only for the containers that have bidirectional_iterator+
+	assert(*(--it1c) == *(--it2c));
+}
+
+template <class Container1, class Container2>
+static void test_container_rbegin(const Container1 &, const Container2 &) {
+	Container1 c1(5);
+	Container2 c2(5);
+
+	assert_equal_container(c1, c2);
+	typename Container1::reverse_iterator rit1 = c1.rbegin();
+	typename Container2::reverse_iterator rit2 = c2.rbegin();
+	assert(*rit1 == *rit2);
+
+	typename Container1::const_reverse_iterator rit1c = c1.rbegin();
+	typename Container2::const_reverse_iterator rit2c = c2.rbegin();
+	assert(*rit1c == *rit2c);
+}
+
+template <class Container1, class Container2>
+static void test_container_rend(const Container1 &, const Container2 &) {
+	Container1 c1(1);
+	Container2 c2(1);
+
+	assert(c1.size() && c2.size());
+	assert_equal_container(c1, c2);
+	typename Container1::reverse_iterator rit1 = c1.rend();
+	typename Container2::reverse_iterator rit2 = c2.rend();
+	// This works only for the containers that have bidirectional_iterator+
+	assert(*(--rit1) == *(--rit2));
+
+	typename Container1::const_reverse_iterator rit1c = c1.rend();
+	typename Container2::const_reverse_iterator rit2c = c2.rend();
+	// This works only for the containers that have bidirectional_iterator+
+	assert(*(--rit1c) == *(--rit2c));
 }
 
 template <class Container1, class Container2>
@@ -357,9 +405,10 @@ static void test_vector() {
 	test_container_assign_range(
 		ft::vector<float>(10, 100.0f), std::vector<float>(10, 100.0f));
 	test_container_get_allocator(ft::vector<char>(), std::vector<char>());
-	test_container_begin(
-		ft::vector<double>(1, 1.0), std::vector<double>(1, 1.0));
+	test_container_begin(ft::vector<double>(), std::vector<double>());
 	test_container_end(ft::vector<std::string>(), std::vector<std::string>());
+	test_container_rbegin(ft::vector<int>(), std::vector<int>());
+	test_container_rend(ft::vector<char>(), std::vector<char>());
 	test_container_max_size(ft::vector<int>(), std::vector<int>());
 	test_container_resize(ft::vector<char>(1, 'a'), std::vector<char>(1, 'a'));
 	test_container_empty(ft::vector<int>(), std::vector<int>());

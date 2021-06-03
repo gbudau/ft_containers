@@ -3,6 +3,7 @@
 #include <limits>
 #include <memory>
 #include <stdexcept>
+#include <string>
 #include "algorithm.hpp"
 #include "iterator.hpp"
 #include "memory.hpp"
@@ -51,10 +52,10 @@ class vector {
 	const_iterator begin() const;
 	iterator       end();
 	const_iterator end() const;
-	//	reverse_iterator		rbegin();
-	//	const_reverse_iterator	rbegin() const;
-	//	reverse_iterator		rend();
-	//	const_reverse_iterator	rend() const;
+	reverse_iterator       rbegin();
+	const_reverse_iterator rbegin() const;
+	reverse_iterator       rend();
+	const_reverse_iterator rend() const;
 	//
 	// capacity
 	size_type      size() const;
@@ -296,6 +297,28 @@ template <class T, class Allocator>
 typename vector<T, Allocator>::const_iterator
 vector<T, Allocator>::end() const {
 	return m_end;
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::reverse_iterator vector<T, Allocator>::rbegin() {
+	return reverse_iterator(end());
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::const_reverse_iterator
+vector<T, Allocator>::rbegin() const {
+	return const_reverse_iterator(end());
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::reverse_iterator vector<T, Allocator>::rend() {
+	return reverse_iterator(begin());
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::const_reverse_iterator
+vector<T, Allocator>::rend() const {
+	return const_reverse_iterator(begin());
 }
 
 template <class T, class Allocator>
