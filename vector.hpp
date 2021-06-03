@@ -2,6 +2,7 @@
 #include <iterator>
 #include <limits>
 #include <memory>
+#include <stdexcept>
 #include "algorithm.hpp"
 #include "iterator.hpp"
 #include "memory.hpp"
@@ -78,19 +79,22 @@ class vector {
 	void           pop_back();
 	iterator       insert(iterator position, const T &x);
 	void           insert(iterator position, size_type n, const T &x);
-	// template <class InputIterator> 		void insert(iterator
-	// position, 				InputIterator first,
-	// InputIterator last);
-	iterator       erase(iterator position);
-	iterator       erase(iterator first, iterator last);
-	void           swap(vector<T, Allocator> &);
-	void           clear();
+	template <class InputIterator>
+	void     insert(iterator         position,
+			typename enable_if<!std::numeric_limits<InputIterator>::is_integer,
+            InputIterator>::type first,
+			InputIterator            last);
+	iterator erase(iterator position);
+	iterator erase(iterator first, iterator last);
+	void     swap(vector<T, Allocator> &);
+	void     clear();
 
   protected:
 	allocator_type m_allocator;
 	iterator       m_begin;
 	iterator       m_end;
 	iterator       m_end_of_storage;
+	size_type      m_calculate_new_capacity(size_type n);
 };
 
 // template <class T, class Allocator>
@@ -378,6 +382,9 @@ typename vector<T, Allocator>::iterator vector<T, Allocator>::insert(
 template <class T, class Allocator>
 void vector<T, Allocator>::insert(
 	iterator position, size_type count, const T &x) {
+	if (count == 0) {
+		return;
+	}
 	if (size() + count <= capacity()) {
 		if (static_cast<size_type>(end() - position) > count) {
 			ft::uninitialized_copy(
@@ -391,9 +398,9 @@ void vector<T, Allocator>::insert(
 				end(), count - (end() - position), x, get_allocator());
 			ft::fill(position, end(), x);
 		}
-		m_end = end() + count;
+		m_end += count;
 	} else {
-		size_type new_capacity = ft::max(capacity() * 2, capacity() + count);
+		size_type new_capacity = m_calculate_new_capacity(count);
 		iterator  new_begin = m_allocator.allocate(new_capacity, this);
 		iterator  dst = ft::uninitialized_copy(
 			 begin(), position, new_begin, get_allocator());
@@ -406,6 +413,47 @@ void vector<T, Allocator>::insert(
 		m_end = dst;
 		m_end_of_storage = m_begin + new_capacity;
 	}
+}
+
+template <class T, class Allocator>
+template <class InputIterator>
+void vector<T, Allocator>::insert(iterator position,
+	typename enable_if<!std::numeric_limits<InputIterator>::is_integer,
+		InputIterator>::type               first,
+	InputIterator                          last) {
+	if (first == last) {
+		return;
+	}
+	size_type n = distance(first, last);
+	if (size() + n <= capacity()) {
+		if (static_cast<size_type>(end() - position) > n) {
+			ft::uninitialized_copy(end() - n, end(), end(), get_allocator());
+			ft::copy_backward(position, position + n, end());
+			ft::copy(first, last, position);
+		} else {
+			ft::uninitialized_copy(
+				position, end(), position + n, get_allocator());
+			InputIterator it = first;
+			ft::advance(it, end() - position);
+			ft::copy(first, it, position);
+			ft::uninitialized_copy(it, last, end(), get_allocator());
+		}
+		m_end += n;
+	} else {
+		size_type new_capacity = m_calculate_new_capacity(n);
+		iterator  new_begin = m_allocator.allocate(new_capacity, this);
+		iterator  dst = ft::uninitialized_copy(
+			 begin(), position, new_begin, get_allocator());
+		ft::uninitialized_copy(position, end(), dst + n, get_allocator());
+		ft::uninitialized_copy(first, last, dst, get_allocator());
+		dst = ft::uninitialized_copy(position, end(), dst + n, get_allocator());
+		clear();
+		m_allocator.deallocate(m_begin, m_end_of_storage - m_begin);
+		m_begin = new_begin;
+		m_end = dst;
+		m_end_of_storage = m_begin + new_capacity;
+	}
+	return;
 }
 
 template <class T, class Allocator>
@@ -449,6 +497,16 @@ void vector<T, Allocator>::clear() {
 		m_allocator.destroy(tmp);
 	}
 	m_end = m_begin;
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::size_type
+vector<T, Allocator>::m_calculate_new_capacity(size_type n) {
+	if (max_size() - size() < n) {
+		throw std::length_error(std::string("vector"));
+	}
+	const size_type len = size() + ft::max(size(), n);
+	return (len < size() || len > max_size()) ? max_size() : len;
 }
 
 }  // namespace ft
