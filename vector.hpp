@@ -3,6 +3,7 @@
 #include <limits>
 #include <memory>
 #include "algorithm.hpp"
+#include "iterator.hpp"
 #include "memory.hpp"
 #include "type_traits.hpp"
 
@@ -26,13 +27,13 @@ class vector {
 	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
 	// constructor/copy/destroy
-	explicit vector(const Allocator &= Allocator());
-	explicit vector(
-		size_type n, const T &value = T(), const Allocator &= Allocator());
+	explicit vector(const Allocator &allocator = Allocator());
+	explicit vector(size_type n, const T &value = T(),
+		const Allocator &allocator = Allocator());
 	template <class InputIterator>
 	vector(typename enable_if<!std::numeric_limits<InputIterator>::is_integer,
 			   InputIterator>::type first,
-		InputIterator               last, const Allocator &= Allocator());
+		InputIterator last, const Allocator &allocator = Allocator());
 	vector(const vector<T, Allocator> &x);
 	~vector();
 	vector<T, Allocator> &operator=(const vector<T, Allocator> &x);
@@ -76,7 +77,7 @@ class vector {
 	void           push_back(const T &x);
 	void           pop_back();
 	iterator       insert(iterator position, const T &x);
-	// void	 insert(iterator position, size_type n, const T& x);
+	void           insert(iterator position, size_type n, const T &x);
 	// template <class InputIterator> 		void insert(iterator
 	// position, 				InputIterator first,
 	// InputIterator last);
@@ -369,32 +370,42 @@ void vector<T, Allocator>::pop_back() {
 template <class T, class Allocator>
 typename vector<T, Allocator>::iterator vector<T, Allocator>::insert(
 	iterator position, const T &x) {
-	size_type n = end() - position;
-	if (size() < capacity()) {
-		if (!size()) {
-			m_allocator.construct(m_begin, x);
+	size_type n = position - begin();
+	insert(position, 1, x);
+	return begin() + n;
+}
+
+template <class T, class Allocator>
+void vector<T, Allocator>::insert(
+	iterator position, size_type count, const T &x) {
+	if (size() + count <= capacity()) {
+		if (static_cast<size_type>(end() - position) > count) {
+			ft::uninitialized_copy(
+				end() - count, end(), end(), get_allocator());
+			ft::copy_backward(position, end() - count, end());
+			ft::fill(position, position + count, x);
 		} else {
-			m_allocator.construct(m_end, *(m_end - 1));
-			for (iterator it = end(); it != position; it--) {
-				*it = *(it - 1);
-			}
-			*position = x;
+			ft::uninitialized_copy(
+				position, end(), position + count, get_allocator());
+			ft::uninitialized_fill_n(
+				end(), count - (end() - position), x, get_allocator());
+			ft::fill(position, end(), x);
 		}
-		m_end++;
+		m_end = end() + count;
 	} else {
-		size_type new_capacity = capacity() ? capacity() * 2 : 1;
+		size_type new_capacity = ft::max(capacity() * 2, capacity() + count);
 		iterator  new_begin = m_allocator.allocate(new_capacity, this);
 		iterator  dst = ft::uninitialized_copy(
 			 begin(), position, new_begin, get_allocator());
-		m_allocator.construct(dst++, x);
-		dst = ft::uninitialized_copy(position, end(), dst, get_allocator());
+		ft::uninitialized_fill_n(dst, count, x, get_allocator());
+		dst = ft::uninitialized_copy(
+			position, end(), dst + count, get_allocator());
 		clear();
 		m_allocator.deallocate(m_begin, m_end_of_storage - m_begin);
 		m_begin = new_begin;
 		m_end = dst;
 		m_end_of_storage = m_begin + new_capacity;
 	}
-	return begin() + n;
 }
 
 template <class T, class Allocator>
