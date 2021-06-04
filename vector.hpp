@@ -72,8 +72,8 @@ class vector {
 	const_reference        at(size_type n) const;
 	reference              front();
 	const_reference        front() const;
-	// reference		back();
-	// const_reference	back() const;
+	reference              back();
+	const_reference        back() const;
 
 	// modifiers
 	void                   push_back(const T &x);
@@ -421,6 +421,17 @@ template <class T, class Allocator>
 typename vector<T, Allocator>::const_reference
 vector<T, Allocator>::front() const {
 	return *m_begin;
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::reference vector<T, Allocator>::back() {
+	return *(m_end - 1);
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::const_reference
+vector<T, Allocator>::back() const {
+	return *(m_end - 1);
 }
 
 template <class T, class Allocator>
