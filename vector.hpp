@@ -45,41 +45,41 @@ class vector {
 		typename enable_if<!std::numeric_limits<InputIterator>::is_integer,
 			InputIterator>::type first,
 		InputIterator            last);
-	allocator_type get_allocator() const;
+	allocator_type         get_allocator() const;
 
 	// iterators
-	iterator       begin();
-	const_iterator begin() const;
-	iterator       end();
-	const_iterator end() const;
+	iterator               begin();
+	const_iterator         begin() const;
+	iterator               end();
+	const_iterator         end() const;
 	reverse_iterator       rbegin();
 	const_reverse_iterator rbegin() const;
 	reverse_iterator       rend();
 	const_reverse_iterator rend() const;
 	//
 	// capacity
-	size_type      size() const;
-	size_type      max_size() const;
-	void           resize(size_type n, T val = T());
-	size_type      capacity() const;
-	bool           empty() const;
-	void           reserve(size_type n);
+	size_type              size() const;
+	size_type              max_size() const;
+	void                   resize(size_type n, T val = T());
+	size_type              capacity() const;
+	bool                   empty() const;
+	void                   reserve(size_type n);
 
 	// element access
 	reference              operator[](size_type n);
 	const_reference        operator[](size_type n) const;
 	reference              at(size_type n);
 	const_reference        at(size_type n) const;
-	// reference		front();
-	// const_reference	front() const;
+	reference              front();
+	const_reference        front() const;
 	// reference		back();
 	// const_reference	back() const;
 
 	// modifiers
-	void           push_back(const T &x);
-	void           pop_back();
-	iterator       insert(iterator position, const T &x);
-	void           insert(iterator position, size_type n, const T &x);
+	void                   push_back(const T &x);
+	void                   pop_back();
+	iterator               insert(iterator position, const T &x);
+	void                   insert(iterator position, size_type n, const T &x);
 	template <class InputIterator>
 	void     insert(iterator         position,
 			typename enable_if<!std::numeric_limits<InputIterator>::is_integer,
@@ -410,6 +410,17 @@ typename vector<T, Allocator>::const_reference vector<T, Allocator>::at(
 		throw std::out_of_range(std::string("vector: index out of range"));
 	}
 	return m_begin[n];
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::reference vector<T, Allocator>::front() {
+	return *m_begin;
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::const_reference
+vector<T, Allocator>::front() const {
+	return *m_begin;
 }
 
 template <class T, class Allocator>

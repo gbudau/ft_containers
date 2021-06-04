@@ -245,6 +245,23 @@ static void test_container_at(
 	assert_equal_container(c1, c2);
 }
 
+template <class T, class Container1, class Container2>
+static void test_container_front(
+	const Container1 &, const Container2 &, const T &val) {
+	Container1 c1(1);
+	Container2 c2(1);
+
+	assert_equal_container(c1, c2);
+	typename Container1::iterator it1 = c1.begin();
+	typename Container2::iterator it2 = c2.begin();
+	for (; it1 != c1.end() && it2 != c2.end(); it1++, it2++) {
+		*it1 = val;
+		*it2 = val;
+	}
+	assert_equal_container(c1, c2);
+	assert(c1.front() == c2.front());
+}
+
 template <class Container1, class Container2>
 static void test_container_reserve(const Container1 &c1, const Container2 &c2) {
 	Container1 c_a(c1);
@@ -458,6 +475,7 @@ static void test_vector() {
 	test_container_not_empty(ft::vector<int>(1, 1), std::vector<int>(1, 1));
 	test_container_array_subscript(ft::vector<int>(), std::vector<int>(), 1);
 	test_container_at(ft::vector<int>(), std::vector<int>(), 1);
+	test_container_front(ft::vector<int>(), std::vector<int>(), 123);
 	test_container_reserve(ft::vector<int>(10, 42), std::vector<int>(10, 42));
 	test_container_push_back(ft::vector<int>(), std::vector<int>(), 123);
 	test_container_pop_back(ft::vector<int>(), std::vector<int>());
