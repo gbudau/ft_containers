@@ -16,7 +16,7 @@ class vector {
   public:
 	// types
 	typedef typename Allocator::reference         reference;
-	typedef typename Allocator::const_reference   const_referenct;
+	typedef typename Allocator::const_reference   const_reference;
 	typedef typename Allocator::pointer           iterator;
 	typedef typename Allocator::const_pointer     const_iterator;
 	typedef typename Allocator::size_type         size_type;
@@ -66,14 +66,14 @@ class vector {
 	void           reserve(size_type n);
 
 	// element access
-	//	reference		operator[](size_type n);
-	//	const_reference	operator[](size_type n) const;
-	//	reference		at(size_type n);
-	//	const_reference	at(size_type n) const;
-	//	reference		front();
-	//	const_reference	front() const;
-	//	reference		back();
-	//	const_reference	back() const;
+	reference              operator[](size_type n);
+	const_reference        operator[](size_type n) const;
+	// reference		at(size_type n);
+	// const_reference	at(size_type n) const;
+	// reference		front();
+	// const_reference	front() const;
+	// reference		back();
+	// const_reference	back() const;
 
 	// modifiers
 	void           push_back(const T &x);
@@ -370,6 +370,8 @@ template <class T, class Allocator>
 void vector<T, Allocator>::reserve(size_type n) {
 	if (n <= capacity()) {
 		return;
+	} else if (n > max_size()) {
+		throw std::length_error(std::string("vector"));
 	}
 	iterator new_begin = m_allocator.allocate(n, this);
 	iterator new_end =
@@ -379,6 +381,18 @@ void vector<T, Allocator>::reserve(size_type n) {
 	m_begin = new_begin;
 	m_end = new_end;
 	m_end_of_storage = m_begin + n;
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::reference vector<T, Allocator>::operator[](
+	size_type n) {
+	return m_begin[n];
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::const_reference vector<T, Allocator>::operator[](
+	size_type n) const {
+	return m_begin[n];
 }
 
 template <class T, class Allocator>
