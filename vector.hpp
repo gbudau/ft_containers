@@ -68,8 +68,8 @@ class vector {
 	// element access
 	reference              operator[](size_type n);
 	const_reference        operator[](size_type n) const;
-	// reference		at(size_type n);
-	// const_reference	at(size_type n) const;
+	reference              at(size_type n);
+	const_reference        at(size_type n) const;
 	// reference		front();
 	// const_reference	front() const;
 	// reference		back();
@@ -371,7 +371,7 @@ void vector<T, Allocator>::reserve(size_type n) {
 	if (n <= capacity()) {
 		return;
 	} else if (n > max_size()) {
-		throw std::length_error(std::string("vector"));
+		throw std::length_error(std::string("vector: reserve: n > max_size"));
 	}
 	iterator new_begin = m_allocator.allocate(n, this);
 	iterator new_end =
@@ -392,6 +392,23 @@ typename vector<T, Allocator>::reference vector<T, Allocator>::operator[](
 template <class T, class Allocator>
 typename vector<T, Allocator>::const_reference vector<T, Allocator>::operator[](
 	size_type n) const {
+	return m_begin[n];
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::reference vector<T, Allocator>::at(size_type n) {
+	if (n >= size()) {
+		throw std::out_of_range(std::string("vector: index out of range"));
+	}
+	return m_begin[n];
+}
+
+template <class T, class Allocator>
+typename vector<T, Allocator>::const_reference vector<T, Allocator>::at(
+	size_type n) const {
+	if (n >= size()) {
+		throw std::out_of_range(std::string("vector: index out of range"));
+	}
 	return m_begin[n];
 }
 
@@ -540,7 +557,8 @@ template <class T, class Allocator>
 typename vector<T, Allocator>::size_type
 vector<T, Allocator>::m_calculate_new_capacity(size_type n) {
 	if (max_size() - size() < n) {
-		throw std::length_error(std::string("vector"));
+		throw std::length_error(
+			std::string("vector: capacity: size() + n > max_size"));
 	}
 	const size_type len = size() + ft::max(size(), n);
 	return (len < size() || len > max_size()) ? max_size() : len;

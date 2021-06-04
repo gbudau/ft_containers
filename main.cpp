@@ -211,6 +211,34 @@ static void test_container_array_subscript(
 
 	assert_equal_container(c1, c2);
 	for (std::size_t i = 0; i < c1.size() && i < c2.size(); i++) {
+		c1.at(i) = val;
+		c2.at(i) = val;
+	}
+	assert_equal_container(c1, c2);
+
+	bool a = false;
+	bool b = false;
+	try {
+		c1.at(-1) = val;
+	} catch (std::out_of_range const &e) {
+		a = true;
+	}
+	try {
+		c2.at(-1) = val;
+	} catch (std::out_of_range const &e) {
+		b = true;
+	}
+	assert(a == b);
+}
+
+template <class T, class Container1, class Container2>
+static void test_container_at(
+	const Container1 &, const Container2 &, const T &val) {
+	Container1 c1(5);
+	Container2 c2(5);
+
+	assert_equal_container(c1, c2);
+	for (std::size_t i = 0; i < c1.size() && i < c2.size(); i++) {
 		c1[i] = val;
 		c2[i] = val;
 	}
@@ -429,6 +457,7 @@ static void test_vector() {
 	test_container_empty(ft::vector<int>(), std::vector<int>());
 	test_container_not_empty(ft::vector<int>(1, 1), std::vector<int>(1, 1));
 	test_container_array_subscript(ft::vector<int>(), std::vector<int>(), 1);
+	test_container_at(ft::vector<int>(), std::vector<int>(), 1);
 	test_container_reserve(ft::vector<int>(10, 42), std::vector<int>(10, 42));
 	test_container_push_back(ft::vector<int>(), std::vector<int>(), 123);
 	test_container_pop_back(ft::vector<int>(), std::vector<int>());
