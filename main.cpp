@@ -452,6 +452,8 @@ static void test_container_swap(const Container1 &, const Container2 &) {
 	c2.swap(c2_empty);
 	assert_equal_container(c1_empty, c2_empty);
 	assert_equal_container(c1, c2);
+	assert(c1.size() == 0 && c2.size() == 0);
+	assert(c1_empty.size() == 5 && c2_empty.size() == 5);
 }
 
 template <class Container1, class Container2>
@@ -469,6 +471,24 @@ static void test_container_clear(const Container1 &, const Container2 &) {
 	c1.clear();
 	c2.clear();
 	assert_equal_container(c1, c2);
+}
+
+template <class Container1, class Container2>
+static void test_container_swap_overload(
+	const Container1 &, const Container2 &) {
+	Container1 c1_empty;
+	Container2 c2_empty;
+	Container1 c1(5);
+	Container2 c2(5);
+
+	assert_equal_container(c1_empty, c2_empty);
+	assert_equal_container(c1, c2);
+	ft::swap(c1, c1_empty);
+	std::swap(c2, c2_empty);
+	assert_equal_container(c1_empty, c2_empty);
+	assert_equal_container(c1, c2);
+	assert(c1.size() == 0 && c2.size() == 0);
+	assert(c1_empty.size() == 5 && c2_empty.size() == 5);
 }
 
 static void test_vector() {
@@ -504,6 +524,7 @@ static void test_vector() {
 	test_container_erase_range(ft::vector<int>(), std::vector<int>());
 	test_container_swap(ft::vector<int>(), std::vector<int>());
 	test_container_clear(ft::vector<int>(), std::vector<int>());
+	test_container_swap_overload(ft::vector<int>(), std::vector<int>());
 }
 
 int main() {

@@ -56,7 +56,7 @@ class vector {
 	const_reverse_iterator rbegin() const;
 	reverse_iterator       rend();
 	const_reverse_iterator rend() const;
-	//
+
 	// capacity
 	size_type              size() const;
 	size_type              max_size() const;
@@ -121,10 +121,10 @@ class vector {
 // template <class T, class Allocator>
 // bool	operator<=(const vector<T, Allocator>& x,
 //					const vector<T, Allocator>& y);
-//
-//// specialized algorithms
-// template <class T, class Allocator>
-// void	swap(vector<T, Allocator>& x, vector<T, Allocator>& y);
+
+// specialized algorithms
+template <class T, class Allocator>
+void swap(vector<T, Allocator> &x, vector<T, Allocator> &y);
 
 template <class T, class Allocator>
 vector<T, Allocator>::vector(const Allocator &allocator)
@@ -584,6 +584,11 @@ vector<T, Allocator>::m_calculate_new_capacity(size_type n) {
 	}
 	const size_type len = size() + ft::max(size(), n);
 	return (len < size() || len > max_size()) ? max_size() : len;
+}
+
+template <class T, class Allocator>
+void swap(vector<T, Allocator> &x, vector<T, Allocator> &y) {
+	x.swap(y);
 }
 
 }  // namespace ft
