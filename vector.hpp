@@ -605,17 +605,17 @@ bool operator<(const vector<T, Allocator> &x, const vector<T, Allocator> &y) {
 
 template <class T, class Allocator>
 bool operator>(const vector<T, Allocator> &x, const vector<T, Allocator> &y) {
-	return ft::lexicographical_compare(y.begin(), y.end(), x.begin(), x.end());
+	return y < x;
 }
 
 template <class T, class Allocator>
 bool operator<=(const vector<T, Allocator> &x, const vector<T, Allocator> &y) {
-	return !ft::lexicographical_compare(y.begin(), y.end(), x.begin(), x.end());
+	return !(y < x);
 }
 
 template <class T, class Allocator>
 bool operator>=(const vector<T, Allocator> &x, const vector<T, Allocator> &y) {
-	return !ft::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end());
+	return !(x < y);
 }
 
 template <class T, class Allocator>
