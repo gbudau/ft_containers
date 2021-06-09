@@ -62,4 +62,21 @@ BidirIt2 copy_backward(BidirIt1 first, BidirIt1 last, BidirIt2 d_last) {
 	return d_last;
 }
 
+// Returns true if one range is lexicographically less than another
+template <class InputIt1, class InputIt2>
+bool lexicographical_compare(
+	InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2) {
+	while (first1 != last1 && first2 != last2) {
+		if (*first1 < *first2) {
+			return false;
+		}
+		if (*first2 < *first1) {
+			return true;
+		}
+		first1++;
+		first2++;
+	}
+	return (first1 == last1) && (first2 != last2);
+}
+
 }  // namespace ft
