@@ -473,6 +473,36 @@ static void test_container_clear(const Container1 &, const Container2 &) {
 	assert_equal_container(c1, c2);
 }
 
+template <class T, class Container1, class Container2>
+static void test_container_equal_operator(
+	const Container1 &, const Container2 &, const T &val) {
+	const int  N = 5;
+	Container1 c1a(N);
+	Container1 c1b(N);
+	Container2 c2a(N);
+	Container2 c2b(N);
+
+	for (int i = 0; i < N - 1; i++) {
+		c1a[i] = val;
+		c1b[i] = val;
+		c2a[i] = val;
+		c2b[i] = val;
+	}
+	assert(c1a == c1b);
+	assert(c2a == c2b);
+
+	c1a[N - 1] = val;
+	c2a[N - 1] = val;
+
+	assert(!(c1a == c1b));
+	assert(!(c2a == c2b));
+
+	Container1 c1;
+	Container2 c2;
+	assert(!(c1a == c1));
+	assert(!(c2a == c2));
+}
+
 template <class Container1, class Container2>
 static void test_container_swap_overload(
 	const Container1 &, const Container2 &) {
@@ -524,6 +554,7 @@ static void test_vector() {
 	test_container_erase_range(ft::vector<int>(), std::vector<int>());
 	test_container_swap(ft::vector<int>(), std::vector<int>());
 	test_container_clear(ft::vector<int>(), std::vector<int>());
+	test_container_equal_operator(ft::vector<int>(), std::vector<int>(), 123);
 	test_container_swap_overload(ft::vector<int>(), std::vector<int>());
 }
 

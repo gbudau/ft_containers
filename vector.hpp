@@ -98,10 +98,9 @@ class vector {
 	size_type      m_calculate_new_capacity(size_type n);
 };
 
-// template <class T, class Allocator>
-// bool	operator==(const vector<T, Allocator>& x,
-//	 				const vector<T, Allocator>& y);
-//
+template <class T, class Allocator>
+bool operator==(const vector<T, Allocator> &x, const vector<T, Allocator> &y);
+
 // template <class T, class Allocator>
 // bool	operator< (const vector<T, Allocator& x,
 //					const vector<T, Allocator& y);
@@ -584,6 +583,19 @@ vector<T, Allocator>::m_calculate_new_capacity(size_type n) {
 	}
 	const size_type len = size() + ft::max(size(), n);
 	return (len < size() || len > max_size()) ? max_size() : len;
+}
+
+template <class T, class Allocator>
+bool operator==(const vector<T, Allocator> &x, const vector<T, Allocator> &y) {
+	if (x.size() != y.size()) {
+		return false;
+	}
+	for (typename vector<T, Allocator>::size_type i = 0; i < x.size(); i++) {
+		if (!(x[i] == y[i])) {
+			return false;
+		}
+	}
+	return true;
 }
 
 template <class T, class Allocator>
