@@ -553,6 +553,66 @@ static void test_container_less_operator(const Container1 &, const Container2 &,
 	assert(!(c2b < c2b));
 }
 
+template <class T, class Container1, class Container2>
+static void test_container_greater_operator(const Container1 &,
+	const Container2 &, const T &val_less, const T &val_great) {
+	Container1 c1a(1, val_less);
+	Container1 c1b(1, val_great);
+	Container2 c2a(1, val_less);
+	Container2 c2b(1, val_great);
+
+	assert(c1b > c1a);
+	assert(c2b > c2a);
+
+	Container1 c1_empty;
+	Container2 c2_empty;
+
+	assert(c1a > c1_empty);
+	assert(c2a > c2_empty);
+	assert(!(c1b > c1b));
+	assert(!(c2b > c2b));
+}
+
+template <class T, class Container1, class Container2>
+static void test_container_lessequal_operator(const Container1 &,
+	const Container2 &, const T &val_less, const T &val_great) {
+	Container1 c1a(1, val_less);
+	Container1 c1b(1, val_great);
+	Container2 c2a(1, val_less);
+	Container2 c2b(1, val_great);
+
+	assert(c1a <= c1b);
+	assert(c2a <= c2b);
+
+	Container1 c1_empty;
+	Container2 c2_empty;
+
+	assert(c1_empty < c1a);
+	assert(c2_empty < c2a);
+	assert(c1b <= c1b);
+	assert(c2b <= c2b);
+}
+
+template <class T, class Container1, class Container2>
+static void test_container_greaterequal_operator(const Container1 &,
+	const Container2 &, const T &val_less, const T &val_great) {
+	Container1 c1a(1, val_less);
+	Container1 c1b(1, val_great);
+	Container2 c2a(1, val_less);
+	Container2 c2b(1, val_great);
+
+	assert(c1b >= c1a);
+	assert(c2b >= c2a);
+
+	Container1 c1_empty;
+	Container2 c2_empty;
+
+	assert(c1a >= c1_empty);
+	assert(c2a >= c2_empty);
+	assert(c1b >= c1b);
+	assert(c2b >= c2b);
+}
+
 template <class Container1, class Container2>
 static void test_container_swap_overload(
 	const Container1 &, const Container2 &) {
@@ -608,6 +668,12 @@ static void test_vector() {
 	test_container_notequal_operator(
 		ft::vector<int>(), std::vector<int>(), 123);
 	test_container_less_operator(ft::vector<std::string>(),
+		std::vector<std::string>(), std::string("abcd"), std::string("bcde"));
+	test_container_greater_operator(ft::vector<std::string>(),
+		std::vector<std::string>(), std::string("abcd"), std::string("bcde"));
+	test_container_lessequal_operator(ft::vector<std::string>(),
+		std::vector<std::string>(), std::string("abcd"), std::string("bcde"));
+	test_container_greaterequal_operator(ft::vector<std::string>(),
 		std::vector<std::string>(), std::string("abcd"), std::string("bcde"));
 	test_container_swap_overload(ft::vector<int>(), std::vector<int>());
 }

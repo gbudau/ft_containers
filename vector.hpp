@@ -107,17 +107,14 @@ bool operator!=(const vector<T, Allocator> &x, const vector<T, Allocator> &y);
 template <class T, class Allocator>
 bool operator<(const vector<T, Allocator> &x, const vector<T, Allocator> &y);
 
-// template <class T, class Allocator>
-// bool	operator> (const vector<T, Allocator>& x,
-//					const vector<T, Allocator>& y);
-//
-// template <class T, class Allocator>
-// bool	operator>=(const vector<T, Allocator>& x,
-//					const vector<T, Allocator>& y);
-//
-// template <class T, class Allocator>
-// bool	operator<=(const vector<T, Allocator>& x,
-//					const vector<T, Allocator>& y);
+template <class T, class Allocator>
+bool operator>(const vector<T, Allocator> &x, const vector<T, Allocator> &y);
+
+template <class T, class Allocator>
+bool operator<=(const vector<T, Allocator> &x, const vector<T, Allocator> &y);
+
+template <class T, class Allocator>
+bool operator>=(const vector<T, Allocator> &x, const vector<T, Allocator> &y);
 
 // specialized algorithms
 template <class T, class Allocator>
@@ -604,6 +601,21 @@ bool operator!=(const vector<T, Allocator> &x, const vector<T, Allocator> &y) {
 template <class T, class Allocator>
 bool operator<(const vector<T, Allocator> &x, const vector<T, Allocator> &y) {
 	return ft::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end());
+}
+
+template <class T, class Allocator>
+bool operator>(const vector<T, Allocator> &x, const vector<T, Allocator> &y) {
+	return ft::lexicographical_compare(y.begin(), y.end(), x.begin(), x.end());
+}
+
+template <class T, class Allocator>
+bool operator<=(const vector<T, Allocator> &x, const vector<T, Allocator> &y) {
+	return !ft::lexicographical_compare(y.begin(), y.end(), x.begin(), x.end());
+}
+
+template <class T, class Allocator>
+bool operator>=(const vector<T, Allocator> &x, const vector<T, Allocator> &y) {
+	return !ft::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end());
 }
 
 template <class T, class Allocator>
