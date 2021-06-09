@@ -101,13 +101,12 @@ class vector {
 template <class T, class Allocator>
 bool operator==(const vector<T, Allocator> &x, const vector<T, Allocator> &y);
 
+template <class T, class Allocator>
+bool operator!=(const vector<T, Allocator> &x, const vector<T, Allocator> &y);
+
 // template <class T, class Allocator>
-// bool	operator< (const vector<T, Allocator& x,
-//					const vector<T, Allocator& y);
-//
-// template <class T, class Allocator>
-// bool	operator!=(const vector<T, Allocator& x,
-//					const vector<T, Allocator& y);
+// bool	operator< (const vector<T, Allocator>& x,
+//					const vector<T, Allocator>& y);
 //
 // template <class T, class Allocator>
 // bool	operator> (const vector<T, Allocator>& x,
@@ -596,6 +595,11 @@ bool operator==(const vector<T, Allocator> &x, const vector<T, Allocator> &y) {
 		}
 	}
 	return true;
+}
+
+template <class T, class Allocator>
+bool operator!=(const vector<T, Allocator> &x, const vector<T, Allocator> &y) {
+	return !(x == y);
 }
 
 template <class T, class Allocator>
