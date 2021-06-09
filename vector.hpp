@@ -582,15 +582,7 @@ vector<T, Allocator>::m_calculate_new_capacity(size_type n) {
 
 template <class T, class Allocator>
 bool operator==(const vector<T, Allocator> &x, const vector<T, Allocator> &y) {
-	if (x.size() != y.size()) {
-		return false;
-	}
-	for (typename vector<T, Allocator>::size_type i = 0; i < x.size(); i++) {
-		if (!(x[i] == y[i])) {
-			return false;
-		}
-	}
-	return true;
+	return x.size() == y.size() && ft::equal(x.begin(), x.end(), y.begin());
 }
 
 template <class T, class Allocator>

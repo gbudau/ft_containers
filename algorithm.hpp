@@ -79,4 +79,15 @@ bool lexicographical_compare(
 	return (first1 == last1) && (first2 != last2);
 }
 
+// Determines if two sets of elements are the same
+template <class InputIt1, class InputIt2>
+bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2) {
+	while (first1 != last1) {
+		if (!(*first1++ == *first2++)) {
+			return false;
+		}
+	}
+	return true;
+}
+
 }  // namespace ft
