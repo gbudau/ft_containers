@@ -77,14 +77,37 @@ class reverse_iterator
 
   private:
 	typedef reverse_iterator<Iterator> self;
-	friend bool                        operator==(const self &x, const self &y);
-	friend bool                        operator!=(const self &x, const self &y);
-	friend bool                        operator<(const self &x, const self &y);
-	friend bool                        operator>(const self &x, const self &y);
-	friend bool                        operator<=(const self &x, const self &y);
-	friend bool                        operator>=(const self &x, const self &y);
-	friend self::difference_type       operator-(const self &x, const self &y);
-	friend self operator+(typename self::difference_type n, const self &x);
+	friend bool operator==(const self &x, const self &y) {
+		return x.m_current == y.m_current;
+	}
+
+	friend bool operator!=(const self &x, const self &y) {
+		return x.m_current != y.m_current;
+	}
+
+	friend bool operator<(const self &x, const self &y) {
+		return x.m_current > y.m_current;
+	}
+
+	friend bool operator>(const self &x, const self &y) {
+		return x.m_current < y.m_current;
+	}
+
+	friend bool operator<=(const self &x, const self &y) {
+		return x.m_current >= y.m_current;
+	}
+
+	friend bool operator>=(const self &x, const self &y) {
+		return x.m_current <= y.m_current;
+	}
+
+	friend self::difference_type operator-(const self &x, const self &y) {
+		return y.m_current - x.m_current;
+	}
+
+	friend self operator+(typename self::difference_type n, const self &x) {
+		return self(x.m_current - n);
+	}
 };
 
 template <class Iterator>
@@ -170,55 +193,6 @@ typename reverse_iterator<Iterator>::reference
 reverse_iterator<Iterator>::operator[](
 	typename reverse_iterator<Iterator>::difference_type n) const {
 	return m_current[-n - 1];
-}
-
-template <class Iterator>
-bool operator==(
-	const reverse_iterator<Iterator> &x, const reverse_iterator<Iterator> &y) {
-	return x.m_current == y.m_current;
-}
-
-template <class Iterator>
-bool operator!=(
-	const reverse_iterator<Iterator> &x, const reverse_iterator<Iterator> &y) {
-	return x.m_current != y.m_current;
-}
-
-template <class Iterator>
-bool operator<(
-	const reverse_iterator<Iterator> &x, const reverse_iterator<Iterator> &y) {
-	return x.m_current > y.m_current;
-}
-
-template <class Iterator>
-bool operator>(
-	const reverse_iterator<Iterator> &x, const reverse_iterator<Iterator> &y) {
-	return x.m_current < y.m_current;
-}
-
-template <class Iterator>
-bool operator<=(
-	const reverse_iterator<Iterator> &x, const reverse_iterator<Iterator> &y) {
-	return x.m_current >= y.m_current;
-}
-
-template <class Iterator>
-bool operator>=(
-	const reverse_iterator<Iterator> &x, const reverse_iterator<Iterator> &y) {
-	return x.m_current <= y.m_current;
-}
-
-template <class Iterator>
-typename reverse_iterator<Iterator>::difference_type operator-(
-	const reverse_iterator<Iterator> &x, const reverse_iterator<Iterator> &y) {
-	return y.m_current - x.m_current;
-}
-
-template <class Iterator>
-reverse_iterator<Iterator> operator+(
-	typename reverse_iterator<Iterator>::difference_type n,
-	const reverse_iterator<Iterator>                    &x) {
-	return reverse_iterator<Iterator>(x.m_current - n);
 }
 
 template <class InputIterator>
