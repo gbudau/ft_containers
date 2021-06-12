@@ -43,7 +43,7 @@ OutputIterator fill_n(OutputIterator first, Size count, const T &value) {
 	return first;
 }
 
-// Copy-assigns the given value to N elements in a range
+// Copies a range of elements to a new location
 template <class InputIterator, class OutputIterator>
 OutputIterator copy(
 	InputIterator first, InputIterator last, OutputIterator d_first) {
@@ -51,6 +51,15 @@ OutputIterator copy(
 		*d_first++ = *first++;
 	}
 	return d_first;
+}
+
+// Copies a number of elements to a new location
+template <class InputIt, class Size, class OutputIt>
+OutputIt copy_n(InputIt first, Size count, OutputIt result) {
+	for (Size i = 0; i < count; ++i) {
+		*result++ = *first++;
+	}
+	return result;
 }
 
 // Copies a range of elements in backwards order
