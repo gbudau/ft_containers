@@ -185,17 +185,11 @@ void vector<T, Allocator>::assign(size_type n, const T &u) {
 		m_end_of_storage = m_end;
 		ft::uninitialized_fill(begin(), end(), u, get_allocator());
 	} else if (size() > n) {
-		iterator dst = begin();
-		while (dst != begin() + n) {
-			*dst++ = u;
-		}
+		iterator dst = ft::fill_n(begin(), begin() + n, u);
 		ft::destroy(dst, end(), get_allocator());
 		m_end = begin() + n;
 	} else {
-		iterator dst = begin();
-		while (dst != end()) {
-			*dst++ = u;
-		}
+		iterator dst = ft::fill_n(begin(), size(), u);
 		ft::uninitialized_fill(dst, begin() + n, u, get_allocator());
 		m_end = begin() + n;
 	}
@@ -207,10 +201,7 @@ void vector<T, Allocator>::assign(
 	typename enable_if<!std::numeric_limits<InputIterator>::is_integer,
 		InputIterator>::type first,
 	InputIterator            last) {
-	size_type n = 0;
-	for (InputIterator it = first; it != last; it++) {
-		n++;
-	}
+	size_type n = ft::distance(first, last);
 	if (capacity() < n) {
 		clear();
 		m_allocator.deallocate(begin(), capacity());
@@ -219,10 +210,7 @@ void vector<T, Allocator>::assign(
 		m_end_of_storage = m_end;
 		ft::uninitialized_copy(first, last, begin(), get_allocator());
 	} else if (size() > n) {
-		iterator dst = begin();
-		while (dst != begin() + n) {
-			*dst++ = *first++;
-		}
+		iterator dst = ft::copy(first, last, begin());
 		ft::destroy(dst, end(), get_allocator());
 		m_end = begin() + n;
 	} else {
