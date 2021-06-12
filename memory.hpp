@@ -33,4 +33,12 @@ ForwardIt uninitialized_copy(
 	return d_first;
 }
 
+// Destroys a range of objects
+template <class ForwardIt, class Allocator>
+void destroy(ForwardIt first, ForwardIt last, Allocator allocator) {
+	while (first != last) {
+		allocator.destroy(first++);
+	}
+}
+
 }  // namespace ft
