@@ -183,9 +183,7 @@ vector<T, Allocator> &vector<T, Allocator>::operator=(
 		while (src != x.end()) {
 			*dst++ = *src++;
 		}
-		while (dst != end()) {
-			m_allocator.destroy(dst);
-		}
+		ft::destroy(dst, end(), get_allocator());
 		m_end = m_begin + x.size();
 	} else {
 		const_iterator src = x.begin();
@@ -213,9 +211,7 @@ void vector<T, Allocator>::assign(size_type n, const T &u) {
 		while (dst != begin() + n) {
 			*dst++ = u;
 		}
-		while (dst != end()) {
-			m_allocator.destroy(dst++);
-		}
+		ft::destroy(dst, end(), get_allocator());
 		m_end = begin() + n;
 	} else {
 		iterator dst = begin();
@@ -249,9 +245,7 @@ void vector<T, Allocator>::assign(
 		while (dst != begin() + n) {
 			*dst++ = *first++;
 		}
-		while (dst != end()) {
-			m_allocator.destroy(dst++);
-		}
+		ft::destroy(dst, end(), get_allocator());
 		m_end = begin() + n;
 	} else {
 		iterator dst = begin();
@@ -339,9 +333,7 @@ void vector<T, Allocator>::resize(size_type n, T val) {
 		m_end_of_storage = m_end;
 		ft::uninitialized_fill(dst, end(), val, get_allocator());
 	} else if (n < size()) {
-		for (iterator it = begin() + n; it != end(); it++) {
-			m_allocator.destroy(it);
-		}
+		ft::destroy(begin() + n, end(), get_allocator());
 		m_end = begin() + n;
 	} else {
 		ft::uninitialized_fill(end(), begin() + n, val, get_allocator());
@@ -546,9 +538,7 @@ typename vector<T, Allocator>::iterator vector<T, Allocator>::erase(
 	for (; src != end(); dst++, src++) {
 		*dst = *src;
 	}
-	for (iterator it = dst; it != end(); it++) {
-		m_allocator.destroy(it);
-	}
+	ft::destroy(dst, end(), get_allocator());
 	m_end = dst;
 	return first;
 }
@@ -563,9 +553,7 @@ void vector<T, Allocator>::swap(vector<T, Allocator> &x) {
 
 template <class T, class Allocator>
 void vector<T, Allocator>::clear() {
-	for (pointer tmp = m_begin; tmp != m_end; tmp++) {
-		m_allocator.destroy(tmp);
-	}
+	ft::destroy(begin(), end(), get_allocator());
 	m_end = m_begin;
 }
 
