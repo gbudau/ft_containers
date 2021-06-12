@@ -99,28 +99,6 @@ class vector {
 };
 
 template <class T, class Allocator>
-bool operator==(const vector<T, Allocator> &x, const vector<T, Allocator> &y);
-
-template <class T, class Allocator>
-bool operator!=(const vector<T, Allocator> &x, const vector<T, Allocator> &y);
-
-template <class T, class Allocator>
-bool operator<(const vector<T, Allocator> &x, const vector<T, Allocator> &y);
-
-template <class T, class Allocator>
-bool operator>(const vector<T, Allocator> &x, const vector<T, Allocator> &y);
-
-template <class T, class Allocator>
-bool operator<=(const vector<T, Allocator> &x, const vector<T, Allocator> &y);
-
-template <class T, class Allocator>
-bool operator>=(const vector<T, Allocator> &x, const vector<T, Allocator> &y);
-
-// specialized algorithms
-template <class T, class Allocator>
-void swap(vector<T, Allocator> &x, vector<T, Allocator> &y);
-
-template <class T, class Allocator>
 vector<T, Allocator>::vector(const Allocator &allocator)
 	: m_allocator(allocator), m_begin(0), m_end(0), m_end_of_storage(0) {}
 
