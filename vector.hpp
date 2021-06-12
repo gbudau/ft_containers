@@ -25,8 +25,8 @@ class vector {
 	typedef Allocator                             allocator_type;
 	typedef typename Allocator::pointer           pointer;
 	typedef typename Allocator::const_pointer     const_pointer;
-	typedef std::reverse_iterator<iterator>       reverse_iterator;
-	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+	typedef ft::reverse_iterator<iterator>       reverse_iterator;
+	typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
 	// constructor/copy/destroy
 	explicit vector(const Allocator &allocator = Allocator());

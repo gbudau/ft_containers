@@ -48,6 +48,19 @@ class reverse_iterator
 		  typename iterator_traits<Iterator>::difference_type,
 		  typename iterator_traits<Iterator>::pointer,
 		  typename iterator_traits<Iterator>::reference> {
+  private:
+	typedef reverse_iterator<Iterator> self;
+	typedef
+		typename iterator_traits<Iterator>::difference_type m_difference_type;
+	friend bool                    operator==(const self &x, const self &y);
+	friend bool                    operator!=(const self &x, const self &y);
+	friend bool                    operator<(const self &x, const self &y);
+	friend bool                    operator>(const self &x, const self &y);
+	friend bool                    operator<=(const self &x, const self &y);
+	friend bool                    operator>=(const self &x, const self &y);
+	friend self::m_difference_type operator-(const self &x, const self &y);
+	friend self operator+(typename self::m_difference_type n, const self &x);
+
   protected:
 	Iterator m_current;
 
@@ -115,7 +128,7 @@ reverse_iterator<Iterator>::reverse_iterator(Iterator x) : m_current(x) {}
 template <class Iterator>
 template <class U>
 reverse_iterator<Iterator>::reverse_iterator(const reverse_iterator<U> &u)
-	: m_current(u.m_current) {}
+	: m_current(u.base()) {}
 
 template <class Iterator>
 Iterator reverse_iterator<Iterator>::base() const {
