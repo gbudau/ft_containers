@@ -156,11 +156,7 @@ vector<T, Allocator> &vector<T, Allocator>::operator=(
 		m_end_of_storage = m_end;
 		ft::uninitialized_copy(x.begin(), x.end(), begin(), get_allocator());
 	} else if (size() >= x.size()) {
-		const_iterator src = x.begin();
-		iterator       dst = begin();
-		while (src != x.end()) {
-			*dst++ = *src++;
-		}
+		iterator dst = ft::copy(x.begin(), x.end(), begin());
 		ft::destroy(dst, end(), get_allocator());
 		m_end = m_begin + x.size();
 	} else {
@@ -185,7 +181,7 @@ void vector<T, Allocator>::assign(size_type n, const T &u) {
 		m_end_of_storage = m_end;
 		ft::uninitialized_fill(begin(), end(), u, get_allocator());
 	} else if (size() > n) {
-		iterator dst = ft::fill_n(begin(), begin() + n, u);
+		iterator dst = ft::fill_n(begin(), n, u);
 		ft::destroy(dst, end(), get_allocator());
 		m_end = begin() + n;
 	} else {

@@ -85,6 +85,12 @@ static void test_container_assign_count(
 	c1.assign(10, v);
 	c2.assign(10, v);
 	assert_equal_container(c1, c2);
+	c1.assign(5, v);
+	c2.assign(5, v);
+	assert_equal_container(c1, c2);
+	c1.assign(15, v);
+	c2.assign(15, v);
+	assert_equal_container(c1, c2);
 }
 
 template <class Container1, class Container2>
@@ -94,6 +100,9 @@ static void test_container_assign_range(
 	Container2 c_b;
 	c_a.assign(c1.begin(), c1.end());
 	c_b.assign(c2.begin(), c2.end());
+	assert_equal_container(c_a, c_b);
+	c_a.assign(c1.begin(), c1.begin());
+	c_b.assign(c2.begin(), c2.begin());
 	assert_equal_container(c_a, c_b);
 }
 
