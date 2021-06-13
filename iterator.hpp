@@ -74,40 +74,6 @@ class reverse_iterator
 	reverse_iterator  operator-(difference_type n) const;
 	reverse_iterator &operator-=(difference_type n);
 	reference         operator[](difference_type n) const;
-
-  private:
-	typedef reverse_iterator<Iterator> self;
-	friend bool operator==(const self &x, const self &y) {
-		return x.m_current == y.m_current;
-	}
-
-	friend bool operator!=(const self &x, const self &y) {
-		return x.m_current != y.m_current;
-	}
-
-	friend bool operator<(const self &x, const self &y) {
-		return x.m_current > y.m_current;
-	}
-
-	friend bool operator>(const self &x, const self &y) {
-		return x.m_current < y.m_current;
-	}
-
-	friend bool operator<=(const self &x, const self &y) {
-		return x.m_current >= y.m_current;
-	}
-
-	friend bool operator>=(const self &x, const self &y) {
-		return x.m_current <= y.m_current;
-	}
-
-	friend self::difference_type operator-(const self &x, const self &y) {
-		return y.m_current - x.m_current;
-	}
-
-	friend self operator+(typename self::difference_type n, const self &x) {
-		return self(x.m_current - n);
-	}
 };
 
 template <class Iterator>
@@ -193,6 +159,99 @@ typename reverse_iterator<Iterator>::reference
 reverse_iterator<Iterator>::operator[](
 	typename reverse_iterator<Iterator>::difference_type n) const {
 	return m_current[-n - 1];
+}
+
+template <class Iterator>
+bool operator==(
+	const reverse_iterator<Iterator> &x, const reverse_iterator<Iterator> &y) {
+	return x.base() == y.base();
+}
+
+template <class Iterator>
+bool operator!=(
+	const reverse_iterator<Iterator> &x, const reverse_iterator<Iterator> &y) {
+	return !(x == y);
+}
+
+template <class Iterator>
+bool operator<(
+	const reverse_iterator<Iterator> &x, const reverse_iterator<Iterator> &y) {
+	return y.base() < x.base();
+}
+
+template <class Iterator>
+bool operator>(
+	const reverse_iterator<Iterator> &x, const reverse_iterator<Iterator> &y) {
+	return y < x;
+}
+
+template <class Iterator>
+bool operator<=(
+	const reverse_iterator<Iterator> &x, const reverse_iterator<Iterator> &y) {
+	return !(y < x);
+}
+
+template <class Iterator>
+bool operator>=(
+	const reverse_iterator<Iterator> &x, const reverse_iterator<Iterator> &y) {
+	return !(x < y);
+}
+
+template <class Iterator>
+typename reverse_iterator<Iterator>::difference_type operator-(
+	const reverse_iterator<Iterator> &x, const reverse_iterator<Iterator> &y) {
+	return y.base() - x.base();
+}
+
+template <class Iterator>
+reverse_iterator<Iterator> operator+(
+	typename reverse_iterator<Iterator>::difference_type n,
+	const reverse_iterator<Iterator>                    &x) {
+	return reverse_iterator<Iterator>(x.base() - n);
+}
+
+// Fixes for the comparison of reverse_iterator to const reverse_iterator.
+template <class IteratorL, class IteratorR>
+bool operator==(const reverse_iterator<IteratorL> &x,
+	const reverse_iterator<IteratorR>             &y) {
+	return x.base() == y.base();
+}
+
+template <class IteratorL, class IteratorR>
+bool operator!=(const reverse_iterator<IteratorL> &x,
+	const reverse_iterator<IteratorR>             &y) {
+	return x.base() != y.base();
+}
+
+template <class IteratorL, class IteratorR>
+bool operator<(const reverse_iterator<IteratorL> &x,
+	const reverse_iterator<IteratorR>            &y) {
+	return x.base() > y.base();
+}
+
+template <class IteratorL, class IteratorR>
+bool operator>(const reverse_iterator<IteratorL> &x,
+	const reverse_iterator<IteratorR>            &y) {
+	return x.base() < y.base();
+}
+
+template <class IteratorL, class IteratorR>
+bool operator<=(const reverse_iterator<IteratorL> &x,
+	const reverse_iterator<IteratorR>             &y) {
+	return x.base() >= y.base();
+}
+
+template <class IteratorL, class IteratorR>
+bool operator>=(const reverse_iterator<IteratorL> &x,
+	const reverse_iterator<IteratorR>             &y) {
+	return x.base() <= y.base();
+}
+
+template <class IteratorL, class IteratorR>
+typename reverse_iterator<IteratorL>::difference_type operator-(
+	const reverse_iterator<IteratorL> &x,
+	const reverse_iterator<IteratorR> &y) {
+	return y.base() - x.base();
 }
 
 template <class InputIterator>
