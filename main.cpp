@@ -199,6 +199,9 @@ static void test_container_resize(const Container1 &c1, const Container2 &c2) {
 	c_a.resize(12);
 	c_b.resize(12);
 	assert_equal_container(c_b, c_a);
+	c_a.resize(c_a.capacity() + 1);
+	c_b.resize(c_b.capacity() + 1);
+	assert_equal_container(c_b, c_a);
 }
 
 template <class Container1, class Container2>

@@ -1,5 +1,4 @@
 #pragma once
-#include <iterator>
 #include <limits>
 #include <memory>
 #include <stdexcept>
@@ -285,14 +284,15 @@ vector<T, Allocator>::max_size() const {
 template <class T, class Allocator>
 void vector<T, Allocator>::resize(size_type n, T val) {
 	if (n > capacity()) {
-		iterator new_begin = m_allocator.allocate(n, this);
-		iterator dst =
+		size_type new_capacity = m_calculate_new_capacity(n - size());
+		iterator  new_begin = m_allocator.allocate(new_capacity, this);
+		iterator  dst =
 			ft::uninitialized_copy(begin(), end(), new_begin, get_allocator());
 		clear();
 		m_allocator.deallocate(begin(), capacity());
 		m_begin = new_begin;
 		m_end = new_begin + n;
-		m_end_of_storage = m_end;
+		m_end_of_storage = m_begin + new_capacity;
 		ft::uninitialized_fill(dst, end(), val, get_allocator());
 	} else if (n < size()) {
 		ft::destroy(begin() + n, end(), get_allocator());

@@ -254,6 +254,7 @@ typename reverse_iterator<IteratorL>::difference_type operator-(
 	return y.base() - x.base();
 }
 
+// Returns the distance between two iterators
 template <class InputIterator>
 typename iterator_traits<InputIterator>::difference_type distance(
 	InputIterator first, InputIterator last) {
@@ -265,6 +266,7 @@ typename iterator_traits<InputIterator>::difference_type distance(
 	return result;
 }
 
+// Advances an iterator by given distance
 template <class InputIterator, class Distance>
 void advance(InputIterator &it, Distance n) {
 	while (n--) {
