@@ -448,7 +448,7 @@ void vector<T, Allocator>::insert(iterator position,
 	if (first == last) {
 		return;
 	}
-	size_type n = distance(first, last);
+	size_type n = ft::distance(first, last);
 	if (size() + n <= capacity()) {
 		if (static_cast<size_type>(end() - position) > n) {
 			ft::uninitialized_copy(end() - n, end(), end(), get_allocator());
