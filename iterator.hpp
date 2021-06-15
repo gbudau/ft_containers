@@ -56,7 +56,7 @@ class reverse_iterator
 	typedef typename iterator_traits<Iterator>::difference_type difference_type;
 	typedef typename iterator_traits<Iterator>::reference       reference;
 	typedef typename iterator_traits<Iterator>::pointer         pointer;
-	reverse_iterator();
+	reverse_iterator() {}
 	explicit reverse_iterator(Iterator x);
 	template <class U>
 	reverse_iterator(const reverse_iterator<U> &u);
