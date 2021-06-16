@@ -115,10 +115,7 @@ vector<T, Allocator>::vector(
 	typename enable_if<!std::numeric_limits<InputIterator>::is_integer,
 		InputIterator>::type first,
 	InputIterator last, const Allocator &allocator) {
-	size_type n = 0;
-	for (InputIterator it = first; it != last; it++) {
-		n++;
-	}
+	const size_type n = ft::distance(first, last);
 	m_allocator = allocator;
 	m_begin = m_allocator.allocate(n, this);
 	m_end = m_begin + n;
@@ -129,8 +126,8 @@ vector<T, Allocator>::vector(
 template <class T, class Allocator>
 vector<T, Allocator>::vector(const vector<T, Allocator> &x) {
 	m_allocator = x.get_allocator();
-	m_begin = m_allocator.allocate(x.end() - x.begin(), this);
-	m_end = m_begin + (x.end() - x.begin());
+	m_begin = m_allocator.allocate(x.size(), this);
+	m_end = m_begin + x.size();
 	m_end_of_storage = m_end;
 	ft::uninitialized_copy(x.begin(), x.end(), begin(), get_allocator());
 }
@@ -138,7 +135,7 @@ vector<T, Allocator>::vector(const vector<T, Allocator> &x) {
 template <class T, class Allocator>
 vector<T, Allocator>::~vector() {
 	clear();
-	m_allocator.deallocate(m_begin, m_end_of_storage - m_begin);
+	m_allocator.deallocate(m_begin, capacity());
 }
 
 template <class T, class Allocator>
@@ -149,9 +146,9 @@ vector<T, Allocator> &vector<T, Allocator>::operator=(
 	}
 	if (capacity() < x.size()) {
 		clear();
-		m_allocator.deallocate(m_begin, m_end_of_storage - m_begin);
-		m_begin = m_allocator.allocate(x.end() - x.begin(), this);
-		m_end = m_begin + (x.end() - x.begin());
+		m_allocator.deallocate(m_begin, capacity());
+		m_begin = m_allocator.allocate(x.size(), this);
+		m_end = m_begin + x.size();
 		m_end_of_storage = m_end;
 		ft::uninitialized_copy(x.begin(), x.end(), begin(), get_allocator());
 	} else if (size() >= x.size()) {
@@ -196,7 +193,7 @@ void vector<T, Allocator>::assign(
 	typename enable_if<!std::numeric_limits<InputIterator>::is_integer,
 		InputIterator>::type first,
 	InputIterator            last) {
-	size_type n = ft::distance(first, last);
+	const size_type n = ft::distance(first, last);
 	if (capacity() < n) {
 		clear();
 		m_allocator.deallocate(begin(), capacity());
@@ -284,9 +281,9 @@ vector<T, Allocator>::max_size() const {
 template <class T, class Allocator>
 void vector<T, Allocator>::resize(size_type n, T val) {
 	if (n > capacity()) {
-		size_type new_capacity = m_calculate_new_capacity(n - size());
-		iterator  new_begin = m_allocator.allocate(new_capacity, this);
-		iterator  dst =
+		const size_type new_capacity = m_calculate_new_capacity(n - size());
+		const iterator  new_begin = m_allocator.allocate(new_capacity, this);
+		iterator        dst =
 			ft::uninitialized_copy(begin(), end(), new_begin, get_allocator());
 		clear();
 		m_allocator.deallocate(begin(), capacity());
@@ -321,8 +318,8 @@ void vector<T, Allocator>::reserve(size_type n) {
 	} else if (n > max_size()) {
 		throw std::length_error(std::string("vector: reserve: n > max_size"));
 	}
-	iterator new_begin = m_allocator.allocate(n, this);
-	iterator new_end =
+	const iterator new_begin = m_allocator.allocate(n, this);
+	const iterator new_end =
 		ft::uninitialized_copy(begin(), end(), new_begin, get_allocator());
 	clear();
 	m_allocator.deallocate(begin(), capacity());
@@ -398,7 +395,7 @@ void vector<T, Allocator>::pop_back() {
 template <class T, class Allocator>
 typename vector<T, Allocator>::iterator vector<T, Allocator>::insert(
 	iterator position, const T &x) {
-	size_type n = position - begin();
+	const size_type n = position - begin();
 	insert(position, 1, x);
 	return begin() + n;
 }
@@ -424,10 +421,10 @@ void vector<T, Allocator>::insert(
 		}
 		m_end += count;
 	} else {
-		size_type new_capacity = m_calculate_new_capacity(count);
-		iterator  new_begin = m_allocator.allocate(new_capacity, this);
-		iterator  dst = ft::uninitialized_copy(
-			 begin(), position, new_begin, get_allocator());
+		const size_type new_capacity = m_calculate_new_capacity(count);
+		const iterator  new_begin = m_allocator.allocate(new_capacity, this);
+		iterator        dst = ft::uninitialized_copy(
+				   begin(), position, new_begin, get_allocator());
 		ft::uninitialized_fill_n(dst, count, x, get_allocator());
 		dst = ft::uninitialized_copy(
 			position, end(), dst + count, get_allocator());
@@ -448,7 +445,7 @@ void vector<T, Allocator>::insert(iterator position,
 	if (first == last) {
 		return;
 	}
-	size_type n = ft::distance(first, last);
+	const size_type n = ft::distance(first, last);
 	if (size() + n <= capacity()) {
 		if (static_cast<size_type>(end() - position) > n) {
 			ft::uninitialized_copy(end() - n, end(), end(), get_allocator());
@@ -464,10 +461,10 @@ void vector<T, Allocator>::insert(iterator position,
 		}
 		m_end += n;
 	} else {
-		size_type new_capacity = m_calculate_new_capacity(n);
-		iterator  new_begin = m_allocator.allocate(new_capacity, this);
-		iterator  dst = ft::uninitialized_copy(
-			 begin(), position, new_begin, get_allocator());
+		const size_type new_capacity = m_calculate_new_capacity(n);
+		const iterator  new_begin = m_allocator.allocate(new_capacity, this);
+		iterator        dst = ft::uninitialized_copy(
+				   begin(), position, new_begin, get_allocator());
 		ft::uninitialized_copy(position, end(), dst + n, get_allocator());
 		ft::uninitialized_copy(first, last, dst, get_allocator());
 		dst = ft::uninitialized_copy(position, end(), dst + n, get_allocator());
@@ -497,8 +494,8 @@ typename vector<T, Allocator>::iterator vector<T, Allocator>::erase(
 	iterator first, iterator last) {
 	iterator src = last;
 	iterator dst = first;
-	for (; src != end(); dst++, src++) {
-		*dst = *src;
+	while (src != end()) {
+		*dst++ = *src++;
 	}
 	ft::destroy(dst, end(), get_allocator());
 	m_end = dst;
