@@ -10,7 +10,7 @@ void swap(T &a, T &b) {
 	b = tmp;
 }
 
-// returns the lowest of the given values
+// Returns the lowest of the given values
 template <class T>
 const T &min(const T &a, const T &b) {
 	if (b < a)
@@ -18,7 +18,7 @@ const T &min(const T &a, const T &b) {
 	return a;
 }
 
-// returns the highest of the given values
+// Returns the highest of the given values
 template <class T>
 const T &max(const T &a, const T &b) {
 	if (a < b)
@@ -34,7 +34,7 @@ void fill(ForwardIterator first, ForwardIterator last, const T &value) {
 	}
 }
 
-// Copy-assigns the given value to N elements in a range
+// Copy-assigns the given value to N elements
 template <class OutputIterator, class Size, class T>
 OutputIterator fill_n(OutputIterator first, Size count, const T &value) {
 	for (Size i = 0; i < count; i++) {

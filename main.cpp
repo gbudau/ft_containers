@@ -1,6 +1,8 @@
 #include <iostream>
+#include <list>
 #include <string>
 #include <vector>
+#include "list.hpp"
 #include "vector.hpp"
 
 static int  g_errors;
@@ -35,12 +37,10 @@ static void test_values_message(const char *function_name, int line_number,
 }
 
 template <class Container1, class Container2>
-static void test_equal_size_and_capacity(const Container1 &c1,
+static void test_equal_size(const Container1 &c1,
 	const Container2 &c2, const char *function_name, int line_number) {
 
 	test_values(function_name, line_number, "size", c1.size(), c2.size());
-	test_values(
-		function_name, line_number, "capacity", c1.capacity(), c2.capacity());
 }
 
 template <class Container1, class Container2>
@@ -61,7 +61,7 @@ static void test_equal_content(const Container1 &c1, const Container2 &c2,
 template <class Container1, class Container2>
 static void test_equal_container(const Container1 &c1, const Container2 &c2,
 	const char *function_name, int line_number) {
-	test_equal_size_and_capacity(c1, c2, function_name, line_number);
+	test_equal_size(c1, c2, function_name, line_number);
 	test_equal_content(c1, c2, function_name, line_number);
 }
 
@@ -71,13 +71,13 @@ static void test_container_default_constructor(const Container1 &,
 	Container1 c1;
 	Container2 c2;
 
-	test_equal_size_and_capacity(c1, c2, function_name, line_number);
+	test_equal_size(c1, c2, function_name, line_number);
 }
 
 template <class Container1, class Container2>
 static void test_container_count_constructor(const Container1 &c1,
 	const Container2 &c2, const char *function_name, int line_number) {
-	test_equal_size_and_capacity(c1, c2, function_name, line_number);
+	test_equal_size(c1, c2, function_name, line_number);
 }
 
 template <class Container1, class Container2>
@@ -814,8 +814,14 @@ static void test_vector() {
 		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
 }
 
+static void	test_list() {
+	test_container_default_constructor(
+		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
+}
+
 int main() {
 	test_vector();
+	test_list();
 	std::cout << g_errors << " errors\n";
 	return g_errors ? 1 : 0;
 }
