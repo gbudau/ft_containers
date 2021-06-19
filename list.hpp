@@ -33,11 +33,6 @@ class list {
 
 	template <bool isconst = false>
 	class list_iterator {
-	  protected:
-		typedef
-			typename ft::choose<isconst, const node_pointer, node_pointer>::type
-				node_pointer_type;
-
 	  public:
 		typedef std::bidirectional_iterator_tag               iterator_category;
 		typedef T                                             value_type;
@@ -46,7 +41,10 @@ class list {
 		typedef typename ft::choose<isconst, const T &, T &>::type reference;
 		typedef typename ft::choose<isconst, const T *, T *>::type pointer;
 
-		list_iterator(node_pointer_type x = 0) : current(x){};
+		list_iterator() : current(0) {}
+		list_iterator(node_pointer x) : current(x) {}
+
+		list_iterator(const list_iterator<false> &rhs) : current(rhs.base()) {}
 
 		reference operator*() const {
 			return current->data;
@@ -84,12 +82,12 @@ class list {
 			return !(x.current == y.current);
 		}
 
-		node_pointer_type base() const {
+		node_pointer base() const {
 			return current;
 		}
 
 	  protected:
-		node_pointer_type current;
+		node_pointer current;
 	};
 
 	typedef list_iterator<false>                 iterator;
@@ -101,6 +99,10 @@ class list {
 	explicit list(const Allocator &allocator = Allocator());
 	explicit list(size_type n, const T &value = T(),
 		const Allocator &allocator = Allocator());
+	template <class InputIterator>
+	list(typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+			 InputIterator>::type first,
+		InputIterator last, const Allocator &allocator = Allocator());
 	~list();
 	allocator_type get_allocator() const;
 
@@ -116,15 +118,21 @@ class list {
 	// modifiers:
 	iterator       insert(iterator position, const T &value);
 	void           insert(iterator position, size_type n, const T &value);
-	iterator       erase(iterator position);
-	iterator       erase(iterator position, iterator last);
-	void           clear();
+	template <class InputIterator>
+	void     insert(iterator         position,
+			typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+            InputIterator>::type first,
+			InputIterator            last);
+	iterator erase(iterator position);
+	iterator erase(iterator position, iterator last);
+	void     clear();
 
   protected:
 	allocator_type m_allocator;
 	size_type      m_length;
-	list_node      m_node;
+	node_pointer   m_node;
 	node_pointer   m_allocate_node() const;
+	void           m_init_header_node();
 };
 
 template <class T, class Allocator>
@@ -146,25 +154,41 @@ list<T, Allocator>::m_allocate_node() const {
 }
 
 template <class T, class Allocator>
+void list<T, Allocator>::m_init_header_node() {
+	m_node = m_allocate_node();
+	m_node->next = m_node;
+	m_node->prev = m_node;
+}
+
+template <class T, class Allocator>
 list<T, Allocator>::list(const Allocator &allocator)
 	: m_allocator(allocator), m_length(0) {
-	m_node.next = &m_node;
-	m_node.prev = &m_node;
-	m_node.data = T();
+	m_init_header_node();
 }
 
 template <class T, class Allocator>
 list<T, Allocator>::list(
 	size_type n, const T &value, const Allocator &allocator)
 	: m_allocator(allocator), m_length(0) {
-	m_node.next = &m_node;
-	m_node.prev = &m_node;
+	m_init_header_node();
 	insert(begin(), n, value);
+}
+
+template <class T, class Allocator>
+template <class InputIterator>
+list<T, Allocator>::list(
+	typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+		InputIterator>::type first,
+	InputIterator last, const Allocator &allocator)
+	: m_allocator(allocator), m_length(0) {
+	m_init_header_node();
+	insert(end(), first, last);
 }
 
 template <class T, class Allocator>
 list<T, Allocator>::~list() {
 	clear();
+	node_allocator.deallocate(m_node, 1);
 }
 
 template <class T, class Allocator>
@@ -175,22 +199,22 @@ list<T, Allocator>::get_allocator() const {
 
 template <class T, class Allocator>
 typename list<T, Allocator>::iterator list<T, Allocator>::begin() {
-	return m_node.next;
+	return m_node->next;
 }
 
 template <class T, class Allocator>
 typename list<T, Allocator>::const_iterator list<T, Allocator>::begin() const {
-	return m_node.next;
+	return m_node->next;
 }
 
 template <class T, class Allocator>
 typename list<T, Allocator>::iterator list<T, Allocator>::end() {
-	return &m_node;
+	return m_node;
 }
 
 template <class T, class Allocator>
 typename list<T, Allocator>::const_iterator list<T, Allocator>::end() const {
-	return &m_node;
+	return m_node;
 }
 
 template <class T, class Allocator>
@@ -220,7 +244,21 @@ void list<T, Allocator>::insert(
 }
 
 template <class T, class Allocator>
-typename list<T, Allocator>::iterator list<T, Allocator>::erase(iterator position) {
+template <class InputIterator>
+void list<T, Allocator>::insert(iterator position,
+	typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+		InputIterator>::type             first,
+	InputIterator                        last) {
+	while (first != last) {
+		position = insert(position, *first);
+		position++;
+		first++;
+	}
+}
+
+template <class T, class Allocator>
+typename list<T, Allocator>::iterator list<T, Allocator>::erase(
+	iterator position) {
 	iterator next = position.base()->next;
 	position.base()->prev->next = position.base()->next;
 	position.base()->next->prev = position.base()->prev;
@@ -231,7 +269,8 @@ typename list<T, Allocator>::iterator list<T, Allocator>::erase(iterator positio
 }
 
 template <class T, class Allocator>
-typename list<T, Allocator>::iterator list<T, Allocator>::erase(iterator position, iterator last) {
+typename list<T, Allocator>::iterator list<T, Allocator>::erase(
+	iterator position, iterator last) {
 	iterator ret = position;
 	while (position != last) {
 		ret = erase(position++);
@@ -240,7 +279,7 @@ typename list<T, Allocator>::iterator list<T, Allocator>::erase(iterator positio
 }
 
 template <class T, class Allocator>
-void	list<T, Allocator>::clear() {
+void list<T, Allocator>::clear() {
 	erase(begin(), end());
 }
 

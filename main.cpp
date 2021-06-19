@@ -80,18 +80,14 @@ static void test_container_count_constructor(const Container1 &c1,
 	test_equal_size(c1, c2, function_name, line_number);
 }
 
-template <class Container1, class Container2>
-static void test_container_range_constructor(const Container1 &c1,
-	const Container2 &c2, const char *function_name, int line_number) {
-	Container1 c;
+template <class T, class Container1, class Container2>
+static void test_container_range_constructor(const Container1 &,
+	const Container2 &, const T &value, const char *function_name,
+	int line_number) {
+	Container2 c;
 
-	for (typename Container1::const_iterator it = c1.begin(); it != c1.end();
-		 it++) {
-		c.push_back(*it);
-	}
-	for (typename Container2::const_iterator it = c2.begin(); it != c2.end();
-		 it++) {
-		c.push_back(*it);
+	for (int i = 0; i < 10; i++) {
+		c.push_back(value);
 	}
 
 	Container1 c_a(c.begin(), c.end());
@@ -739,7 +735,7 @@ static void test_vector() {
 	test_container_count_constructor(
 		ft::vector<int>(5), std::vector<int>(5), __FUNCTION__, __LINE__);
 	test_container_range_constructor(
-		ft::vector<int>(1, 1), std::vector<int>(1, 1), __FUNCTION__, __LINE__);
+		ft::vector<int>(), std::vector<int>(), 111, __FUNCTION__, __LINE__);
 	test_container_copy_constructor(
 		ft::vector<int>(42), __FUNCTION__, __LINE__);
 	test_container_assignment_operator(
@@ -819,6 +815,8 @@ static void test_list() {
 		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
 	test_container_count_constructor(
 		ft::list<int>(5), std::list<int>(5), __FUNCTION__, __LINE__);
+	test_container_range_constructor(
+		ft::list<int>(), std::list<int>(), 111, __FUNCTION__, __LINE__);
 }
 
 int main() {
