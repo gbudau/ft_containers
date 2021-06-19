@@ -7,6 +7,7 @@
 #include "iterator.hpp"
 #include "memory.hpp"
 #include "type_traits.hpp"
+#include "utils.hpp"
 
 namespace ft {
 
@@ -14,55 +15,199 @@ template <class T, class Allocator = std::allocator<T> >
 class list {
   protected:
 	struct list_node;
-	typedef typename Allocator::template rebind<list_node>::other node_alloc;
+	typedef typename Allocator::template rebind<list_node>::other
+												  node_allocator_type;
+	typedef typename node_allocator_type::pointer node_pointer;
+	static node_allocator_type                    node_allocator;
 
   public:
 	// types:
-	typedef typename Allocator::reference        reference;
-	typedef typename Allocator::const_reference  const_reference;
-	typedef typename node_alloc::size_type       size_type;
-	typedef typename node_alloc::difference_type difference_type;
-	typedef T                                    value_type;
-	typedef Allocator                            allocator_type;
-	typedef typename Allocator::pointer          pointer;
-	typedef typename Allocator::const_pointer    const_pointer;
-	/* TODO Define iterator									class
-	typedef ft::reverse_iterator<iterator>					reverse_iterator;
-	typedef ft::reverse_iterator<const_iterator>
-	const_reverse_iterator;
-	*/
+	typedef typename Allocator::reference                 reference;
+	typedef typename Allocator::const_reference           const_reference;
+	typedef typename node_allocator_type::size_type       size_type;
+	typedef typename node_allocator_type::difference_type difference_type;
+	typedef T                                             value_type;
+	typedef Allocator                                     allocator_type;
+	typedef typename Allocator::pointer                   pointer;
+	typedef typename Allocator::const_pointer             const_pointer;
+
+	template <bool isconst = false>
+	class list_iterator {
+	  protected:
+		typedef
+			typename ft::choose<isconst, const node_pointer, node_pointer>::type
+				node_pointer;
+
+	  public:
+		typedef std::bidirectional_iterator_tag               iterator_category;
+		typedef T                                             value_type;
+		typedef typename node_allocator_type::difference_type difference_type;
+		typedef typename node_allocator_type::size_type       size_type;
+		typedef typename ft::choose<isconst, const T &, T &>::type reference;
+		typedef typename ft::choose<isconst, const T *, T *>::type pointer;
+
+		list_iterator(node_pointer x = 0) : current(x){};
+
+		reference operator*() const {
+			return current->data;
+		}
+		pointer operator->() const {
+			return &(current->data);
+		}
+		list_iterator &operator++() {
+			current = current->next;
+			return *this;
+		}
+
+		list_iterator operator++(int) {
+			list_iterator tmp(*this);
+			current = current->next;
+			return tmp;
+		}
+
+		list_iterator &operator--() {
+			current = current->prev;
+			return *this;
+		}
+
+		list_iterator operator--(int) {
+			list_iterator tmp(*this);
+			current = current->prev;
+			return tmp;
+		}
+
+		friend bool operator==(const list_iterator &x, const list_iterator &y) {
+			return x.current == y.current;
+		}
+
+		friend bool operator!=(const list_iterator &x, const list_iterator &y) {
+			return !(x.current == y.current);
+		}
+
+		node_pointer base() const {
+			return current;
+		}
+
+	  protected:
+		node_pointer current;
+	};
+
+	typedef list_iterator<false>                 iterator;
+	typedef list_iterator<true>                  const_iterator;
+	typedef ft::reverse_iterator<iterator>       reverse_iterator;
+	typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
 	// construct/copy/destroy:
 	explicit list(const Allocator &allocator = Allocator());
+	explicit list(size_type n, const T &value = T(),
+		const Allocator &allocator = Allocator());
+	allocator_type get_allocator() const;
+
+	// iterators:
+	iterator       begin();
+	const_iterator begin() const;
+	iterator       end();
+	const_iterator end() const;
 
 	// capacity:
-	size_type size() const;
+	size_type      size() const;
+
+	// modifiers:
+	iterator       insert(iterator position, const T &value);
+	void           insert(iterator position, size_type n, const T &value);
 
   protected:
 	allocator_type m_allocator;
 	size_type      m_length;
-	list_node     *m_node;
+	list_node      m_node;
+	node_pointer   m_allocate_node() const;
 };
 
 template <class T, class Allocator>
 struct list<T, Allocator>::list_node {
-	list_node *prev;
-	list_node *next;
-	T          data;
+	list<T, Allocator>::node_pointer next;
+	list<T, Allocator>::node_pointer prev;
+	T                                data;
 };
+
+template <class T, class Allocator>
+typename list<T, Allocator>::node_allocator_type
+	list<T, Allocator>::node_allocator;
+
+template <class T, class Allocator>
+typename list<T, Allocator>::node_pointer
+list<T, Allocator>::m_allocate_node() const {
+	node_pointer node = node_allocator.allocate(1, this);
+	return node;
+}
 
 template <class T, class Allocator>
 list<T, Allocator>::list(const Allocator &allocator)
 	: m_allocator(allocator), m_length(0) {
-	node_alloc node_allocator;
-	m_node = node_allocator.allocate(1, this);
-	m_node->next = m_node;
-	m_node->prev = m_node;
+	m_node.next = &m_node;
+	m_node.prev = &m_node;
+	m_node.data = T();
+}
+
+template <class T, class Allocator>
+list<T, Allocator>::list(
+	size_type n, const T &value, const Allocator &allocator)
+	: m_allocator(allocator), m_length(0) {
+	m_node.next = &m_node;
+	m_node.prev = &m_node;
+	insert(begin(), n, value);
+}
+
+template <class T, class Allocator>
+typename list<T, Allocator>::allocator_type
+list<T, Allocator>::get_allocator() const {
+	return m_allocator;
+}
+
+template <class T, class Allocator>
+typename list<T, Allocator>::iterator list<T, Allocator>::begin() {
+	return m_node.next;
+}
+
+template <class T, class Allocator>
+typename list<T, Allocator>::const_iterator list<T, Allocator>::begin() const {
+	return m_node.next;
+}
+
+template <class T, class Allocator>
+typename list<T, Allocator>::iterator list<T, Allocator>::end() {
+	return &m_node;
+}
+
+template <class T, class Allocator>
+typename list<T, Allocator>::const_iterator list<T, Allocator>::end() const {
+	return &m_node;
 }
 
 template <class T, class Allocator>
 typename list<T, Allocator>::size_type list<T, Allocator>::size() const {
 	return m_length;
+}
+
+template <class T, class Allocator>
+typename list<T, Allocator>::iterator list<T, Allocator>::insert(
+	iterator position, const T &value) {
+	node_pointer tmp = m_allocate_node();
+	m_allocator.construct(m_allocator.address(tmp->data), value);
+	tmp->next = position.base();
+	tmp->prev = position.base()->prev;
+	position.base()->prev = tmp;
+	position.base()->prev->next = tmp;
+	m_length++;
+	return tmp;
+}
+
+template <class T, class Allocator>
+void list<T, Allocator>::insert(
+	iterator position, size_type n, const T &value) {
+	while (n--) {
+		insert(position, value);
+	}
 }
 
 }  // namespace ft

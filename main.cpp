@@ -37,8 +37,8 @@ static void test_values_message(const char *function_name, int line_number,
 }
 
 template <class Container1, class Container2>
-static void test_equal_size(const Container1 &c1,
-	const Container2 &c2, const char *function_name, int line_number) {
+static void test_equal_size(const Container1 &c1, const Container2 &c2,
+	const char *function_name, int line_number) {
 
 	test_values(function_name, line_number, "size", c1.size(), c2.size());
 }
@@ -814,9 +814,11 @@ static void test_vector() {
 		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
 }
 
-static void	test_list() {
+static void test_list() {
 	test_container_default_constructor(
 		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
+	test_container_count_constructor(
+		ft::list<int>(5), std::list<int>(5), __FUNCTION__, __LINE__);
 }
 
 int main() {
