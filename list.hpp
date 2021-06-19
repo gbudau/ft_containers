@@ -36,7 +36,7 @@ class list {
 	  protected:
 		typedef
 			typename ft::choose<isconst, const node_pointer, node_pointer>::type
-				node_pointer;
+				node_pointer_type;
 
 	  public:
 		typedef std::bidirectional_iterator_tag               iterator_category;
@@ -46,7 +46,7 @@ class list {
 		typedef typename ft::choose<isconst, const T &, T &>::type reference;
 		typedef typename ft::choose<isconst, const T *, T *>::type pointer;
 
-		list_iterator(node_pointer x = 0) : current(x){};
+		list_iterator(node_pointer_type x = 0) : current(x){};
 
 		reference operator*() const {
 			return current->data;
@@ -84,12 +84,12 @@ class list {
 			return !(x.current == y.current);
 		}
 
-		node_pointer base() const {
+		node_pointer_type base() const {
 			return current;
 		}
 
 	  protected:
-		node_pointer current;
+		node_pointer_type current;
 	};
 
 	typedef list_iterator<false>                 iterator;
@@ -101,6 +101,7 @@ class list {
 	explicit list(const Allocator &allocator = Allocator());
 	explicit list(size_type n, const T &value = T(),
 		const Allocator &allocator = Allocator());
+	~list();
 	allocator_type get_allocator() const;
 
 	// iterators:
@@ -115,6 +116,9 @@ class list {
 	// modifiers:
 	iterator       insert(iterator position, const T &value);
 	void           insert(iterator position, size_type n, const T &value);
+	iterator       erase(iterator position);
+	iterator       erase(iterator position, iterator last);
+	void           clear();
 
   protected:
 	allocator_type m_allocator;
@@ -159,6 +163,11 @@ list<T, Allocator>::list(
 }
 
 template <class T, class Allocator>
+list<T, Allocator>::~list() {
+	clear();
+}
+
+template <class T, class Allocator>
 typename list<T, Allocator>::allocator_type
 list<T, Allocator>::get_allocator() const {
 	return m_allocator;
@@ -196,8 +205,8 @@ typename list<T, Allocator>::iterator list<T, Allocator>::insert(
 	m_allocator.construct(m_allocator.address(tmp->data), value);
 	tmp->next = position.base();
 	tmp->prev = position.base()->prev;
-	position.base()->prev = tmp;
 	position.base()->prev->next = tmp;
+	position.base()->prev = tmp;
 	m_length++;
 	return tmp;
 }
@@ -208,6 +217,31 @@ void list<T, Allocator>::insert(
 	while (n--) {
 		insert(position, value);
 	}
+}
+
+template <class T, class Allocator>
+typename list<T, Allocator>::iterator list<T, Allocator>::erase(iterator position) {
+	iterator next = position.base()->next;
+	position.base()->prev->next = position.base()->next;
+	position.base()->next->prev = position.base()->prev;
+	m_allocator.destroy(m_allocator.address(position.base()->data));
+	node_allocator.deallocate(position.base(), 1);
+	m_length--;
+	return next;
+}
+
+template <class T, class Allocator>
+typename list<T, Allocator>::iterator list<T, Allocator>::erase(iterator position, iterator last) {
+	iterator ret = position;
+	while (position != last) {
+		ret = erase(position++);
+	}
+	return ret;
+}
+
+template <class T, class Allocator>
+void	list<T, Allocator>::clear() {
+	erase(begin(), end());
 }
 
 }  // namespace ft
