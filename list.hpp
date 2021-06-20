@@ -103,6 +103,7 @@ class list {
 	list(typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
 			 InputIterator>::type first,
 		InputIterator last, const Allocator &allocator = Allocator());
+	list(const list<T, Allocator> &x);
 	~list();
 	allocator_type get_allocator() const;
 
@@ -183,6 +184,13 @@ list<T, Allocator>::list(
 	: m_allocator(allocator), m_length(0) {
 	m_init_header_node();
 	insert(end(), first, last);
+}
+
+template <class T, class Allocator>
+list<T, Allocator>::list(const list<T, Allocator> &x)
+	: m_allocator(x.get_allocator()), m_length(0) {
+	m_init_header_node();
+	insert(end(), x.begin(), x.end());
 }
 
 template <class T, class Allocator>
