@@ -834,6 +834,12 @@ static void test_list() {
 		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
 	test_container_rend(
 		ft::list<char>(), std::list<char>(), __FUNCTION__, __LINE__);
+	test_container_empty(
+		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
+	test_container_not_empty(
+		ft::list<int>(1, 1), std::list<int>(1, 1), __FUNCTION__, __LINE__);
+	test_container_max_size(
+		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
 }
 
 int main() {

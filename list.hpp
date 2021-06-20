@@ -124,7 +124,9 @@ class list {
 	const_reverse_iterator rend() const;
 
 	// capacity:
+	bool                   empty() const;
 	size_type              size() const;
+	size_type              max_size() const;
 
 	// modifiers:
 	iterator               insert(iterator position, const T &value);
@@ -280,6 +282,16 @@ template <class T, class Allocator>
 typename list<T, Allocator>::const_reverse_iterator
 list<T, Allocator>::rend() const {
 	return reverse_iterator(begin());
+}
+
+template <class T, class Allocator>
+bool list<T, Allocator>::empty() const {
+	return m_length == 0;
+}
+
+template <class T, class Allocator>
+typename list<T, Allocator>::size_type list<T, Allocator>::max_size() const {
+	return node_allocator.max_size();
 }
 
 template <class T, class Allocator>
