@@ -818,6 +818,8 @@ static void test_list() {
 	test_container_range_constructor(
 		ft::list<int>(), std::list<int>(), 111, __FUNCTION__, __LINE__);
 	test_container_copy_constructor(ft::list<int>(42), __FUNCTION__, __LINE__);
+	test_container_assignment_operator(
+		ft::list<std::string>(1, "hello"), __FUNCTION__, __LINE__);
 }
 
 int main() {

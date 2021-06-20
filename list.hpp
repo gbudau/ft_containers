@@ -41,8 +41,7 @@ class list {
 		typedef typename ft::choose<isconst, const T &, T &>::type reference;
 		typedef typename ft::choose<isconst, const T *, T *>::type pointer;
 
-		list_iterator() : current(0) {}
-		list_iterator(node_pointer x) : current(x) {}
+		list_iterator(node_pointer x = 0) : current(x) {}
 
 		list_iterator(const list_iterator<false> &rhs) : current(rhs.base()) {}
 
@@ -105,20 +104,21 @@ class list {
 		InputIterator last, const Allocator &allocator = Allocator());
 	list(const list<T, Allocator> &x);
 	~list();
-	allocator_type get_allocator() const;
+	list<T, Allocator> &operator=(const list<T, Allocator> &x);
+	allocator_type      get_allocator() const;
 
 	// iterators:
-	iterator       begin();
-	const_iterator begin() const;
-	iterator       end();
-	const_iterator end() const;
+	iterator            begin();
+	const_iterator      begin() const;
+	iterator            end();
+	const_iterator      end() const;
 
 	// capacity:
-	size_type      size() const;
+	size_type           size() const;
 
 	// modifiers:
-	iterator       insert(iterator position, const T &value);
-	void           insert(iterator position, size_type n, const T &value);
+	iterator            insert(iterator position, const T &value);
+	void                insert(iterator position, size_type n, const T &value);
 	template <class InputIterator>
 	void     insert(iterator         position,
 			typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
@@ -197,6 +197,16 @@ template <class T, class Allocator>
 list<T, Allocator>::~list() {
 	clear();
 	node_allocator.deallocate(m_node, 1);
+}
+
+template <class T, class Allocator>
+list<T, Allocator> &list<T, Allocator>::operator=(const list<T, Allocator> &x) {
+	if (this == &x) {
+		return *this;
+	}
+	clear();
+	insert(end(), x.begin(), x.end());
+	return *this;
 }
 
 template <class T, class Allocator>
