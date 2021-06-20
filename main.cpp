@@ -822,8 +822,18 @@ static void test_list() {
 		ft::list<std::string>(1, "hello"), __FUNCTION__, __LINE__);
 	test_container_assign_count(
 		ft::list<int>(), std::list<int>(), 4, __FUNCTION__, __LINE__);
-	test_container_assign_range(ft::vector<float>(10, 100.0f),
-		std::vector<float>(10, 100.0f), __FUNCTION__, __LINE__);
+	test_container_assign_range(ft::list<float>(10, 100.0f),
+		std::list<float>(10, 100.0f), __FUNCTION__, __LINE__);
+	test_container_get_allocator(
+		ft::list<char>(), std::list<char>(), __FUNCTION__, __LINE__);
+	test_container_begin(
+		ft::list<double>(), std::list<double>(), __FUNCTION__, __LINE__);
+	test_container_end(ft::list<std::string>(), std::list<std::string>(),
+		__FUNCTION__, __LINE__);
+	test_container_rbegin(
+		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
+	test_container_rend(
+		ft::list<char>(), std::list<char>(), __FUNCTION__, __LINE__);
 }
 
 int main() {

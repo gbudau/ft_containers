@@ -111,20 +111,24 @@ class list {
 		typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
 			InputIterator>::type first,
 		InputIterator            last);
-	allocator_type get_allocator() const;
+	allocator_type         get_allocator() const;
 
 	// iterators:
-	iterator       begin();
-	const_iterator begin() const;
-	iterator       end();
-	const_iterator end() const;
+	iterator               begin();
+	const_iterator         begin() const;
+	iterator               end();
+	const_iterator         end() const;
+	reverse_iterator       rbegin();
+	const_reverse_iterator rbegin() const;
+	reverse_iterator       rend();
+	const_reverse_iterator rend() const;
 
 	// capacity:
-	size_type      size() const;
+	size_type              size() const;
 
 	// modifiers:
-	iterator       insert(iterator position, const T &value);
-	void           insert(iterator position, size_type n, const T &value);
+	iterator               insert(iterator position, const T &value);
+	void insert(iterator position, size_type n, const T &value);
 	template <class InputIterator>
 	void     insert(iterator         position,
 			typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
@@ -254,6 +258,28 @@ typename list<T, Allocator>::iterator list<T, Allocator>::end() {
 template <class T, class Allocator>
 typename list<T, Allocator>::const_iterator list<T, Allocator>::end() const {
 	return m_node;
+}
+
+template <class T, class Allocator>
+typename list<T, Allocator>::reverse_iterator list<T, Allocator>::rbegin() {
+	return reverse_iterator(end());
+}
+
+template <class T, class Allocator>
+typename list<T, Allocator>::const_reverse_iterator
+list<T, Allocator>::rbegin() const {
+	return reverse_iterator(end());
+}
+
+template <class T, class Allocator>
+typename list<T, Allocator>::reverse_iterator list<T, Allocator>::rend() {
+	return reverse_iterator(begin());
+}
+
+template <class T, class Allocator>
+typename list<T, Allocator>::const_reverse_iterator
+list<T, Allocator>::rend() const {
+	return reverse_iterator(begin());
 }
 
 template <class T, class Allocator>
