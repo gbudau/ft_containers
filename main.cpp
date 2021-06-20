@@ -820,6 +820,10 @@ static void test_list() {
 	test_container_copy_constructor(ft::list<int>(42), __FUNCTION__, __LINE__);
 	test_container_assignment_operator(
 		ft::list<std::string>(1, "hello"), __FUNCTION__, __LINE__);
+	test_container_assign_count(
+		ft::list<int>(), std::list<int>(), 4, __FUNCTION__, __LINE__);
+	test_container_assign_range(ft::vector<float>(10, 100.0f),
+		std::vector<float>(10, 100.0f), __FUNCTION__, __LINE__);
 }
 
 int main() {

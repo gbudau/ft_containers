@@ -105,20 +105,26 @@ class list {
 	list(const list<T, Allocator> &x);
 	~list();
 	list<T, Allocator> &operator=(const list<T, Allocator> &x);
-	allocator_type      get_allocator() const;
+	void                assign(size_type n, const T &t);
+	template <class InputIterator>
+	void assign(
+		typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+			InputIterator>::type first,
+		InputIterator            last);
+	allocator_type get_allocator() const;
 
 	// iterators:
-	iterator            begin();
-	const_iterator      begin() const;
-	iterator            end();
-	const_iterator      end() const;
+	iterator       begin();
+	const_iterator begin() const;
+	iterator       end();
+	const_iterator end() const;
 
 	// capacity:
-	size_type           size() const;
+	size_type      size() const;
 
 	// modifiers:
-	iterator            insert(iterator position, const T &value);
-	void                insert(iterator position, size_type n, const T &value);
+	iterator       insert(iterator position, const T &value);
+	void           insert(iterator position, size_type n, const T &value);
 	template <class InputIterator>
 	void     insert(iterator         position,
 			typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
@@ -172,7 +178,7 @@ list<T, Allocator>::list(
 	size_type n, const T &value, const Allocator &allocator)
 	: m_allocator(allocator), m_length(0) {
 	m_init_header_node();
-	insert(begin(), n, value);
+	insert(end(), n, value);
 }
 
 template <class T, class Allocator>
@@ -204,9 +210,24 @@ list<T, Allocator> &list<T, Allocator>::operator=(const list<T, Allocator> &x) {
 	if (this == &x) {
 		return *this;
 	}
-	clear();
-	insert(end(), x.begin(), x.end());
+	assign(x.begin(), x.end());
 	return *this;
+}
+
+template <class T, class Allocator>
+void list<T, Allocator>::assign(size_type n, const T &value) {
+	clear();
+	insert(end(), n, value);
+}
+
+template <class T, class Allocator>
+template <class InputIterator>
+void list<T, Allocator>::assign(
+	typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+		InputIterator>::type first,
+	InputIterator            last) {
+	clear();
+	insert(end(), first, last);
 }
 
 template <class T, class Allocator>
