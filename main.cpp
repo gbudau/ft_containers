@@ -880,6 +880,8 @@ static void test_list() {
 		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
 	test_container_pop_front(
 		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
+	test_container_push_back(
+		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
 }
 
 int main() {
