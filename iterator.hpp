@@ -266,12 +266,61 @@ typename iterator_traits<InputIterator>::difference_type distance(
 	return result;
 }
 
-// Advances an iterator by given distance
-template <class InputIterator, class Distance>
-void advance(InputIterator &it, Distance n) {
-	while (n--) {
+// implementation via tag dispatch
+namespace detail {
+
+template <class It>
+void do_advance(It &it, typename ft::iterator_traits<It>::difference_type n,
+	std::input_iterator_tag) {
+	while (n > 0) {
+		--n;
 		++it;
 	}
+}
+
+template <class It>
+void do_advance(It &it, typename ft::iterator_traits<It>::difference_type n,
+	std::bidirectional_iterator_tag) {
+	while (n > 0) {
+		--n;
+		++it;
+	}
+	while (n < 0) {
+		++n;
+		--it;
+	}
+}
+
+template <class It>
+void do_advance(It &it, typename ft::iterator_traits<It>::difference_type n,
+	std::random_access_iterator_tag) {
+	it += n;
+}
+
+}  // namespace detail
+
+// Advances an iterator by given distance
+template <class It, class Distance>
+void advance(It &it, Distance n) {
+	detail::do_advance(it,
+		typename std::iterator_traits<It>::difference_type(n),
+		typename ft::iterator_traits<It>::iterator_category());
+}
+
+// Decrement an iterator
+template <class BidirIt>
+BidirIt prev(
+	BidirIt it, typename ft::iterator_traits<BidirIt>::difference_type n = 1) {
+	ft::advance(it, -n);
+	return it;
+}
+
+// Increment an iterator
+template <class InputIt>
+InputIt next(
+	InputIt it, typename ft::iterator_traits<InputIt>::difference_type n = 1) {
+	ft::advance(it, n);
+	return it;
 }
 
 }  // namespace ft
