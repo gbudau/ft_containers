@@ -842,6 +842,10 @@ static void test_list() {
 		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
 	test_container_resize(ft::list<char>(1, 'a'), std::list<char>(1, 'a'),
 		__FUNCTION__, __LINE__);
+	test_container_front(
+		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
+	test_container_back(
+		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
 }
 
 int main() {
