@@ -149,6 +149,7 @@ class list {
 			InputIterator            last);
 	iterator erase(iterator position);
 	iterator erase(iterator position, iterator last);
+	void     swap(list<T, Allocator> &other);
 	void     clear();
 
   protected:
@@ -415,6 +416,13 @@ typename list<T, Allocator>::iterator list<T, Allocator>::erase(
 		ret = erase(position++);
 	}
 	return ret;
+}
+
+template <class T, class Allocator>
+void list<T, Allocator>::swap(list<T, Allocator> &other) {
+	ft::swap(m_allocator, other.m_allocator);
+	ft::swap(m_length, other.m_length);
+	ft::swap(m_node, other.m_node);
 }
 
 template <class T, class Allocator>
