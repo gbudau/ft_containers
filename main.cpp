@@ -357,6 +357,21 @@ static void test_container_reserve(const Container1 &c1, const Container2 &c2,
 }
 
 template <class T, class Container1, class Container2>
+static void test_container_push_front(const Container1 &, const Container2 &,
+	const T &val, const char *function_name, int line_number) {
+	Container1 c1;
+	Container2 c2;
+
+	test_equal_container(c1, c2, function_name, line_number);
+	for (int i = 0; i < 10; i++) {
+		c1.push_front(val);
+		c2.push_front(val);
+		test_equal_container(c1, c2, function_name, line_number);
+	}
+	test_equal_container(c1, c2, function_name, line_number);
+}
+
+template <class T, class Container1, class Container2>
 static void test_container_push_back(const Container1 &, const Container2 &,
 	const T &val, const char *function_name, int line_number) {
 	Container1 c1;
@@ -845,6 +860,8 @@ static void test_list() {
 	test_container_front(
 		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
 	test_container_back(
+		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
+	test_container_push_front(
 		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
 }
 

@@ -136,6 +136,7 @@ class list {
 	const_reference        back() const;
 
 	// modifiers:
+	void                   push_front(const T &value);
 	iterator               insert(iterator position, const T &value);
 	void insert(iterator position, size_type n, const T &value);
 	template <class InputIterator>
@@ -335,6 +336,11 @@ typename list<T, Allocator>::reference list<T, Allocator>::back() {
 template <class T, class Allocator>
 typename list<T, Allocator>::const_reference list<T, Allocator>::back() const {
 	return *ft::prev(end());
+}
+
+template <class T, class Allocator>
+void list<T, Allocator>::push_front(const T &value) {
+	insert(begin(), value);
 }
 
 template <class T, class Allocator>
