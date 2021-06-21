@@ -740,6 +740,29 @@ static void test_container_greaterequal_operator(const Container1 &,
 }
 
 template <class Container1, class Container2>
+static void test_list_splice_entire_list(const Container1 &, const Container2 &,
+	const char *function_name, int line_number) {
+	Container1 c1_empty;
+	Container2 c2_empty;
+	Container1 c1(10);
+	Container2 c2(10);
+
+	test_equal_container(c1_empty, c2_empty, function_name, line_number);
+	test_equal_container(c1, c2, function_name, line_number);
+	c1_empty.splice(c1_empty.begin(), c1);
+	c2_empty.splice(c2_empty.begin(), c2);
+	test_equal_container(c1_empty, c2_empty, function_name, line_number);
+	test_equal_container(c1, c2, function_name, line_number);
+
+	Container1 c1a(20);
+	Container2 c2a(20);
+	c1_empty.splice(c1_empty.end(), c1a);
+	c2_empty.splice(c2_empty.end(), c2a);
+	test_equal_container(c1_empty, c2_empty, function_name, line_number);
+	test_equal_container(c1a, c2a, function_name, line_number);
+}
+
+template <class Container1, class Container2>
 static void test_container_swap_overload(const Container1 &, const Container2 &,
 	const char *function_name, int line_number) {
 	Container1 c1_empty;
@@ -887,6 +910,8 @@ static void test_list() {
 	test_container_swap(
 		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
 	test_container_clear(
+		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
+	test_list_splice_entire_list(
 		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
 }
 

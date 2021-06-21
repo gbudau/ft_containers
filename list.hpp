@@ -152,12 +152,16 @@ class list {
 	void     swap(list<T, Allocator> &other);
 	void     clear();
 
+	// list operations:
+	void     splice(iterator position, list<T, Allocator> &other);
+
   protected:
 	allocator_type m_allocator;
 	size_type      m_length;
 	node_pointer   m_node;
 	node_pointer   m_allocate_node() const;
 	void           m_init_header_node();
+	void           m_transfer(iterator position, iterator first, iterator last);
 };
 
 template <class T, class Allocator>
@@ -428,6 +432,28 @@ void list<T, Allocator>::swap(list<T, Allocator> &other) {
 template <class T, class Allocator>
 void list<T, Allocator>::clear() {
 	erase(begin(), end());
+}
+
+template <class T, class Allocator>
+void list<T, Allocator>::m_transfer(
+	iterator position, iterator first, iterator last) {
+	last.base()->prev->next = position.base();
+	first.base()->prev->next = last.base();
+	position.base()->prev->next = first.base();
+	node_pointer tmp = position.base()->prev;
+	position.base()->prev = last.base()->prev;
+	last.base()->prev = first.base()->prev;
+	first.base()->prev = tmp;
+}
+
+template <class T, class Allocator>
+void list<T, Allocator>::splice(iterator position, list<T, Allocator> &other) {
+	if (other.empty()) {
+		return;
+	}
+	m_transfer(position, other.begin(), other.end());
+	m_length += other.m_length;
+	other.m_length = 0;
 }
 
 }  // namespace ft
