@@ -127,6 +127,7 @@ class list {
 	bool                   empty() const;
 	size_type              size() const;
 	size_type              max_size() const;
+	void                   resize(size_type n, T value = T());
 
 	// modifiers:
 	iterator               insert(iterator position, const T &value);
@@ -290,13 +291,24 @@ bool list<T, Allocator>::empty() const {
 }
 
 template <class T, class Allocator>
+typename list<T, Allocator>::size_type list<T, Allocator>::size() const {
+	return m_length;
+}
+
+template <class T, class Allocator>
 typename list<T, Allocator>::size_type list<T, Allocator>::max_size() const {
 	return node_allocator.max_size();
 }
 
 template <class T, class Allocator>
-typename list<T, Allocator>::size_type list<T, Allocator>::size() const {
-	return m_length;
+void list<T, Allocator>::resize(size_type n, T value) {
+	if (n > size()) {
+		insert(end(), n - size(), value);
+	} else if (n < size()) {
+		iterator it = begin();
+		ft::advance(it, n);
+		erase(it, end());
+	}
 }
 
 template <class T, class Allocator>

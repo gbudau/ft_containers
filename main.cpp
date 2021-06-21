@@ -244,8 +244,8 @@ static void test_container_resize(const Container1 &c1, const Container2 &c2,
 	c_a.resize(12);
 	c_b.resize(12);
 	test_equal_container(c_b, c_a, function_name, line_number);
-	c_a.resize(c_a.capacity() + 1);
-	c_b.resize(c_b.capacity() + 1);
+	c_a.resize(c_a.size() + 1);
+	c_b.resize(c_b.size() + 1);
 	test_equal_container(c_b, c_a, function_name, line_number);
 }
 
@@ -840,6 +840,8 @@ static void test_list() {
 		ft::list<int>(1, 1), std::list<int>(1, 1), __FUNCTION__, __LINE__);
 	test_container_max_size(
 		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
+	test_container_resize(ft::list<char>(1, 'a'), std::list<char>(1, 'a'),
+		__FUNCTION__, __LINE__);
 }
 
 int main() {
