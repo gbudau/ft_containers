@@ -139,6 +139,7 @@ class list {
 	void                   push_front(const T &value);
 	void                   pop_front();
 	void                   push_back(const T &value);
+	void                   pop_back();
 	iterator               insert(iterator position, const T &value);
 	void insert(iterator position, size_type n, const T &value);
 	template <class InputIterator>
@@ -353,6 +354,11 @@ void list<T, Allocator>::pop_front() {
 template <class T, class Allocator>
 void list<T, Allocator>::push_back(const T &value) {
 	insert(end(), value);
+}
+
+template <class T, class Allocator>
+void list<T, Allocator>::pop_back() {
+	erase(ft::prev(end()));
 }
 
 template <class T, class Allocator>
