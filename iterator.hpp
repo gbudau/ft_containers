@@ -254,11 +254,13 @@ typename reverse_iterator<IteratorL>::difference_type operator-(
 	return y.base() - x.base();
 }
 
-// Returns the distance between two iterators
-template <class InputIterator>
-typename iterator_traits<InputIterator>::difference_type distance(
-	InputIterator first, InputIterator last) {
-	typename iterator_traits<InputIterator>::difference_type result = 0;
+// distance implementation via tag dispatch
+namespace detail {
+
+template <class It>
+typename ft::iterator_traits<It>::difference_type do_distance(
+	It first, It last, std::input_iterator_tag) {
+	typename iterator_traits<It>::difference_type result = 0;
 	while (first != last) {
 		first++;
 		result++;
@@ -266,7 +268,22 @@ typename iterator_traits<InputIterator>::difference_type distance(
 	return result;
 }
 
-// implementation via tag dispatch
+template <class It>
+typename ft::iterator_traits<It>::difference_type do_distance(
+	It first, It last, std::random_access_iterator_tag) {
+	return last - first;
+}
+
+}  // namespace detail
+
+// Returns the distance between two iterators
+template <class It>
+typename iterator_traits<It>::difference_type distance(It first, It last) {
+	return detail::do_distance(
+		first, last, typename ft::iterator_traits<It>::iterator_category());
+}
+
+// advance implementation via tag dispatch
 namespace detail {
 
 template <class It>
