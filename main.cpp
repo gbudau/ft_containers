@@ -981,6 +981,8 @@ static void test_list() {
 	test_container_greaterequal_operator(ft::list<std::string>(),
 		std::list<std::string>(), std::string("abcd"), std::string("bcde"),
 		__FUNCTION__, __LINE__);
+	test_container_swap_overload(
+		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
 }
 
 int main() {

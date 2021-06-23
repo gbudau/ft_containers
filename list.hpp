@@ -515,4 +515,10 @@ bool operator>=(const list<T, Allocator> &x, const list<T, Allocator> &y) {
 	return !(x < y);
 }
 
+// specialized algorithms:
+template <class T, class Allocator>
+void swap(list<T, Allocator> &x, list<T, Allocator> &y) {
+	x.swap(y);
+}
+
 }  // namespace ft
