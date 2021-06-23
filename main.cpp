@@ -763,6 +763,54 @@ static void test_list_splice_entire_list(const Container1 &, const Container2 &,
 }
 
 template <class Container1, class Container2>
+static void test_list_splice_one_iterator(const Container1 &,
+	const Container2 &, const char *function_name, int line_number) {
+	Container1 c1_empty;
+	Container2 c2_empty;
+	Container1 c1(10);
+	Container2 c2(10);
+
+	test_equal_container(c1_empty, c2_empty, function_name, line_number);
+	test_equal_container(c1, c2, function_name, line_number);
+	c1_empty.splice(c1_empty.begin(), c1, c1.begin());
+	c2_empty.splice(c2_empty.begin(), c2, c2.begin());
+	test_equal_container(c1_empty, c2_empty, function_name, line_number);
+	test_equal_container(c1, c2, function_name, line_number);
+	c1_empty.splice(c1_empty.begin(), c1, ft::prev(c1.end()));
+	c2_empty.splice(c2_empty.begin(), c2, ft::prev(c2.end()));
+	test_equal_container(c1_empty, c2_empty, function_name, line_number);
+	test_equal_container(c1, c2, function_name, line_number);
+	c1.splice(c1.begin(), c1, c1.begin());
+	c2.splice(c2.begin(), c2, c2.begin());
+	test_equal_container(c1, c2, function_name, line_number);
+	c1.splice(c1.end(), c1, ft::prev(c1.end()));
+	c2.splice(c2.end(), c2, ft::prev(c2.end()));
+	test_equal_container(c1, c2, function_name, line_number);
+}
+
+template <class Container1, class Container2>
+static void test_list_splice_range(const Container1 &, const Container2 &,
+	const char *function_name, int line_number) {
+	Container1 c1_empty;
+	Container2 c2_empty;
+	Container1 c1(10);
+	Container2 c2(10);
+
+	test_equal_container(c1_empty, c2_empty, function_name, line_number);
+	test_equal_container(c1, c2, function_name, line_number);
+	c1.splice(c1.begin(), c1, ft::next(c1.begin()), c1.end());
+	c2.splice(c2.begin(), c2, ft::next(c2.begin()), c2.end());
+	test_equal_container(c1, c2, function_name, line_number);
+	c1.splice(c1.end(), c1, c1.begin(), c1.end());
+	c2.splice(c2.end(), c2, c2.begin(), c2.end());
+	test_equal_container(c1, c2, function_name, line_number);
+	c1_empty.splice(c1_empty.begin(), c1, c1.begin(), c1.end());
+	c2_empty.splice(c2_empty.begin(), c2, c2.begin(), c2.end());
+	test_equal_container(c1_empty, c2_empty, function_name, line_number);
+	test_equal_container(c1, c2, function_name, line_number);
+}
+
+template <class Container1, class Container2>
 static void test_container_swap_overload(const Container1 &, const Container2 &,
 	const char *function_name, int line_number) {
 	Container1 c1_empty;
@@ -913,11 +961,19 @@ static void test_list() {
 		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
 	test_list_splice_entire_list(
 		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
+	test_list_splice_one_iterator(
+		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
+	test_list_splice_range(
+		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
 }
 
 int main() {
 	test_vector();
 	test_list();
-	std::cout << g_errors << " errors\n";
+	if (g_errors) {
+		std::cout << g_errors << " errors\n";
+	} else {
+		std::cout << "All tests passed!\n";
+	}
 	return g_errors ? 1 : 0;
 }

@@ -154,6 +154,9 @@ class list {
 
 	// list operations:
 	void     splice(iterator position, list<T, Allocator> &other);
+	void     splice(iterator position, list<T, Allocator> &other, iterator it);
+	void splice(iterator position, list<T, Allocator> &other, iterator first,
+		iterator last);
 
   protected:
 	allocator_type m_allocator;
@@ -229,10 +232,9 @@ list<T, Allocator>::~list() {
 
 template <class T, class Allocator>
 list<T, Allocator> &list<T, Allocator>::operator=(const list<T, Allocator> &x) {
-	if (this == &x) {
-		return *this;
+	if (this != &x) {
+		assign(x.begin(), x.end());
 	}
-	assign(x.begin(), x.end());
 	return *this;
 }
 
@@ -454,6 +456,32 @@ void list<T, Allocator>::splice(iterator position, list<T, Allocator> &other) {
 	m_transfer(position, other.begin(), other.end());
 	m_length += other.m_length;
 	other.m_length = 0;
+}
+
+template <class T, class Allocator>
+void list<T, Allocator>::splice(
+	iterator position, list<T, Allocator> &other, iterator it) {
+	iterator it_next = ft::next(it);
+	if (position == it || position == it_next) {
+		return;
+	}
+	m_transfer(position, it, it_next);
+	++m_length;
+	--other.m_length;
+}
+
+template <class T, class Allocator>
+void list<T, Allocator>::splice(iterator position, list<T, Allocator> &other,
+	iterator first, iterator last) {
+	if (first == last || last == end()) {
+		return;
+	}
+	if (this != &other) {
+		difference_type n = ft::distance(first, last);
+		m_length += n;
+		other.m_length -= n;
+	}
+	m_transfer(position, first, last);
 }
 
 }  // namespace ft
