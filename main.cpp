@@ -580,22 +580,22 @@ static void test_container_equal_operator(const Container1 &,
 	const Container2 &, const T &val, const char *function_name,
 	int line_number) {
 	const int  N = 5;
-	Container1 c1a(N);
-	Container1 c1b(N);
-	Container2 c2a(N);
-	Container2 c2b(N);
+	Container1 c1a;
+	Container1 c1b;
+	Container2 c2a;
+	Container2 c2b;
 
-	for (int i = 0; i < N - 1; i++) {
-		c1a[i] = val;
-		c1b[i] = val;
-		c2a[i] = val;
-		c2b[i] = val;
+	for (int i = 0; i < N; i++) {
+		c1a.push_back(val);
+		c1b.push_back(val);
+		c2a.push_back(val);
+		c2b.push_back(val);
 	}
 	test_condition(function_name, line_number, "equal operator", c1a == c1b);
 	test_condition(function_name, line_number, "equal operator", c2a == c2b);
 
-	c1a[N - 1] = val;
-	c2a[N - 1] = val;
+	c1a.push_back(val);
+	c2a.push_back(val);
 
 	test_condition(function_name, line_number, "equal operator", !(c1a == c1b));
 	test_condition(function_name, line_number, "equal operator", !(c2a == c2b));
@@ -611,24 +611,24 @@ static void test_container_notequal_operator(const Container1 &,
 	const Container2 &, const T &val, const char *function_name,
 	int line_number) {
 	const int  N = 5;
-	Container1 c1a(N);
-	Container1 c1b(N);
-	Container2 c2a(N);
-	Container2 c2b(N);
+	Container1 c1a;
+	Container1 c1b;
+	Container2 c2a;
+	Container2 c2b;
 
 	for (int i = 0; i < N - 1; i++) {
-		c1a[i] = val;
-		c1b[i] = val;
-		c2a[i] = val;
-		c2b[i] = val;
+		c1a.push_back(val);
+		c1b.push_back(val);
+		c2a.push_back(val);
+		c2b.push_back(val);
 	}
 	test_condition(
 		function_name, line_number, "notequal operator", !(c1a != c1b));
 	test_condition(
 		function_name, line_number, "notequal operator", !(c2a != c2b));
 
-	c1a[N - 1] = val;
-	c2a[N - 1] = val;
+	c1a.push_back(val);
+	c2a.push_back(val);
 
 	test_condition(function_name, line_number, "notequal operator", c1a != c1b);
 	test_condition(function_name, line_number, "notequal operator", c2a != c2b);
@@ -965,6 +965,22 @@ static void test_list() {
 		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
 	test_list_splice_range(
 		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
+	test_container_equal_operator(
+		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
+	test_container_notequal_operator(
+		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
+	test_container_less_operator(ft::list<std::string>(),
+		std::list<std::string>(), std::string("abcd"), std::string("bcde"),
+		__FUNCTION__, __LINE__);
+	test_container_greater_operator(ft::list<std::string>(),
+		std::list<std::string>(), std::string("abcd"), std::string("bcde"),
+		__FUNCTION__, __LINE__);
+	test_container_lessequal_operator(ft::list<std::string>(),
+		std::list<std::string>(), std::string("abcd"), std::string("bcde"),
+		__FUNCTION__, __LINE__);
+	test_container_greaterequal_operator(ft::list<std::string>(),
+		std::list<std::string>(), std::string("abcd"), std::string("bcde"),
+		__FUNCTION__, __LINE__);
 }
 
 int main() {

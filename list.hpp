@@ -484,4 +484,35 @@ void list<T, Allocator>::splice(iterator position, list<T, Allocator> &other,
 	m_transfer(position, first, last);
 }
 
+// relational operators:
+template <class T, class Allocator>
+bool operator==(const list<T, Allocator> &x, const list<T, Allocator> &y) {
+	return x.size() == y.size() && ft::equal(x.begin(), x.end(), y.begin());
+}
+
+template <class T, class Allocator>
+bool operator!=(const list<T, Allocator> &x, const list<T, Allocator> &y) {
+	return !(x == y);
+}
+
+template <class T, class Allocator>
+bool operator<(const list<T, Allocator> &x, const list<T, Allocator> &y) {
+	return ft::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end());
+}
+
+template <class T, class Allocator>
+bool operator>(const list<T, Allocator> &x, const list<T, Allocator> &y) {
+	return y < x;
+}
+
+template <class T, class Allocator>
+bool operator<=(const list<T, Allocator> &x, const list<T, Allocator> &y) {
+	return !(y < x);
+}
+
+template <class T, class Allocator>
+bool operator>=(const list<T, Allocator> &x, const list<T, Allocator> &y) {
+	return !(x < y);
+}
+
 }  // namespace ft
