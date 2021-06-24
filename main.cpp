@@ -529,14 +529,16 @@ static void test_container_insert_range(const Container1 &, const Container2 &,
 	test_equal_container(c1, c2, function_name, line_number);
 }
 
-template <class Container1, class Container2>
+template <class Container1, class Container2, class T>
 static void test_container_erase_position(const Container1 &,
-	const Container2 &, const char *function_name, int line_number) {
-	Container1                    c1(10);
-	Container2                    c2(10);
+	const Container2 &, T (*generateRandomValue)(), const char *function_name,
+	int line_number) {
+	Container1                    c1;
+	Container2                    c2;
 	typename Container1::iterator c1_it;
 	typename Container2::iterator c2_it;
 
+	add_random_values_to_containers(c1, c2, generateRandomValue, 10);
 	test_equal_container(c1, c2, function_name, line_number);
 	for (std::size_t i = 0; i < c1.size(); i++) {
 		c1_it = c1.erase(c1.begin());
@@ -547,9 +549,9 @@ static void test_container_erase_position(const Container1 &,
 	test_equal_container(c1, c2, function_name, line_number);
 }
 
-template <class Container1, class Container2>
+template <class Container1, class Container2, class T>
 static void test_container_erase_range(const Container1 &, const Container2 &,
-	const char *function_name, int line_number) {
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
 	Container1 c1;
 	Container2 c2;
 
@@ -561,8 +563,7 @@ static void test_container_erase_range(const Container1 &, const Container2 &,
 	test_values_message(
 		function_name, line_number, "c2_it != c2.end()", c2_it, c2.end());
 	test_equal_container(c1, c2, function_name, line_number);
-	c1 = Container1(5);
-	c2 = Container2(5);
+	add_random_values_to_containers(c1, c2, generateRandomValue, 10);
 	c1_it = c1.erase(c1.begin(), c1.end());
 	c2_it = c2.erase(c2.begin(), c2.end());
 	test_values_message(
@@ -855,44 +856,51 @@ static void test_list_splice_range(const Container1 &, const Container2 &,
 template <class Container1, class Container2, class T>
 static void test_list_remove(const Container1 &, const Container2 &,
 	T (*generateRandomValue)(), const char *function_name, int line_number) {
-	const int  N = 10;
 	Container1 c1;
 	Container2 c2;
 
-	for (int i = 0; i < N; i++) {
-		T value = generateRandomValue();
-		c1.push_back(value);
-		c2.push_back(value);
-	}
+	add_random_values_to_containers(c1, c2, generateRandomValue, 10);
 	test_equal_container(c1, c2, function_name, line_number);
-	c1.remove(c1.front());
-	c2.remove(c2.front());
+	T value1 = c1.front();
+	T value2 = c2.front();
+	c1.remove(value1);
+	c2.remove(value2);
 	test_equal_container(c1, c2, function_name, line_number);
-	c1.remove(c1.back());
-	c2.remove(c2.back());
+	value1 = c1.back();
+	value2 = c2.back();
+	c1.remove(value1);
+	c2.remove(value2);
 	test_equal_container(c1, c2, function_name, line_number);
 	T value = generateRandomValue();
 	c1.remove(value);
 	c2.remove(value);
+	test_equal_container(c1, c2, function_name, line_number);
 }
 
 template <class Container1, class Container2, class T>
 static void test_list_remove_if(const Container1 &, const Container2 &,
 	T (*generateRandomValue)(), bool (*funcPtr)(T), const char *function_name,
 	int line_number) {
-
-	const int  N = 10;
 	Container1 c1;
 	Container2 c2;
 
-	for (int i = 0; i < N; i++) {
-		T value = generateRandomValue();
-		c1.push_back(value);
-		c2.push_back(value);
-	}
+	add_random_values_to_containers(c1, c2, generateRandomValue, 10);
 	test_equal_container(c1, c2, function_name, line_number);
 	c1.remove_if(funcPtr);
 	c2.remove_if(funcPtr);
+	test_equal_container(c1, c2, function_name, line_number);
+}
+
+template <class Container1, class Container2, class T>
+static void test_list_unique(const Container1 &, const Container2 &,
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
+	T          value = generateRandomValue();
+	Container1 c1(10, value);
+	Container2 c2(10, value);
+
+	test_equal_container(c1, c2, function_name, line_number);
+	c1.unique();
+	c2.unique();
 	test_equal_container(c1, c2, function_name, line_number);
 }
 
@@ -968,10 +976,10 @@ static void test_vector() {
 		ft::vector<int>(), std::vector<int>(), 42, __FUNCTION__, __LINE__);
 	test_container_insert_range(
 		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
-	test_container_erase_position(
-		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
-	test_container_erase_range(
-		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
+	test_container_erase_position(ft::vector<int>(), std::vector<int>(),
+		std::rand, __FUNCTION__, __LINE__);
+	test_container_erase_range(ft::vector<int>(), std::vector<int>(), std::rand,
+		__FUNCTION__, __LINE__);
 	test_container_swap(
 		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
 	test_container_clear(
@@ -1040,6 +1048,16 @@ static void test_list() {
 		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
 	test_container_pop_back(
 		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
+	test_container_insert_one(
+		ft::list<int>(), std::list<int>(), 1, __FUNCTION__, __LINE__);
+	test_container_insert_count(
+		ft::list<int>(), std::list<int>(), 42, __FUNCTION__, __LINE__);
+	test_container_insert_range(
+		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
+	test_container_erase_position(
+		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_erase_range(
+		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
 	test_container_swap(
 		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
 	test_container_clear(
@@ -1054,6 +1072,8 @@ static void test_list() {
 		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
 	test_list_remove_if(ft::list<int>(), std::list<int>(), std::rand, isEven,
 		__FUNCTION__, __LINE__);
+	test_list_unique(
+		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
 	test_container_equal_operator(
 		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
 	test_container_notequal_operator(

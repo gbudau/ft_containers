@@ -160,6 +160,7 @@ class list {
 	void     remove(const T &value);
 	template <class Predicate>
 	void remove_if(Predicate predicate);
+	void unique();
 
   protected:
 	allocator_type m_allocator;
@@ -511,6 +512,25 @@ void list<T, Allocator>::remove_if(Predicate predicate) {
 		} else {
 			++first;
 		}
+	}
+}
+
+template <class T, class Allocator>
+void list<T, Allocator>::unique() {
+	if (size() <= std::size_t(1)) {
+		return;
+	}
+	iterator first = begin();
+	iterator second = begin();
+	iterator last = end();
+	++second;
+	while (second != last) {
+		if (*first == *second) {
+			first = erase(first);
+		} else {
+			++first;
+		}
+		++second;
 	}
 }
 
