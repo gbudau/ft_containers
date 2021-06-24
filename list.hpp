@@ -161,6 +161,8 @@ class list {
 	template <class Predicate>
 	void remove_if(Predicate predicate);
 	void unique();
+	template <class BinaryPredicate>
+	void unique(BinaryPredicate binary_pred);
 
   protected:
 	allocator_type m_allocator;
@@ -409,9 +411,9 @@ void list<T, Allocator>::insert(iterator position,
 template <class T, class Allocator>
 typename list<T, Allocator>::iterator list<T, Allocator>::erase(
 	iterator position) {
-	iterator next = position.base()->next;
 	position.base()->prev->next = position.base()->next;
 	position.base()->next->prev = position.base()->prev;
+	iterator next = position.base()->next;
 	m_allocator.destroy(m_allocator.address(position.base()->data));
 	node_allocator.deallocate(position.base(), 1);
 	m_length--;
@@ -517,20 +519,37 @@ void list<T, Allocator>::remove_if(Predicate predicate) {
 
 template <class T, class Allocator>
 void list<T, Allocator>::unique() {
-	if (size() <= std::size_t(1)) {
+	if (empty()) {
 		return;
 	}
 	iterator first = begin();
 	iterator second = begin();
 	iterator last = end();
-	++second;
-	while (second != last) {
+	while (++second != last) {
 		if (*first == *second) {
 			first = erase(first);
 		} else {
 			++first;
 		}
-		++second;
+	}
+}
+
+template <class T, class Allocator>
+template <class BinaryPredicate>
+void list<T, Allocator>::unique(BinaryPredicate binary_pred) {
+	if (empty()) {
+		return;
+	}
+	iterator first = begin();
+	iterator second = begin();
+	iterator last = end();
+	while (++second != last) {
+		if (binary_pred(*first, *second)) {
+			erase(second);
+		} else {
+			first = second;
+		}
+		second = first;
 	}
 }
 

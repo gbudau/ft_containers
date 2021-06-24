@@ -9,9 +9,26 @@
 
 static int  g_errors;
 
+template <class Container>
+void print_container(const Container &c) {
+	typename Container::const_iterator it = c.begin();
+	typename Container::const_iterator ite = c.end();
+
+	std::cout << "Container content: ";
+	while (it != ite) {
+		std::cout << *it++ << ' ';
+	}
+	std::cout << '\n';
+}
+
 template <class T>
-bool isEven(T n) {
+bool is_even(const T n) {
 	return n % 2;
+}
+
+template <class T>
+bool is_equal_mod_10(const T a, const T b) {
+	return a % 10 == b % 10;
 }
 
 char generateRandomChar() {
@@ -902,6 +919,36 @@ static void test_list_unique(const Container1 &, const Container2 &,
 	c1.unique();
 	c2.unique();
 	test_equal_container(c1, c2, function_name, line_number);
+	add_random_values_to_containers(c1, c2, generateRandomValue, 100);
+	c1.unique();
+	c2.unique();
+	test_equal_container(c1, c2, function_name, line_number);
+
+	Container1 c1_one(1);
+	Container1 c2_one(1);
+	c1_one.unique();
+	c2_one.unique();
+	test_equal_container(c1_one, c2_one, function_name, line_number);
+}
+
+template <class Container1, class Container2, class T>
+static void test_list_unique_predicate(const Container1 &, const Container2 &,
+	T (*generateRandomValue)(), bool (*funcPtr)(T, T),
+	const char *function_name, int line_number) {
+	Container1 c1;
+	Container2 c2;
+
+	add_random_values_to_containers(c1, c2, generateRandomValue, 100);
+	test_equal_container(c1, c2, function_name, line_number);
+	c1.unique(funcPtr);
+	c2.unique(funcPtr);
+	test_equal_container(c1, c2, function_name, line_number);
+
+	Container1 c1_one(1);
+	Container1 c2_one(1);
+	c1_one.unique(funcPtr);
+	c2_one.unique(funcPtr);
+	test_equal_container(c1_one, c2_one, function_name, line_number);
 }
 
 template <class Container1, class Container2>
@@ -1070,10 +1117,12 @@ static void test_list() {
 		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
 	test_list_remove(
 		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_list_remove_if(ft::list<int>(), std::list<int>(), std::rand, isEven,
+	test_list_remove_if(ft::list<int>(), std::list<int>(), std::rand, is_even,
 		__FUNCTION__, __LINE__);
 	test_list_unique(
 		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_list_unique_predicate(ft::list<int>(), std::list<int>(), std::rand,
+		is_equal_mod_10, __FUNCTION__, __LINE__);
 	test_container_equal_operator(
 		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
 	test_container_notequal_operator(
