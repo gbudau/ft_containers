@@ -157,6 +157,9 @@ class list {
 	void     splice(iterator position, list<T, Allocator> &other, iterator it);
 	void splice(iterator position, list<T, Allocator> &other, iterator first,
 		iterator last);
+	void     remove(const T &value);
+	template <class Predicate>
+	void remove_if(Predicate predicate);
 
   protected:
 	allocator_type m_allocator;
@@ -473,7 +476,7 @@ void list<T, Allocator>::splice(
 template <class T, class Allocator>
 void list<T, Allocator>::splice(iterator position, list<T, Allocator> &other,
 	iterator first, iterator last) {
-	if (first == last || last == end()) {
+	if (first == last || (position == end() && last == end())) {
 		return;
 	}
 	if (this != &other) {
@@ -482,6 +485,33 @@ void list<T, Allocator>::splice(iterator position, list<T, Allocator> &other,
 		other.m_length -= n;
 	}
 	m_transfer(position, first, last);
+}
+
+template <class T, class Allocator>
+void list<T, Allocator>::remove(const T &value) {
+	iterator first = begin();
+	iterator last = end();
+	while (first != last) {
+		if (*first == value) {
+			first = erase(first);
+		} else {
+			++first;
+		}
+	}
+}
+
+template <class T, class Allocator>
+template <class Predicate>
+void list<T, Allocator>::remove_if(Predicate predicate) {
+	iterator first = begin();
+	iterator last = end();
+	while (first != last) {
+		if (predicate(*first)) {
+			first = erase(first);
+		} else {
+			++first;
+		}
+	}
 }
 
 // relational operators:

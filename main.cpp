@@ -1,3 +1,5 @@
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
 #include <list>
 #include <string>
@@ -6,6 +8,36 @@
 #include "vector.hpp"
 
 static int  g_errors;
+
+template <class T>
+bool isEven(T n) {
+	return n % 2;
+}
+
+char generateRandomChar() {
+	return std::rand() % 128;
+}
+
+std::string generateRandomString() {
+	std::string str;
+	int         length = std::rand() % 65;
+
+	str.reserve(length);
+	for (int i = 0; i < length; i++) {
+		str[i] = generateRandomChar();
+	}
+	return str;
+}
+
+template <class T, class Container1, class Container2>
+void add_random_values_to_containers(
+	Container1 &c1, Container2 &c2, T (*generateRandomValue)(), int N) {
+	for (int i = 0; i < N; i++) {
+		T value = generateRandomValue();
+		c1.push_back(value);
+		c2.push_back(value);
+	}
+}
 
 static void test_condition(const char *function_name, int line_number,
 	const char *message, bool condition) {
@@ -71,34 +103,37 @@ static void test_container_default_constructor(const Container1 &,
 	Container1 c1;
 	Container2 c2;
 
-	test_equal_size(c1, c2, function_name, line_number);
+	test_equal_container(c1, c2, function_name, line_number);
 }
 
 template <class Container1, class Container2>
-static void test_container_count_constructor(const Container1 &c1,
-	const Container2 &c2, const char *function_name, int line_number) {
-	test_equal_size(c1, c2, function_name, line_number);
+static void test_container_count_constructor(const Container1 &,
+	const Container2 &, const char *function_name, int line_number) {
+	Container1 c1(10);
+	Container2 c2(10);
+	test_equal_container(c1, c2, function_name, line_number);
 }
 
 template <class T, class Container1, class Container2>
 static void test_container_range_constructor(const Container1 &,
-	const Container2 &, const T &value, const char *function_name,
+	const Container2 &, T (*generateRandomValue)(), const char *function_name,
 	int line_number) {
-	Container2 c;
+	std::vector<T> v;
 
 	for (int i = 0; i < 10; i++) {
-		c.push_back(value);
+		T value = generateRandomValue();
+		v.push_back(value);
 	}
 
-	Container1 c_a(c.begin(), c.end());
-	Container2 c_b(c.begin(), c.end());
-	test_equal_container(c_a, c_b, function_name, line_number);
+	Container1 c1(v.begin(), v.end());
+	Container2 c2(v.begin(), v.end());
+	test_equal_container(c1, c2, function_name, line_number);
 }
 
-template <class Container1>
+template <class Container>
 static void test_container_copy_constructor(
-	const Container1 &c1, const char *function_name, int line_number) {
-	Container1 c2(c1);
+	const Container &c1, const char *function_name, int line_number) {
+	Container c2(c1);
 
 	test_equal_container(c1, c2, function_name, line_number);
 }
@@ -739,14 +774,15 @@ static void test_container_greaterequal_operator(const Container1 &,
 		function_name, line_number, "greater-equal operator", c2b >= c2b);
 }
 
-template <class Container1, class Container2>
+template <class Container1, class Container2, class T>
 static void test_list_splice_entire_list(const Container1 &, const Container2 &,
-	const char *function_name, int line_number) {
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
 	Container1 c1_empty;
 	Container2 c2_empty;
-	Container1 c1(10);
-	Container2 c2(10);
+	Container1 c1;
+	Container2 c2;
 
+	add_random_values_to_containers(c1, c2, generateRandomValue, 10);
 	test_equal_container(c1_empty, c2_empty, function_name, line_number);
 	test_equal_container(c1, c2, function_name, line_number);
 	c1_empty.splice(c1_empty.begin(), c1);
@@ -754,22 +790,25 @@ static void test_list_splice_entire_list(const Container1 &, const Container2 &,
 	test_equal_container(c1_empty, c2_empty, function_name, line_number);
 	test_equal_container(c1, c2, function_name, line_number);
 
-	Container1 c1a(20);
-	Container2 c2a(20);
+	Container1 c1a;
+	Container2 c2a;
+	add_random_values_to_containers(c1a, c2a, generateRandomValue, 10);
 	c1_empty.splice(c1_empty.end(), c1a);
 	c2_empty.splice(c2_empty.end(), c2a);
 	test_equal_container(c1_empty, c2_empty, function_name, line_number);
 	test_equal_container(c1a, c2a, function_name, line_number);
 }
 
-template <class Container1, class Container2>
+template <class Container1, class Container2, class T>
 static void test_list_splice_one_iterator(const Container1 &,
-	const Container2 &, const char *function_name, int line_number) {
+	const Container2 &, T (*generateRandomValue)(), const char *function_name,
+	int line_number) {
 	Container1 c1_empty;
 	Container2 c2_empty;
-	Container1 c1(10);
-	Container2 c2(10);
+	Container1 c1;
+	Container2 c2;
 
+	add_random_values_to_containers(c1, c2, generateRandomValue, 10);
 	test_equal_container(c1_empty, c2_empty, function_name, line_number);
 	test_equal_container(c1, c2, function_name, line_number);
 	c1_empty.splice(c1_empty.begin(), c1, c1.begin());
@@ -788,14 +827,15 @@ static void test_list_splice_one_iterator(const Container1 &,
 	test_equal_container(c1, c2, function_name, line_number);
 }
 
-template <class Container1, class Container2>
+template <class Container1, class Container2, class T>
 static void test_list_splice_range(const Container1 &, const Container2 &,
-	const char *function_name, int line_number) {
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
 	Container1 c1_empty;
 	Container2 c2_empty;
-	Container1 c1(10);
-	Container2 c2(10);
+	Container1 c1;
+	Container2 c2;
 
+	add_random_values_to_containers(c1, c2, generateRandomValue, 10);
 	test_equal_container(c1_empty, c2_empty, function_name, line_number);
 	test_equal_container(c1, c2, function_name, line_number);
 	c1.splice(c1.begin(), c1, ft::next(c1.begin()), c1.end());
@@ -807,6 +847,52 @@ static void test_list_splice_range(const Container1 &, const Container2 &,
 	c1_empty.splice(c1_empty.begin(), c1, c1.begin(), c1.end());
 	c2_empty.splice(c2_empty.begin(), c2, c2.begin(), c2.end());
 	test_equal_container(c1_empty, c2_empty, function_name, line_number);
+	test_equal_container(c1, c2, function_name, line_number);
+	c1_empty.splice(c1_empty.end(), c1_empty, c1_empty.begin(), c1_empty.end());
+	c2_empty.splice(c2_empty.end(), c2_empty, c2_empty.begin(), c2_empty.end());
+}
+
+template <class Container1, class Container2, class T>
+static void test_list_remove(const Container1 &, const Container2 &,
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
+	const int  N = 10;
+	Container1 c1;
+	Container2 c2;
+
+	for (int i = 0; i < N; i++) {
+		T value = generateRandomValue();
+		c1.push_back(value);
+		c2.push_back(value);
+	}
+	test_equal_container(c1, c2, function_name, line_number);
+	c1.remove(c1.front());
+	c2.remove(c2.front());
+	test_equal_container(c1, c2, function_name, line_number);
+	c1.remove(c1.back());
+	c2.remove(c2.back());
+	test_equal_container(c1, c2, function_name, line_number);
+	T value = generateRandomValue();
+	c1.remove(value);
+	c2.remove(value);
+}
+
+template <class Container1, class Container2, class T>
+static void test_list_remove_if(const Container1 &, const Container2 &,
+	T (*generateRandomValue)(), bool (*funcPtr)(T), const char *function_name,
+	int line_number) {
+
+	const int  N = 10;
+	Container1 c1;
+	Container2 c2;
+
+	for (int i = 0; i < N; i++) {
+		T value = generateRandomValue();
+		c1.push_back(value);
+		c2.push_back(value);
+	}
+	test_equal_container(c1, c2, function_name, line_number);
+	c1.remove_if(funcPtr);
+	c2.remove_if(funcPtr);
 	test_equal_container(c1, c2, function_name, line_number);
 }
 
@@ -834,13 +920,12 @@ static void test_vector() {
 	test_container_default_constructor(
 		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
 	test_container_count_constructor(
-		ft::vector<int>(5), std::vector<int>(5), __FUNCTION__, __LINE__);
-	test_container_range_constructor(
-		ft::vector<int>(), std::vector<int>(), 111, __FUNCTION__, __LINE__);
-	test_container_copy_constructor(
-		ft::vector<int>(42), __FUNCTION__, __LINE__);
+		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
+	test_container_range_constructor(ft::vector<int>(), std::vector<int>(),
+		std::rand, __FUNCTION__, __LINE__);
+	test_container_copy_constructor(ft::vector<int>(5), __FUNCTION__, __LINE__);
 	test_container_assignment_operator(
-		ft::vector<std::string>(1, "hello"), __FUNCTION__, __LINE__);
+		ft::vector<std::string>(10), __FUNCTION__, __LINE__);
 	test_container_assign_count(
 		ft::vector<int>(), std::vector<int>(), 4, __FUNCTION__, __LINE__);
 	test_container_assign_range(ft::vector<float>(10, 100.0f),
@@ -915,12 +1000,12 @@ static void test_list() {
 	test_container_default_constructor(
 		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
 	test_container_count_constructor(
-		ft::list<int>(5), std::list<int>(5), __FUNCTION__, __LINE__);
+		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
 	test_container_range_constructor(
-		ft::list<int>(), std::list<int>(), 111, __FUNCTION__, __LINE__);
-	test_container_copy_constructor(ft::list<int>(42), __FUNCTION__, __LINE__);
+		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_copy_constructor(ft::list<int>(5), __FUNCTION__, __LINE__);
 	test_container_assignment_operator(
-		ft::list<std::string>(1, "hello"), __FUNCTION__, __LINE__);
+		ft::list<std::string>(5), __FUNCTION__, __LINE__);
 	test_container_assign_count(
 		ft::list<int>(), std::list<int>(), 4, __FUNCTION__, __LINE__);
 	test_container_assign_range(ft::list<float>(10, 100.0f),
@@ -960,11 +1045,15 @@ static void test_list() {
 	test_container_clear(
 		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
 	test_list_splice_entire_list(
-		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
+		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
 	test_list_splice_one_iterator(
-		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
+		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
 	test_list_splice_range(
-		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
+		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_list_remove(
+		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_list_remove_if(ft::list<int>(), std::list<int>(), std::rand, isEven,
+		__FUNCTION__, __LINE__);
 	test_container_equal_operator(
 		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
 	test_container_notequal_operator(
@@ -986,6 +1075,7 @@ static void test_list() {
 }
 
 int main() {
+	std::srand(std::time(NULL));
 	test_vector();
 	test_list();
 	if (g_errors) {
