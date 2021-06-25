@@ -167,6 +167,7 @@ class list {
 	void merge(list<T, Allocator> &other);
 	template <class Compare>
 	void merge(list<T, Allocator> &other, Compare comp);
+	void reverse();
 
   protected:
 	allocator_type m_allocator;
@@ -575,6 +576,20 @@ void list<T, Allocator>::merge(list<T, Allocator> &other, Compare comp) {
 	}
 	m_length += other.m_length;
 	other.m_length = 0;
+}
+
+template <class T, class Allocator>
+void list<T, Allocator>::reverse() {
+	if (size() < 2) {
+		return;
+	}
+	iterator first = ft::next(begin());
+	iterator last = end();
+	while (first != last) {
+		iterator next = ft::next(first);
+		m_transfer(begin(), first, next);
+		first = next;
+	}
 }
 
 // relational operators:

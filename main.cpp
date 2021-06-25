@@ -988,6 +988,22 @@ static void test_list_merge_compare(const Container1 &, const Container2 &,
 	test_equal_container(c1b, c2b, function_name, line_number);
 }
 
+template <class Container1, class Container2, class T>
+static void test_list_reverse(const Container1 &, const Container2 &,
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
+	Container1 c1;
+	Container2 c2;
+
+	add_random_values_to_containers(c1, c2, generateRandomValue, 10);
+	test_equal_container(c1, c2, function_name, line_number);
+	c1.reverse();
+	c2.reverse();
+	test_equal_container(c1, c2, function_name, line_number);
+	c1.reverse();
+	c2.reverse();
+	test_equal_container(c1, c2, function_name, line_number);
+}
+
 template <class Container1, class Container2>
 static void test_container_swap_overload(const Container1 &, const Container2 &,
 	const char *function_name, int line_number) {
@@ -1164,6 +1180,8 @@ static void test_list() {
 		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
 	test_list_merge_compare(ft::list<int>(), std::list<int>(), std::rand,
 		ft::less<int>(), __FUNCTION__, __LINE__);
+	test_list_reverse(
+		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
 	test_container_equal_operator(
 		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
 	test_container_notequal_operator(
