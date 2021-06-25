@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <string>
 #include "algorithm.hpp"
+#include "functional.hpp"
 #include "iterator.hpp"
 #include "memory.hpp"
 #include "type_traits.hpp"
@@ -163,6 +164,9 @@ class list {
 	void unique();
 	template <class BinaryPredicate>
 	void unique(BinaryPredicate binary_pred);
+	void merge(list<T, Allocator> &other);
+	template <class Compare>
+	void merge(list<T, Allocator> &other, Compare comp);
 
   protected:
 	allocator_type m_allocator;
@@ -519,19 +523,7 @@ void list<T, Allocator>::remove_if(Predicate predicate) {
 
 template <class T, class Allocator>
 void list<T, Allocator>::unique() {
-	if (empty()) {
-		return;
-	}
-	iterator first = begin();
-	iterator second = begin();
-	iterator last = end();
-	while (++second != last) {
-		if (*first == *second) {
-			first = erase(first);
-		} else {
-			++first;
-		}
-	}
+	unique(ft::equal_to<T>());
 }
 
 template <class T, class Allocator>
@@ -551,6 +543,38 @@ void list<T, Allocator>::unique(BinaryPredicate binary_pred) {
 		}
 		second = first;
 	}
+}
+
+template <class T, class Allocator>
+void list<T, Allocator>::merge(list<T, Allocator> &other) {
+	merge(other, ft::less<T>());
+}
+
+template <class T, class Allocator>
+template <class Compare>
+void list<T, Allocator>::merge(list<T, Allocator> &other, Compare comp) {
+	if (this == &other) {
+		return;
+	}
+	iterator first1 = begin();
+	iterator last1 = end();
+	iterator first2 = other.begin();
+	iterator last2 = other.end();
+
+	while (first1 != last1 && first2 != last2) {
+		if (comp(*first2, *first1)) {
+			iterator second2 = first2;
+			m_transfer(first1, first2, ++second2);
+			first2 = second2;
+		} else {
+			++first1;
+		}
+	}
+	if (first2 != last2) {
+		m_transfer(end(), first2, last2);
+	}
+	m_length += other.m_length;
+	other.m_length = 0;
 }
 
 // relational operators:

@@ -27,8 +27,8 @@ bool is_even(const T n) {
 }
 
 template <class T>
-bool is_equal_mod_10(const T a, const T b) {
-	return a % 10 == b % 10;
+bool both_numbers_are_even(const T a, const T b) {
+	return is_even(a) && is_even(b);
 }
 
 char generateRandomChar() {
@@ -938,7 +938,7 @@ static void test_list_unique_predicate(const Container1 &, const Container2 &,
 	Container1 c1;
 	Container2 c2;
 
-	add_random_values_to_containers(c1, c2, generateRandomValue, 100);
+	add_random_values_to_containers(c1, c2, generateRandomValue, 20);
 	test_equal_container(c1, c2, function_name, line_number);
 	c1.unique(funcPtr);
 	c2.unique(funcPtr);
@@ -949,6 +949,43 @@ static void test_list_unique_predicate(const Container1 &, const Container2 &,
 	c1_one.unique(funcPtr);
 	c2_one.unique(funcPtr);
 	test_equal_container(c1_one, c2_one, function_name, line_number);
+}
+
+template <class Container1, class Container2, class T>
+static void test_list_merge(const Container1 &, const Container2 &,
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
+	Container1 c1a;
+	Container1 c1b;
+	Container2 c2a;
+	Container2 c2b;
+
+	add_random_values_to_containers(c1a, c2a, generateRandomValue, 10);
+	test_equal_container(c1a, c2a, function_name, line_number);
+	add_random_values_to_containers(c1b, c2b, generateRandomValue, 10);
+	test_equal_container(c1b, c2b, function_name, line_number);
+	c1a.merge(c1b);
+	c2a.merge(c2b);
+	test_equal_container(c1a, c2a, function_name, line_number);
+	test_equal_container(c1b, c2b, function_name, line_number);
+}
+
+template <class Container1, class Container2, class T, class Compare>
+static void test_list_merge_compare(const Container1 &, const Container2 &,
+	T (*generateRandomValue)(), Compare comp, const char *function_name,
+	int line_number) {
+	Container1 c1a;
+	Container1 c1b;
+	Container2 c2a;
+	Container2 c2b;
+
+	add_random_values_to_containers(c1a, c2a, generateRandomValue, 10);
+	test_equal_container(c1a, c2a, function_name, line_number);
+	add_random_values_to_containers(c1b, c2b, generateRandomValue, 10);
+	test_equal_container(c1b, c2b, function_name, line_number);
+	c1a.merge(c1b, comp);
+	c2a.merge(c2b, comp);
+	test_equal_container(c1a, c2a, function_name, line_number);
+	test_equal_container(c1b, c2b, function_name, line_number);
 }
 
 template <class Container1, class Container2>
@@ -1122,7 +1159,11 @@ static void test_list() {
 	test_list_unique(
 		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
 	test_list_unique_predicate(ft::list<int>(), std::list<int>(), std::rand,
-		is_equal_mod_10, __FUNCTION__, __LINE__);
+		both_numbers_are_even, __FUNCTION__, __LINE__);
+	test_list_merge(
+		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_list_merge_compare(ft::list<int>(), std::list<int>(), std::rand,
+		ft::less<int>(), __FUNCTION__, __LINE__);
 	test_container_equal_operator(
 		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
 	test_container_notequal_operator(
