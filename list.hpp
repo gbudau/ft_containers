@@ -1,8 +1,6 @@
 #pragma once
 #include <limits>
 #include <memory>
-#include <stdexcept>
-#include <string>
 #include "algorithm.hpp"
 #include "functional.hpp"
 #include "iterator.hpp"
@@ -597,10 +595,11 @@ void list<T, Allocator>::sort(Compare compare) {
 	const int          array_size = 64;
 	list<T, Allocator> array[array_size];
 	list<T, Allocator> next_node;
-	int                i = 0;
+	int                i;
+
 	while (!empty()) {
 		next_node.splice(next_node.begin(), *this, begin());
-		for (i = 0; (i < array_size) && !array[i].empty(); ++i) {
+		for (i = 0; i < array_size && !array[i].empty(); ++i) {
 			next_node.merge(array[i], compare);
 		}
 		array[i].swap(next_node);
