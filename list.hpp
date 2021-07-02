@@ -158,7 +158,7 @@ class list {
 	void     splice(iterator position, list<T, Allocator> &other, iterator it);
 	void splice(iterator position, list<T, Allocator> &other, iterator first,
 		iterator last);
-	void     remove(const T &value);
+	void remove(const T &value);
 	template <class Predicate>
 	void remove_if(Predicate predicate);
 	void unique();
@@ -586,10 +586,28 @@ void list<T, Allocator>::sort() {
 	sort(ft::less<T>());
 }
 
+// Adaptation of bottom-up merge sort
+// https://en.wikipedia.org/wiki/Merge_sort#Bottom-up_implementation_using_lists
 template <class T, class Allocator>
 template <class Compare>
 void list<T, Allocator>::sort(Compare compare) {
-	(void)compare;
+	if (size() < 2) {
+		return;
+	}
+	const int          array_size = 64;
+	list<T, Allocator> array[array_size];
+	list<T, Allocator> next_node;
+	int                i = 0;
+	while (!empty()) {
+		next_node.splice(next_node.begin(), *this, begin());
+		for (i = 0; (i < array_size) && !array[i].empty(); ++i) {
+			next_node.merge(array[i], compare);
+		}
+		array[i].swap(next_node);
+	}
+	for (i = 0; i < array_size; ++i) {
+		merge(array[i], compare);
+	}
 }
 
 template <class T, class Allocator>
