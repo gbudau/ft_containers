@@ -2,12 +2,14 @@
 #include <ctime>
 #include <iostream>
 #include <list>
+#include <queue>
 #include <string>
 #include <vector>
 #include "list.hpp"
+#include "queue.hpp"
 #include "vector.hpp"
 
-static int  g_errors;
+static int g_errors;
 
 template <class Container>
 void print_container(const Container &c) {
@@ -53,6 +55,16 @@ void add_random_values_to_containers(
 		T value = generateRandomValue();
 		c1.push_back(value);
 		c2.push_back(value);
+	}
+}
+
+template <class T, class Container1, class Container2>
+void add_random_values_to_containers_adaptors(
+	Container1 &c1, Container2 &c2, T (*generateRandomValue)(), int N) {
+	for (int i = 0; i < N; i++) {
+		T value = generateRandomValue();
+		c1.push(value);
+		c2.push(value);
 	}
 }
 
@@ -121,6 +133,16 @@ static void test_container_default_constructor(const Container1 &,
 	Container2 c2;
 
 	test_equal_container(c1, c2, function_name, line_number);
+}
+
+template <class Container1, class Container2>
+static void test_container_adaptor_default_constructor(
+	const Container1 &, const Container2 &) {
+	Container1 c1;
+	Container2 c2;
+
+	(void)c1;
+	(void)c2;
 }
 
 template <class Container1, class Container2>
@@ -307,6 +329,29 @@ static void test_container_empty(const Container1 &c1, const Container2 &c2,
 	test_values(function_name, line_number, "empty", c1.empty(), c2.empty());
 }
 
+template <class Container1, class Container2, class T>
+static void test_container_adaptor_empty(const Container1 &, const Container2 &,
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
+	Container1 c1;
+	Container2 c2;
+
+	test_values(function_name, line_number, "empty", c1.empty(), c2.empty());
+	add_random_values_to_containers_adaptors(c1, c2, generateRandomValue, 10);
+	test_values(function_name, line_number, "empty", c1.empty(), c2.empty());
+}
+
+template <class Container1, class Container2, class T>
+static void test_container_adaptor_size(const Container1 &, const Container2 &,
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
+
+	Container1 c1;
+	Container2 c2;
+
+	test_values(function_name, line_number, "size", c1.size(), c2.size());
+	add_random_values_to_containers_adaptors(c1, c2, generateRandomValue, 10);
+	test_values(function_name, line_number, "size", c1.size(), c2.size());
+}
+
 template <class Container1, class Container2>
 static void test_container_not_empty(const Container1 &c1, const Container2 &c2,
 	const char *function_name, int line_number) {
@@ -373,6 +418,21 @@ static void test_container_front(const Container1 &, const Container2 &,
 	test_values(function_name, line_number, "front", c1.front(), c2.front());
 }
 
+template <class Container1, class Container2, class T>
+static void test_container_adaptor_front(const Container1 &, const Container2 &,
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
+	Container1 c1;
+	Container2 c2;
+
+	add_random_values_to_containers_adaptors(c1, c2, generateRandomValue, 2);
+	test_values(function_name, line_number, "front", c1.front(), c2.front());
+
+	const Container1 c1_const(c1);
+	const Container2 c2_const(c2);
+	test_values(
+		function_name, line_number, "const front", c1.front(), c2.front());
+}
+
 template <class T, class Container1, class Container2>
 static void test_container_back(const Container1 &, const Container2 &,
 	const T &val, const char *function_name, int line_number) {
@@ -388,6 +448,79 @@ static void test_container_back(const Container1 &, const Container2 &,
 	}
 	test_equal_container(c1, c2, function_name, line_number);
 	test_values(function_name, line_number, "back", c1.back(), c2.back());
+}
+
+template <class Container1, class Container2, class T>
+static void test_container_adaptor_back(const Container1 &, const Container2 &,
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
+	Container1 c1;
+	Container2 c2;
+
+	add_random_values_to_containers_adaptors(c1, c2, generateRandomValue, 2);
+	test_values(function_name, line_number, "back", c1.back(), c2.back());
+
+	const Container1 c1_const(c1);
+	const Container2 c2_const(c2);
+	test_values(function_name, line_number, "const back", c1.back(), c2.back());
+}
+
+template <class Container1, class Container2, class T>
+static void test_container_adaptor_push(const Container1 &, const Container2 &,
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
+	Container1 c1;
+	Container2 c2;
+
+	for (int i = 0; i < 10; ++i) {
+		T value = generateRandomValue();
+		c1.push(value);
+		c2.push(value);
+		test_values(function_name, line_number, "size", c1.size(), c2.size());
+		test_values(
+			function_name, line_number, "front", c1.front(), c2.front());
+		test_values(function_name, line_number, "back", c1.back(), c2.back());
+	}
+}
+
+template <class Container1, class Container2, class T>
+static void test_container_adaptor_pop(const Container1 &, const Container2 &,
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
+	Container1 c1;
+	Container2 c2;
+
+	add_random_values_to_containers_adaptors(c1, c2, generateRandomValue, 10);
+	while (!c1.empty() && c2.empty()) {
+		c1.pop();
+		c2.pop();
+		test_values(function_name, line_number, "size", c1.size(), c2.size());
+		test_values(
+			function_name, line_number, "front", c1.front(), c2.front());
+		test_values(function_name, line_number, "back", c1.back(), c2.back());
+	}
+	test_values(function_name, line_number, "size", c1.size(), c2.size());
+}
+
+template <class Container, class T>
+static void test_container_adaptor_comparision_operators(const Container &,
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
+	Container c1a;
+	Container c1b;
+
+	add_random_values_to_containers_adaptors(c1a, c1b, generateRandomValue, 5);
+	test_condition(function_name, line_number, "equal operator", c1a == c1b);
+	test_condition(
+		function_name, line_number, "less than or equal operator", c1a <= c1b);
+	test_condition(
+		function_name, line_number, "greater than or operator", c1a >= c1b);
+	add_random_values_to_containers_adaptors(c1b, c1b, generateRandomValue, 1);
+	test_condition(
+		function_name, line_number, "not equal operator", c1a != c1b);
+	test_condition(function_name, line_number, "less than operator", c1a < c1b);
+	test_condition(
+		function_name, line_number, "greater than operator", c1b > c1a);
+	test_condition(
+		function_name, line_number, "less than or equal operator", c1a <= c1b);
+	test_condition(
+		function_name, line_number, "greater than or operator", c1b >= c1a);
 }
 
 template <class Container1, class Container2>
@@ -1235,10 +1368,30 @@ static void test_list() {
 		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
 }
 
+void test_queue() {
+	test_container_adaptor_default_constructor(
+		ft::queue<int>(), std::queue<int>());
+	test_container_adaptor_empty(
+		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_adaptor_size(
+		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_adaptor_front(
+		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_adaptor_back(
+		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_adaptor_push(
+		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_adaptor_pop(
+		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_adaptor_comparision_operators(
+		ft::queue<int>(), std::rand, __FUNCTION__, __LINE__);
+}
+
 int main() {
 	std::srand(std::time(NULL));
 	test_vector();
 	test_list();
+	test_queue();
 	if (g_errors) {
 		std::cout << g_errors << " errors\n";
 	} else {
