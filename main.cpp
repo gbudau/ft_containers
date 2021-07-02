@@ -500,7 +500,7 @@ static void test_container_adaptor_pop(const Container1 &, const Container2 &,
 }
 
 template <class Container, class T>
-static void test_container_adaptor_comparision_operators(const Container &,
+static void test_container_adaptor_comparison_operators(const Container &,
 	T (*generateRandomValue)(), const char *function_name, int line_number) {
 	Container c1a;
 	Container c1b;
@@ -1383,7 +1383,7 @@ void test_queue() {
 		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
 	test_container_adaptor_pop(
 		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_container_adaptor_comparision_operators(
+	test_container_adaptor_comparison_operators(
 		ft::queue<int>(), std::rand, __FUNCTION__, __LINE__);
 }
 
