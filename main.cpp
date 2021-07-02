@@ -1024,6 +1024,35 @@ static void test_container_swap_overload(const Container1 &, const Container2 &,
 	test_values(function_name, line_number, "size", c2_empty.size(), 5UL);
 }
 
+template <class Container1, class Container2, class T>
+static void test_container_sort(const Container1 &, const Container2 &,
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
+	Container1 c1;
+	Container2 c2;
+
+	for (int i = 0; i < 5; ++i) {
+		add_random_values_to_containers(c1, c2, generateRandomValue, i);
+		c1.sort();
+		c2.sort();
+		test_equal_container(c1, c2, function_name, line_number);
+	}
+}
+
+template <class Container1, class Container2, class T, class Compare>
+static void test_container_sort_compare(const Container1 &, const Container2 &,
+	T (*generateRandomValue)(), Compare comp, const char *function_name,
+	int line_number) {
+	Container1 c1;
+	Container2 c2;
+
+	for (int i = 0; i < 5; ++i) {
+		add_random_values_to_containers(c1, c2, generateRandomValue, i);
+		c1.sort(comp);
+		c2.sort(comp);
+		test_equal_container(c1, c2, function_name, line_number);
+	}
+}
+
 static void test_vector() {
 	test_container_default_constructor(
 		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
@@ -1179,6 +1208,10 @@ static void test_list() {
 	test_list_merge(
 		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
 	test_list_merge_compare(ft::list<int>(), std::list<int>(), std::rand,
+		ft::less<int>(), __FUNCTION__, __LINE__);
+	test_container_sort(
+		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_sort_compare(ft::list<int>(), std::list<int>(), std::rand,
 		ft::less<int>(), __FUNCTION__, __LINE__);
 	test_list_reverse(
 		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);

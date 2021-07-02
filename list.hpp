@@ -167,6 +167,9 @@ class list {
 	void merge(list<T, Allocator> &other);
 	template <class Compare>
 	void merge(list<T, Allocator> &other, Compare comp);
+	void sort();
+	template <class Compare>
+	void sort(Compare compare);
 	void reverse();
 
   protected:
@@ -576,6 +579,17 @@ void list<T, Allocator>::merge(list<T, Allocator> &other, Compare comp) {
 	}
 	m_length += other.m_length;
 	other.m_length = 0;
+}
+
+template <class T, class Allocator>
+void list<T, Allocator>::sort() {
+	sort(ft::less<T>());
+}
+
+template <class T, class Allocator>
+template <class Compare>
+void list<T, Allocator>::sort(Compare compare) {
+	(void)compare;
 }
 
 template <class T, class Allocator>
