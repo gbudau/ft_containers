@@ -3,10 +3,12 @@
 #include <iostream>
 #include <list>
 #include <queue>
+#include <stack>
 #include <string>
 #include <vector>
 #include "list.hpp"
 #include "queue.hpp"
+#include "stack.hpp"
 #include "vector.hpp"
 
 static int g_errors;
@@ -433,6 +435,20 @@ static void test_container_adaptor_front(const Container1 &, const Container2 &,
 		function_name, line_number, "const front", c1.front(), c2.front());
 }
 
+template <class Container1, class Container2, class T>
+static void test_container_adaptor_top(const Container1 &, const Container2 &,
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
+	Container1 c1;
+	Container2 c2;
+
+	add_random_values_to_containers_adaptors(c1, c2, generateRandomValue, 2);
+	test_values(function_name, line_number, "top", c1.top(), c2.top());
+
+	const Container1 c1_const(c1);
+	const Container2 c2_const(c2);
+	test_values(function_name, line_number, "const top", c1.top(), c2.top());
+}
+
 template <class T, class Container1, class Container2>
 static void test_container_back(const Container1 &, const Container2 &,
 	const T &val, const char *function_name, int line_number) {
@@ -464,11 +480,11 @@ static void test_container_adaptor_back(const Container1 &, const Container2 &,
 	test_values(function_name, line_number, "const back", c1.back(), c2.back());
 }
 
-template <class Container1, class Container2, class T>
-static void test_container_adaptor_push(const Container1 &, const Container2 &,
+template <class QueueContainer1, class QueueContainer2, class T>
+static void test_queue_push(const QueueContainer1 &, const QueueContainer2 &,
 	T (*generateRandomValue)(), const char *function_name, int line_number) {
-	Container1 c1;
-	Container2 c2;
+	QueueContainer1 c1;
+	QueueContainer2 c2;
 
 	for (int i = 0; i < 10; ++i) {
 		T value = generateRandomValue();
@@ -481,11 +497,26 @@ static void test_container_adaptor_push(const Container1 &, const Container2 &,
 	}
 }
 
-template <class Container1, class Container2, class T>
-static void test_container_adaptor_pop(const Container1 &, const Container2 &,
+template <class StackContainer1, class StackContainer2, class T>
+static void test_stack_push(const StackContainer1 &, const StackContainer2 &,
 	T (*generateRandomValue)(), const char *function_name, int line_number) {
-	Container1 c1;
-	Container2 c2;
+	StackContainer1 c1;
+	StackContainer2 c2;
+
+	for (int i = 0; i < 10; ++i) {
+		T value = generateRandomValue();
+		c1.push(value);
+		c2.push(value);
+		test_values(function_name, line_number, "size", c1.size(), c2.size());
+		test_values(function_name, line_number, "top", c1.top(), c2.top());
+	}
+}
+
+template <class QueueContainer1, class QueueContainer2, class T>
+static void test_queue_pop(const QueueContainer1 &, const QueueContainer2 &,
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
+	QueueContainer1 c1;
+	QueueContainer2 c2;
 
 	add_random_values_to_containers_adaptors(c1, c2, generateRandomValue, 10);
 	while (!c1.empty() && c2.empty()) {
@@ -495,6 +526,22 @@ static void test_container_adaptor_pop(const Container1 &, const Container2 &,
 		test_values(
 			function_name, line_number, "front", c1.front(), c2.front());
 		test_values(function_name, line_number, "back", c1.back(), c2.back());
+	}
+	test_values(function_name, line_number, "size", c1.size(), c2.size());
+}
+
+template <class StackContainer1, class StackContainer2, class T>
+static void test_stack_pop(const StackContainer1 &, const StackContainer2 &,
+	T (*generateRandomValue)(), const char *function_name, int line_number) {
+	StackContainer1 c1;
+	StackContainer2 c2;
+
+	add_random_values_to_containers_adaptors(c1, c2, generateRandomValue, 10);
+	while (!c1.empty() && c2.empty()) {
+		c1.pop();
+		c2.pop();
+		test_values(function_name, line_number, "size", c1.size(), c2.size());
+		test_values(function_name, line_number, "top", c1.top(), c2.top());
 	}
 	test_values(function_name, line_number, "size", c1.size(), c2.size());
 }
@@ -1379,12 +1426,29 @@ void test_queue() {
 		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
 	test_container_adaptor_back(
 		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_container_adaptor_push(
+	test_queue_push(
 		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_container_adaptor_pop(
+	test_queue_pop(
 		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
 	test_container_adaptor_comparison_operators(
 		ft::queue<int>(), std::rand, __FUNCTION__, __LINE__);
+}
+
+void test_stack() {
+	test_container_adaptor_default_constructor(
+		ft::stack<int>(), std::stack<int>());
+	test_container_adaptor_empty(
+		ft::stack<int>(), std::stack<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_adaptor_size(
+		ft::stack<int>(), std::stack<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_adaptor_top(
+		ft::stack<int>(), std::stack<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_stack_push(
+		ft::stack<int>(), std::stack<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_stack_pop(
+		ft::stack<int>(), std::stack<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_adaptor_comparison_operators(
+		ft::stack<int>(), std::rand, __FUNCTION__, __LINE__);
 }
 
 int main() {
