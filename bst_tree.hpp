@@ -48,6 +48,14 @@ class bst_tree {
 	size_type max_size() const;
 
 	// modifiers:
+	// ft::pair<iterator, bool> insert(const value_type &x);
+	// TODO Temporary insert function, until iterator is implemented
+	void      insert(const value_type &x);
+	template <class InputIterator>
+	void insert(
+		typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+			InputIterator>::type first,
+		InputIterator            last);
 
   protected:
 	allocator_type   m_allocator;
@@ -94,7 +102,6 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_tree(
 	const Compare &comp, const Allocator &allocator)
 	: m_allocator(allocator), m_size(0), m_root(NULL), m_key_compare(comp) {}
 
-#if 0
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
 template <class InputIterator>
@@ -105,7 +112,6 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_tree(
 	: m_allocator(allocator), m_size(0), m_root(NULL), m_key_compare(comp) {
 	insert(first, last);
 }
-#endif
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
@@ -125,6 +131,39 @@ template <class Key, class Value, class KeyOfValue, class Compare,
 typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::size_type
 bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::max_size() const {
 	return bst_node_allocator.max_size();
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::insert(
+	const value_type &value) {
+	bst_node_pointer x = m_root;
+	bst_node_pointer y = NULL;
+	while (x != NULL) {
+		y = x;
+		if (m_key_compare(KeyOfValue(value)(), KeyOfValue(x.value)())) {
+			x = x.left;
+		} else {
+			x = x.right;
+		}
+	}
+	if (y == NULL) {
+		root = m_allocate_bst_node(value);
+	} else if (m_key_compare(KeyOfValue(value)(), KeyOfValue(y.value)())) {
+	} else {
+	}
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+template <class InputIterator>
+void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::insert(
+	typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+		InputIterator>::type first,
+	InputIterator            last) {
+	while (first != last) {
+		insert(*first++);
+	}
 }
 
 }  // namespace ft
