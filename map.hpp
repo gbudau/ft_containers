@@ -51,8 +51,9 @@ class map {
 	explicit map(const Compare &comp = Compare(),
 		const Allocator        &allocator = Allocator());
 	template <class InputIterator>
-	map(InputIterator first, InputIterator last,
-		const Compare   &comp = Compare(),
+	map(typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+			InputIterator>::type first,
+		InputIterator last, const Compare &comp = Compare(),
 		const Allocator &Allocator = Allocator());
 	map(const map<Key, T, Compare, Allocator> &x);
 	~map();

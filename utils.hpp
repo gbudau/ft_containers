@@ -21,6 +21,6 @@ struct select_first : public unary_function<T, U> {
 	const U &operator()(const T &x) const {
 		return x.first;
 	}
-}
+};
 
 }  // namespace ft
