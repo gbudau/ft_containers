@@ -63,7 +63,7 @@ class bst_tree {
 	// TODO Keep it as root or make it a dummy/header node?
 	bst_node_pointer m_root;
 	Compare          m_key_compare;
-	bst_node_pointer m_allocate_bst_node(const value_type &v) const;
+	bst_node_pointer m_allocate_bst_node(const value_type &v);
 };
 
 template <class Key, class Value, class KeyOfValue, class Compare,
@@ -87,7 +87,7 @@ template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
 typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_node_pointer
 bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::m_allocate_bst_node(
-	const value_type &value) const {
+	const value_type &value) {
 	bst_node_pointer node = bst_node_allocator.allocate(1, this);
 	node->parent = NULL;
 	node->left = NULL;
@@ -139,18 +139,26 @@ void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::insert(
 	const value_type &value) {
 	bst_node_pointer x = m_root;
 	bst_node_pointer y = NULL;
-	while (x != NULL) {
+	while (x != NULL && KeyOfValue()(value) != KeyOfValue()(x->value)) {
 		y = x;
-		if (m_key_compare(KeyOfValue(value)(), KeyOfValue(x.value)())) {
-			x = x.left;
-		} else {
-			x = x.right;
-		}
+		bool comp = m_key_compare(KeyOfValue()(value), KeyOfValue()(x->value));
+		x = comp ? x->left : x->right;
 	}
-	if (y == NULL) {
-		root = m_allocate_bst_node(value);
-	} else if (m_key_compare(KeyOfValue(value)(), KeyOfValue(y.value)())) {
+	if (x) {
+		// TODO return false (not inserted)
+		;
+	} else if (y == NULL) {
+		m_root = m_allocate_bst_node(value);
+		++m_size;
 	} else {
+		bst_node_pointer z = m_allocate_bst_node(value);
+		z->parent = y;
+		++m_size;
+		if (m_key_compare(KeyOfValue()(value), KeyOfValue()(y->value))) {
+			y->left = z;
+		} else {
+			y->right = z;
+		}
 	}
 }
 
