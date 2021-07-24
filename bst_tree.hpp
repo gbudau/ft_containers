@@ -173,6 +173,7 @@ class bst_tree {
 	bst_node_pointer m_allocate_bst_node(const value_type &v);
 	bst_node_pointer m_minimum(bst_node_pointer x);
 	bst_node_pointer m_maximum(bst_node_pointer x);
+	bool m_equal_keys(const value_type &x, const value_type &y) const;
 };
 
 template <class Key, class Value, class KeyOfValue, class Compare,
@@ -206,6 +207,13 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::m_maximum(
 		x = x->right;
 	}
 	return x;
+}
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+bool bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::m_equal_keys(
+	const value_type &x, const value_type &y) const {
+	return !m_key_compare(KeyOfValue()(x), KeyOfValue()(y)) &&
+		   !m_key_compare(KeyOfValue()(y), KeyOfValue()(x));
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
@@ -328,7 +336,7 @@ void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::insert(
 	const value_type &value) {
 	bst_node_pointer x = m_root;
 	bst_node_pointer y = NULL;
-	while (x != NULL && KeyOfValue()(value) != KeyOfValue()(x->value)) {
+	while (x != NULL && !m_equal_keys(value, x->value)) {
 		y = x;
 		bool comp = m_key_compare(KeyOfValue()(value), KeyOfValue()(x->value));
 		x = comp ? x->left : x->right;

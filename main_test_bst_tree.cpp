@@ -35,6 +35,7 @@ int main() {
 	v.push_back(ft::make_pair(200, "two hundred"));
 	v.push_back(ft::make_pair(300, "three hundred"));
 	v.push_back(ft::make_pair(400, "four hundred"));
+	v.push_back(ft::make_pair(400, "four hundred"));
 	custom_bst_tree bst_range(v.begin(), v.end());
 	std::cout << bst_range.size() << '\n';
 	custom_bst_tree::iterator it = bst_range.begin();
