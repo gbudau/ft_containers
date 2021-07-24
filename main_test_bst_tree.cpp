@@ -1,6 +1,8 @@
 #include <iostream>
+#include <map>
 #include <memory>
 #include <string>
+#include <vector>
 #include "bst_tree.hpp"
 #include "utility.hpp"
 #include "utils.hpp"
@@ -8,12 +10,17 @@
 int main() {
 	typedef ft::pair<int, std::string> value_type;
 	typedef int                        key_type;
-	ft::bst_tree<key_type, value_type, ft::select_first<value_type, key_type>,
-		ft::less<int>, std::allocator<value_type> >
-		bst;
+	typedef ft::bst_tree<key_type, value_type,
+		ft::select_first<value_type, key_type>, ft::less<int>,
+		std::allocator<value_type> >
+							   custom_bst_tree;
+
+	custom_bst_tree            bst;
+	std::map<int, std::string> m;
 	std::cout << bst.size() << '\n';
 	std::cout << std::boolalpha << bst.empty() << '\n';
 	std::cout << bst.max_size() << '\n';
+	std::cout << m.max_size() << '\n';
 	bst.insert(ft::make_pair(1, "one"));
 	std::cout << bst.size() << '\n';
 	bst.insert(ft::make_pair(2, "two"));
@@ -22,4 +29,17 @@ int main() {
 	std::cout << bst.size() << '\n';
 	bst.insert(ft::make_pair(3, "three"));
 	std::cout << bst.size() << '\n';
+
+	std::vector<value_type> v;
+	v.push_back(ft::make_pair(100, "one hundred"));
+	v.push_back(ft::make_pair(200, "two hundred"));
+	v.push_back(ft::make_pair(300, "three hundred"));
+	v.push_back(ft::make_pair(400, "four hundred"));
+	custom_bst_tree bst_range(v.begin(), v.end());
+	std::cout << bst_range.size() << '\n';
+	custom_bst_tree::iterator it = bst_range.begin();
+	while (it != bst_range.end()) {
+		std::cout << (*it++).second << '|';
+	}
+	std::cout << '\n';
 }

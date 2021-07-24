@@ -32,6 +32,101 @@ class bst_tree {
 	typedef typename Allocator::pointer                       pointer;
 	typedef typename Allocator::const_pointer                 const_pointer;
 
+	template <bool isconst = false>
+	class bst_tree_iterator {
+	  public:
+		typedef std::bidirectional_iterator_tag iterator_category;
+		typedef Value                           value_type;
+		typedef
+			typename bst_node_allocator_type::difference_type difference_type;
+		typedef typename bst_node_allocator_type::size_type   size_type;
+		typedef typename ft::choose<isconst, const Value &, Value &>::type
+			reference;
+		typedef
+			typename ft::choose<isconst, const Value *, Value *>::type pointer;
+
+		bst_tree_iterator(bst_node_pointer x = 0) : current(x) {}
+
+		bst_tree_iterator(const bst_tree_iterator<false> &rhs)
+			: current(rhs.base()) {}
+
+		reference operator*() const {
+			return current->value;
+		}
+
+		pointer operator->() const {
+			return &(current->value);
+		}
+
+		bst_tree_iterator operator++() {
+			if (current->right != NULL) {
+				current = current->right;
+				while (current->left != NULL) {
+					current = current->left;
+				}
+			} else {
+				bst_node_pointer y = current->parent;
+				while (y != NULL && current == y->right) {
+					current = y;
+					y = y->parent;
+				}
+				current = y;
+			}
+			return *this;
+		}
+
+		bst_tree_iterator operator++(int) {
+			bst_tree_iterator tmp = *this;
+			++*this;
+			return tmp;
+		}
+
+		bst_tree_iterator operator--() {
+			if (current->left != NULL) {
+				current = current->left;
+				while (current->left != NULL) {
+					current = current->left;
+				}
+			} else {
+				bst_node_pointer y = current->parent;
+				while (y != NULL && current == y->left) {
+					current = y;
+					y = y->parent;
+				}
+				current = y;
+			}
+			return *this;
+		}
+
+		bst_tree_iterator operator--(int) {
+			bst_tree_iterator tmp = *this;
+			--*this;
+			return tmp;
+		}
+
+		friend bool operator==(
+			const bst_tree_iterator &x, const bst_tree_iterator &y) {
+			return x.current == y.current;
+		}
+
+		friend bool operator!=(
+			const bst_tree_iterator &x, const bst_tree_iterator &y) {
+			return !(x.current == y.current);
+		}
+
+		bst_node_pointer base() const {
+			return current;
+		}
+
+	  protected:
+		bst_node_pointer current;
+	};
+
+	typedef bst_tree_iterator<false>             iterator;
+	typedef bst_tree_iterator<true>              const_iterator;
+	typedef ft::reverse_iterator<iterator>       reverse_iterator;
+	typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
+
 	// construct/copy/destroy
 	explicit bst_tree(const Compare &comp = Compare(),
 		const Allocator             &allocator = Allocator());
@@ -42,15 +137,26 @@ class bst_tree {
 		InputIterator last, const Compare &comp = Compare(),
 		const Allocator &allocator = Allocator());
 
+	// iterators:
+	iterator               begin();
+	iterator               begin() const;
+	// TODO Replace m_root with a dummy/header node
+	iterator               end();
+	iterator               end() const;
+	reverse_iterator       rbegin();
+	const_reverse_iterator rbegin() const;
+	reverse_iterator       rend();
+	const_reverse_iterator rend() const;
+
 	// capacity:
-	bool      empty() const;
-	size_type size() const;
-	size_type max_size() const;
+	bool                   empty() const;
+	size_type              size() const;
+	size_type              max_size() const;
 
 	// modifiers:
 	// ft::pair<iterator, bool> insert(const value_type &x);
 	// TODO Temporary insert function, until iterator is implemented
-	void      insert(const value_type &x);
+	void                   insert(const value_type &x);
 	template <class InputIterator>
 	void insert(
 		typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
@@ -60,10 +166,13 @@ class bst_tree {
   protected:
 	allocator_type   m_allocator;
 	size_type        m_size;
-	// TODO Keep it as root or make it a dummy/header node?
+	// TODO Replace m_root with a dummy/header node
+	//      In order to fix end() and rbegin()
 	bst_node_pointer m_root;
 	Compare          m_key_compare;
 	bst_node_pointer m_allocate_bst_node(const value_type &v);
+	bst_node_pointer m_minimum(bst_node_pointer x);
+	bst_node_pointer m_maximum(bst_node_pointer x);
 };
 
 template <class Key, class Value, class KeyOfValue, class Compare,
@@ -76,6 +185,28 @@ struct bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_node {
 	// Pair of key, mapped_type
 	Value                                                        value;
 };
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_node_pointer
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::m_minimum(
+	bst_node_pointer x) {
+	while (x->left) {
+		x = x->left;
+	}
+	return x;
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_node_pointer
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::m_maximum(
+	bst_node_pointer x) {
+	while (x->right) {
+		x = x->right;
+	}
+	return x;
+}
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
@@ -111,6 +242,64 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_tree(
 	InputIterator last, const Compare &comp, const Allocator &allocator)
 	: m_allocator(allocator), m_size(0), m_root(NULL), m_key_compare(comp) {
 	insert(first, last);
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::begin() {
+	return iterator(m_minimum(m_root));
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::begin() const {
+	return iterator(m_minimum(m_root));
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::end() {
+	return iterator(NULL);
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::end() const {
+	return iterator(NULL);
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::reverse_iterator
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::rbegin() {
+	return reverse_iterator(end());
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+typename bst_tree<Key, Value, KeyOfValue, Compare,
+	Allocator>::const_reverse_iterator
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::rbegin() const {
+	return reverse_iterator(end());
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::reverse_iterator
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::rend() {
+	return reverse_iterator(begin());
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+typename bst_tree<Key, Value, KeyOfValue, Compare,
+	Allocator>::const_reverse_iterator
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::rend() const {
+	return reverse_iterator(begin());
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
