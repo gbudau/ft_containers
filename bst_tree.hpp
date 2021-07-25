@@ -151,6 +151,7 @@ class bst_tree {
 		InputIterator last, const Compare &comp = Compare(),
 		const Allocator &allocator = Allocator());
 	bst_tree(const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x);
+	~bst_tree();
 
 	// iterators:
 	iterator                 begin();
@@ -174,6 +175,9 @@ class bst_tree {
 		typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
 			InputIterator>::type first,
 		InputIterator            last);
+	void erase(iterator position);
+	// size_type erase(const key_type &x);
+	void erase(iterator first, iterator last);
 
   protected:
 	allocator_type   m_allocator;
@@ -181,6 +185,7 @@ class bst_tree {
 	bst_node_pointer m_root;
 	Compare          m_key_compare;
 	bst_node_pointer m_allocate_bst_node() const;
+	void             m_transplant(bst_node_pointer u, bst_node_pointer v);
 	bool m_equal_keys(const value_type &x, const value_type &y) const;
 	static bst_node_pointer m_minimum(bst_node_pointer x);
 	static bst_node_pointer m_maximum(bst_node_pointer x);
@@ -268,6 +273,12 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_tree(
 	: m_allocator(x.get_allocator()), m_size(0), m_root(NULL),
 	  m_key_compare(x.m_key_compare) {
 	insert(x.begin(), x.end());
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::~bst_tree() {
+	erase(begin(), end());
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
@@ -391,6 +402,59 @@ void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::insert(
 	InputIterator            last) {
 	while (first != last) {
 		insert(*first++);
+	}
+}
+
+// Make current->parent point to descendent
+// And descendent->parent point to current->parent;
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::m_transplant(
+	bst_node_pointer current, bst_node_pointer descendent) {
+	if (current->parent == NULL) {
+		m_root = descendent;
+	} else if (current == current->parent->left) {
+		current->parent->left = descendent;
+	} else {
+		current->parent->right = descendent;
+	}
+	if (descendent != NULL) {
+		descendent->parent = current->parent;
+	}
+}
+
+// From https://www.cs.dartmouth.edu/~thc/cs10/lectures/0428/0428.html
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::erase(
+	iterator position) {
+	bst_node_pointer node = position.base();
+	if (node->left == NULL) {
+		m_transplant(node, node->right);
+	} else if (node->right == NULL) {
+		m_transplant(node, node->left);
+	} else {
+		bst_node_pointer successor = m_minimum(node->right);
+		if (successor->parent != node) {
+			m_transplant(successor, successor->right);
+			successor->right = node->right;
+			successor->right->parent = successor;
+		}
+		m_transplant(node, successor);
+		successor->left = node->left;
+		successor->left->parent = successor;
+	}
+	m_allocator.destroy(m_allocator.address(node->value));
+	bst_node_allocator.deallocate(node, 1);
+	--m_size;
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::erase(
+	iterator first, iterator last) {
+	while (first != last) {
+		erase(first++);
 	}
 }
 

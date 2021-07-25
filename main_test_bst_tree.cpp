@@ -56,6 +56,7 @@ int main() {
 	std::cout << "Return of insert with new key (500): " << std::boolalpha
 			  << ret.second << ", key: " << (*ret.first).first << '\n';
 	custom_bst_tree bst_copy_construct(bst_range.begin(), bst_range.end());
+	bst_copy_construct.erase(bst_copy_construct.begin());
 	it = bst_copy_construct.begin();
 	while (it != bst_copy_construct.end()) {
 		std::cout << (*it++).second << '|';
