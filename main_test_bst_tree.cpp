@@ -55,4 +55,10 @@ int main() {
 	ret = bst_range.insert(ft::make_pair(500, "five hundred"));
 	std::cout << "Return of insert with new key (500): " << std::boolalpha
 			  << ret.second << ", key: " << (*ret.first).first << '\n';
+	custom_bst_tree bst_copy_construct(bst_range.begin(), bst_range.end());
+	it = bst_copy_construct.begin();
+	while (it != bst_copy_construct.end()) {
+		std::cout << (*it++).second << '|';
+	}
+	std::cout << '\n';
 }

@@ -150,6 +150,7 @@ class bst_tree {
 			InputIterator>::type first,
 		InputIterator last, const Compare &comp = Compare(),
 		const Allocator &allocator = Allocator());
+	bst_tree(const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x);
 
 	// iterators:
 	iterator                 begin();
@@ -258,6 +259,15 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_tree(
 	InputIterator last, const Compare &comp, const Allocator &allocator)
 	: m_allocator(allocator), m_size(0), m_root(NULL), m_key_compare(comp) {
 	insert(first, last);
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_tree(
+	const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x)
+	: m_allocator(x.get_allocator()), m_size(0), m_root(NULL),
+	  m_key_compare(x.m_key_compare) {
+	insert(x.begin(), x.end());
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
