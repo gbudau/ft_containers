@@ -7,6 +7,26 @@
 #include "utility.hpp"
 #include "utils.hpp"
 
+template <class BstTree>
+void print_bst_content(const BstTree &bst) {
+	typename BstTree::const_iterator it = bst.begin();
+	typename BstTree::const_iterator ite = bst.end();
+	while (it != ite) {
+		std::cout << (*it++).second << '|';
+	}
+	std::cout << '\n';
+}
+
+template <class BstTree>
+void reverse_print_bst_content(const BstTree &bst) {
+	typename BstTree::const_reverse_iterator it = bst.rbegin();
+	typename BstTree::const_reverse_iterator ite = bst.rend();
+	while (it != ite) {
+		std::cout << (*it++).second << '|';
+	}
+	std::cout << '\n';
+}
+
 int main() {
 	typedef ft::pair<int, std::string> value_type;
 	typedef int                        key_type;
@@ -36,18 +56,12 @@ int main() {
 	v.push_back(ft::make_pair(300, "three hundred"));
 	v.push_back(ft::make_pair(400, "four hundred"));
 	v.push_back(ft::make_pair(400, "four hundred"));
+
 	custom_bst_tree bst_range(v.begin(), v.end());
 	std::cout << bst_range.size() << '\n';
-	custom_bst_tree::iterator it = bst_range.begin();
-	while (it != bst_range.end()) {
-		std::cout << (*it++).second << '|';
-	}
-	std::cout << '\n';
-	custom_bst_tree::reverse_iterator rit = bst_range.rbegin();
-	while (rit != bst_range.rend()) {
-		std::cout << (*rit++).second << '|';
-	}
-	std::cout << '\n';
+	print_bst_content(bst_range);
+	reverse_print_bst_content(bst_range);
+
 	ft::pair<custom_bst_tree::iterator, bool> ret;
 	ret = bst_range.insert(ft::make_pair(100, "one hundred"));
 	std::cout << "Return of insert with duplicate key (100): " << std::boolalpha
@@ -55,11 +69,12 @@ int main() {
 	ret = bst_range.insert(ft::make_pair(500, "five hundred"));
 	std::cout << "Return of insert with new key (500): " << std::boolalpha
 			  << ret.second << ", key: " << (*ret.first).first << '\n';
+
 	custom_bst_tree bst_copy_construct(bst_range.begin(), bst_range.end());
+
 	bst_copy_construct.erase(bst_copy_construct.begin());
-	it = bst_copy_construct.begin();
-	while (it != bst_copy_construct.end()) {
-		std::cout << (*it++).second << '|';
-	}
-	std::cout << '\n';
+	print_bst_content(bst_copy_construct);
+
+	bst.swap(bst_copy_construct);
+	print_bst_content(bst_copy_construct);
 }

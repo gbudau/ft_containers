@@ -1,6 +1,7 @@
 #pragma once
 #include <limits>
 #include <memory>
+#include "algorithm.hpp"
 #include "functional.hpp"
 #include "iterator.hpp"
 #include "type_traits.hpp"
@@ -178,6 +179,8 @@ class bst_tree {
 	void erase(iterator position);
 	// size_type erase(const key_type &x);
 	void erase(iterator first, iterator last);
+	void swap(bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x);
+	void clear();
 
   protected:
 	allocator_type   m_allocator;
@@ -456,6 +459,22 @@ void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::erase(
 	while (first != last) {
 		erase(first++);
 	}
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::swap(
+	bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x) {
+	ft::swap(m_allocator, x.m_allocator);
+	ft::swap(m_size, x.m_size);
+	ft::swap(m_root, x.m_root);
+	ft::swap(m_key_compare, x.m_key_compare);
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::clear() {
+	erase(begin(), end());
 }
 
 }  // namespace ft
