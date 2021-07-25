@@ -43,4 +43,16 @@ int main() {
 		std::cout << (*it++).second << '|';
 	}
 	std::cout << '\n';
+	custom_bst_tree::reverse_iterator rit = bst_range.rbegin();
+	while (rit != bst_range.rend()) {
+		std::cout << (*rit++).second << '|';
+	}
+	std::cout << '\n';
+	ft::pair<custom_bst_tree::iterator, bool> ret;
+	ret = bst_range.insert(ft::make_pair(100, "one hundred"));
+	std::cout << "Return of insert with duplicate key (100): " << std::boolalpha
+			  << ret.second << ", key: " << (*ret.first).first << '\n';
+	ret = bst_range.insert(ft::make_pair(500, "five hundred"));
+	std::cout << "Return of insert with new key (500): " << std::boolalpha
+			  << ret.second << ", key: " << (*ret.first).first << '\n';
 }
