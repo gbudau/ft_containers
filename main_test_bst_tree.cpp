@@ -64,8 +64,9 @@ int main() {
 
 	ft::pair<custom_bst_tree::iterator, bool> ret;
 	ret = bst_range.insert(ft::make_pair(100, "one hundred"));
-	std::cout << "Return of insert with duplicate key (100): " << std::boolalpha
-			  << ret.second << ", key: " << (*ret.first).first << '\n';
+	std::cout << "\nReturn of insert with duplicate key (100): "
+			  << std::boolalpha << ret.second << ", key: " << (*ret.first).first
+			  << '\n';
 	ret = bst_range.insert(ft::make_pair(500, "five hundred"));
 	std::cout << "Return of insert with new key (500): " << std::boolalpha
 			  << ret.second << ", key: " << (*ret.first).first << '\n';
@@ -77,4 +78,9 @@ int main() {
 
 	bst.swap(bst_copy_construct);
 	print_bst_content(bst_copy_construct);
+
+	bst_copy_construct = bst;
+	std::cout << "\nContent of containers after assignment operator:\n";
+	print_bst_content(bst_copy_construct);
+	print_bst_content(bst);
 }
