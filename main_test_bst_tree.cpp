@@ -1,3 +1,4 @@
+#include <cassert>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -153,4 +154,25 @@ int main() {
 	} else {
 		std::cout << "None\n";
 	}
+	std::cout << "\nbst and bst_copy_construct content before swap:\n";
+	print_bst_content(bst);
+	print_bst_content(bst_copy_construct);
+	ft::swap(bst, bst_copy_construct);
+	std::cout << "\nbst and bst_copy_construct content after swap:\n";
+	print_bst_content(bst);
+	print_bst_content(bst_copy_construct);
+
+	assert(bst == bst);
+	assert(bst != bst_copy_construct);
+
+	custom_bst_tree bst_a;
+	custom_bst_tree bst_b;
+	bst_a.insert(ft::make_pair<int, std::string>(0, "a"));
+	bst_b.insert(ft::make_pair<int, std::string>(0, "b"));
+	assert(bst_a < bst_b);
+	assert(bst_b > bst_a);
+	assert(bst_a <= bst_a);
+	assert(bst_b >= bst_b);
+	assert(bst_a <= bst_b);
+	assert(bst_b >= bst_a);
 }

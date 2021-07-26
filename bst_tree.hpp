@@ -682,4 +682,54 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::equal_range(
 	return ft::make_pair(lower_bound(key), upper_bound(key));
 }
 
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+bool operator==(const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x,
+	const bst_tree<Key, Value, KeyOfValue, Compare, Allocator>             &y) {
+	return x.size() == y.size() && ft::equal(x.begin(), x.end(), y.begin());
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+bool operator!=(const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x,
+	const bst_tree<Key, Value, KeyOfValue, Compare, Allocator>             &y) {
+	return !(x == y);
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+bool operator<(const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x,
+	const bst_tree<Key, Value, KeyOfValue, Compare, Allocator>            &y) {
+	return ft::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end());
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+bool operator>(const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x,
+	const bst_tree<Key, Value, KeyOfValue, Compare, Allocator>            &y) {
+	return !(x < y);
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+bool operator<=(const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x,
+	const bst_tree<Key, Value, KeyOfValue, Compare, Allocator>             &y) {
+	return !(y < x);
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+bool operator>=(const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x,
+	const bst_tree<Key, Value, KeyOfValue, Compare, Allocator>             &y) {
+	return !(x < y);
+}
+
+// specialized algorithms:
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+void swap(bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x,
+	bst_tree<Key, Value, KeyOfValue, Compare, Allocator>       &y) {
+	x.swap(y);
+}
+
 }  // namespace ft
