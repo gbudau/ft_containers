@@ -119,4 +119,38 @@ int main() {
 			  << '\n';
 	std::cout << "Number of elements with 300 as key: " << bst.count(300)
 			  << '\n';
+
+	it = bst.lower_bound(400);
+	std::cout << "bst key with lower bound than 400: ";
+	if (it != bst.end()) {
+		std::cout << (*it).first << '\n';
+	} else {
+		std::cout << "None\n";
+	}
+
+	it = bst.upper_bound(400);
+	std::cout << "bst key with upper bound than 400: ";
+	if (it != bst.end()) {
+		std::cout << (*it).first << '\n';
+	} else {
+		std::cout << "None\n";
+	}
+
+	ft::pair<custom_bst_tree::iterator, custom_bst_tree::iterator> pair_it;
+	pair_it = bst.equal_range(400);
+
+	std::cout << "\nTesting equal_range:\n";
+	std::cout << "bst key with lower bound than 400: ";
+	if (pair_it.first != bst.end()) {
+		std::cout << (*pair_it.first).first << '\n';
+	} else {
+		std::cout << "None\n";
+	}
+
+	std::cout << "bst key with upper bound than 400: ";
+	if (pair_it.second != bst.end()) {
+		std::cout << (*pair_it.second).first << '\n';
+	} else {
+		std::cout << "None\n";
+	}
 }
