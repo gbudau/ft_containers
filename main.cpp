@@ -2,11 +2,13 @@
 #include <ctime>
 #include <iostream>
 #include <list>
+#include <map>
 #include <queue>
 #include <stack>
 #include <string>
 #include <vector>
 #include "list.hpp"
+#include "map.hpp"
 #include "queue.hpp"
 #include "stack.hpp"
 #include "vector.hpp"
