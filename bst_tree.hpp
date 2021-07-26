@@ -155,6 +155,7 @@ class bst_tree {
 	~bst_tree();
 	bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &operator=(
 		const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x);
+	allocator_type           get_allocator() const;
 
 	// iterators:
 	iterator                 begin();
@@ -285,6 +286,7 @@ template <class Key, class Value, class KeyOfValue, class Compare,
 bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::~bst_tree() {
 	erase(begin(), end());
 }
+
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
 bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &
@@ -295,6 +297,13 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::operator=(
 		insert(x.begin(), x.end());
 	}
 	return *this;
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::allocator_type
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::get_allocator() const {
+	return m_allocator;
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
