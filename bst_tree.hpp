@@ -193,6 +193,7 @@ class bst_tree {
 	// operations:
 	iterator  find(const key_type &x);
 	const_iterator find(const key_type &x) const;
+	size_type      count(const key_type &x) const;
 
   protected:
 	allocator_type   m_allocator;
@@ -561,6 +562,14 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::find(
 		traverse = comp ? traverse->left : traverse->right;
 	}
 	return iterator(traverse);
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::size_type
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::count(
+	const key_type &key) const {
+	return find(key) == end() ? 0 : 1;
 }
 
 }  // namespace ft

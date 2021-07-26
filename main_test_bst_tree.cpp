@@ -114,4 +114,9 @@ int main() {
 	n = bst.erase(200);
 	std::cout << "Number of elements removed: " << n << '\n';
 	print_bst_content(bst);
+
+	std::cout << "\nNumber of elements with 100 as key: " << bst.count(100)
+			  << '\n';
+	std::cout << "Number of elements with 300 as key: " << bst.count(300)
+			  << '\n';
 }
