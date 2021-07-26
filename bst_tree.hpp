@@ -32,6 +32,7 @@ class bst_tree {
 	typedef Allocator                                         allocator_type;
 	typedef typename Allocator::pointer                       pointer;
 	typedef typename Allocator::const_pointer                 const_pointer;
+	typedef Compare                                           key_compare;
 
 	template <bool isconst = false>
 	class bst_tree_iterator {
@@ -179,11 +180,14 @@ class bst_tree {
 		typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
 			InputIterator>::type first,
 		InputIterator            last);
-	void erase(iterator position);
+	void    erase(iterator position);
 	// size_type erase(const key_type &x);
-	void erase(iterator first, iterator last);
-	void swap(bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x);
-	void clear();
+	void    erase(iterator first, iterator last);
+	void    swap(bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x);
+	void    clear();
+
+	// observers:
+	Compare key_comp() const;
 
   protected:
 	allocator_type   m_allocator;
@@ -497,6 +501,13 @@ template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
 void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::clear() {
 	erase(begin(), end());
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::key_compare
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::key_comp() const {
+	return m_key_compare;
 }
 
 }  // namespace ft

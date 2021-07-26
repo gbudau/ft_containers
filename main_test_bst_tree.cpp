@@ -83,4 +83,6 @@ int main() {
 	std::cout << "\nContent of containers after assignment operator:\n";
 	print_bst_content(bst_copy_construct);
 	print_bst_content(bst);
+	custom_bst_tree::key_compare compare = bst.key_comp();
+	std::cout << compare(1, 2) << '\n';
 }
