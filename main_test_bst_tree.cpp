@@ -83,6 +83,35 @@ int main() {
 	std::cout << "\nContent of containers after assignment operator:\n";
 	print_bst_content(bst_copy_construct);
 	print_bst_content(bst);
+
 	custom_bst_tree::key_compare compare = bst.key_comp();
 	std::cout << compare(1, 2) << '\n';
+
+	std::cout << "\nFind key 100:\n";
+	custom_bst_tree::iterator it = bst.find(100);
+	if (it != bst.end()) {
+		std::cout << "key: " << (*it).first << ", value: " << (*it).second
+				  << '\n';
+	} else {
+		std::cout << "Key not found\n";
+	}
+
+	std::cout << "\nFind key 200:\n";
+	custom_bst_tree::const_iterator cit = bst.find(200);
+	if (cit != bst.end()) {
+		std::cout << "key: " << (*cit).first << ", value: " << (*cit).second
+				  << '\n';
+	} else {
+		std::cout << "Key not found\n";
+	}
+
+	std::cout << "\nRemoving 200 from bst\n";
+	std::size_t n = bst.erase(200);
+	std::cout << "Number of elements removed: " << n << '\n';
+	print_bst_content(bst);
+
+	std::cout << "\nRemoving 200 from bst\n";
+	n = bst.erase(200);
+	std::cout << "Number of elements removed: " << n << '\n';
+	print_bst_content(bst);
 }

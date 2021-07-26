@@ -28,6 +28,7 @@ class bst_tree {
 	typedef typename Allocator::const_reference               const_reference;
 	typedef typename bst_node_allocator_type::size_type       size_type;
 	typedef typename bst_node_allocator_type::difference_type difference_type;
+	typedef Key                                               key_type;
 	typedef Value                                             value_type;
 	typedef Allocator                                         allocator_type;
 	typedef typename Allocator::pointer                       pointer;
@@ -180,14 +181,18 @@ class bst_tree {
 		typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
 			InputIterator>::type first,
 		InputIterator            last);
-	void    erase(iterator position);
-	// size_type erase(const key_type &x);
-	void    erase(iterator first, iterator last);
-	void    swap(bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x);
-	void    clear();
+	void      erase(iterator position);
+	size_type erase(const key_type &x);
+	void      erase(iterator first, iterator last);
+	void      swap(bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x);
+	void      clear();
 
 	// observers:
-	Compare key_comp() const;
+	Compare   key_comp() const;
+
+	// operations:
+	iterator  find(const key_type &x);
+	const_iterator find(const key_type &x) const;
 
   protected:
 	allocator_type   m_allocator;
@@ -480,6 +485,18 @@ void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::erase(
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
+typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::size_type
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::erase(const key_type &x) {
+	iterator it = find(x);
+	if (it == end()) {
+		return 0;
+	}
+	erase(it);
+	return 1;
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
 void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::erase(
 	iterator first, iterator last) {
 	while (first != last) {
@@ -508,6 +525,42 @@ template <class Key, class Value, class KeyOfValue, class Compare,
 typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::key_compare
 bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::key_comp() const {
 	return m_key_compare;
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::find(
+	const key_type &key) {
+	bst_node_pointer traverse = m_root;
+	while (traverse != NULL) {
+		const bool comp = m_key_compare(key, KeyOfValue()(traverse->value));
+		const bool equalKeys =
+			!comp && !m_key_compare(KeyOfValue()(traverse->value), key);
+		if (equalKeys) {
+			break;
+		}
+		traverse = comp ? traverse->left : traverse->right;
+	}
+	return iterator(traverse);
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::const_iterator
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::find(
+	const key_type &key) const {
+	bst_node_pointer traverse = m_root;
+	while (traverse != NULL) {
+		const bool comp = m_key_compare(key, KeyOfValue()(traverse->value));
+		const bool equalKeys =
+			!comp && !m_key_compare(KeyOfValue()(traverse->value), key);
+		if (equalKeys) {
+			break;
+		}
+		traverse = comp ? traverse->left : traverse->right;
+	}
+	return iterator(traverse);
 }
 
 }  // namespace ft
