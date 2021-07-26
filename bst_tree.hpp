@@ -176,6 +176,7 @@ class bst_tree {
 
 	// modifiers:
 	ft::pair<iterator, bool> insert(const value_type &x);
+	iterator                 insert(iterator position, const value_type &x);
 	template <class InputIterator>
 	void insert(
 		typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
@@ -435,6 +436,16 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::insert(
 		trailing->right = node;
 	}
 	return ft::make_pair(iterator(node, m_root), true);
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator
+bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::insert(
+	iterator position, const value_type &x) {
+	// TODO Optimize
+	(void)position;
+	return insert(x).first;
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
