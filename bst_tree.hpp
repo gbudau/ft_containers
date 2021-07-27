@@ -585,7 +585,7 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::find(
 		}
 		traverse = comp ? traverse->left : traverse->right;
 	}
-	return iterator(traverse);
+	return const_iterator(traverse);
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
@@ -631,7 +631,7 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::lower_bound(
 			traverse = traverse->right;
 		}
 	}
-	return iterator(trailing);
+	return const_iterator(trailing);
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
@@ -669,7 +669,7 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::upper_bound(
 			traverse = traverse->right;
 		}
 	}
-	return iterator(trailing);
+	return const_iterator(trailing);
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
