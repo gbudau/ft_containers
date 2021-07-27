@@ -96,8 +96,8 @@ class bst_tree {
 				}
 			} else if (current->left != NULL) {
 				current = current->left;
-				while (current->left != NULL) {
-					current = current->left;
+				while (current->right != NULL) {
+					current = current->right;
 				}
 			} else {
 				bst_node_pointer trailing = current->parent;
