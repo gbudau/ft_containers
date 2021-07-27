@@ -72,6 +72,10 @@ class map {
 		return *this;
 	}
 
+	allocator_type get_allocator() const {
+		return m_tree.get_allocator();
+	}
+
 	// iterators:
 	iterator begin() {
 		return m_tree.begin();
