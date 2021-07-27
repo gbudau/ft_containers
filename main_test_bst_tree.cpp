@@ -163,6 +163,8 @@ int main() {
 	print_bst_content(bst_copy_construct);
 
 	assert(bst == bst);
+	assert(!(bst < bst));
+	assert(!(bst > bst));
 	assert(bst != bst_copy_construct);
 
 	custom_bst_tree bst_a;

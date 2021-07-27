@@ -718,7 +718,7 @@ template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
 bool operator>(const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x,
 	const bst_tree<Key, Value, KeyOfValue, Compare, Allocator>            &y) {
-	return !(x < y);
+	return y < x;
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
