@@ -605,7 +605,7 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::lower_bound(
 	bst_node_pointer traverse = m_root;
 
 	while (traverse != NULL) {
-		if (m_key_compare(KeyOfValue()(traverse->value), key)) {
+		if (!m_key_compare(KeyOfValue()(traverse->value), key)) {
 			trailing = traverse;
 			traverse = traverse->left;
 		} else {
@@ -624,7 +624,7 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::lower_bound(
 	bst_node_pointer traverse = m_root;
 
 	while (traverse != NULL) {
-		if (m_key_compare(KeyOfValue()(traverse->value), key)) {
+		if (!m_key_compare(KeyOfValue()(traverse->value), key)) {
 			trailing = traverse;
 			traverse = traverse->left;
 		} else {

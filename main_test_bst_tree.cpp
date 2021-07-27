@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "algorithm.hpp"
 #include "bst_tree.hpp"
 #include "utility.hpp"
 #include "utils.hpp"
@@ -177,4 +178,19 @@ int main() {
 	assert(bst_b >= bst_b);
 	assert(bst_a <= bst_b);
 	assert(bst_b >= bst_a);
+	custom_bst_tree bst_c(bst_a);
+	assert(ft::equal(bst_a.begin(), bst_a.end(), bst_c.begin()));
+	bst_b = bst_a;
+	assert(ft::equal(bst_a.begin(), bst_a.end(), bst_b.begin()));
+
+	std::cout << '\n';
+	print_bst_content(bst);
+
+	it = bst.lower_bound(200);
+	std::cout << "bst key with lower bound than 200: ";
+	if (it != bst.end()) {
+		std::cout << (*it).first << '\n';
+	} else {
+		std::cout << "None\n";
+	}
 }
