@@ -63,7 +63,7 @@ class bst_tree {
 			return &(current->value);
 		}
 
-		bst_tree_iterator operator++() {
+		bst_tree_iterator &operator++() {
 			if (current->right != NULL) {
 				current = current->right;
 				while (current->left != NULL) {
@@ -86,7 +86,7 @@ class bst_tree {
 			return tmp;
 		}
 
-		bst_tree_iterator operator--() {
+		bst_tree_iterator &operator--() {
 			if (current == NULL && root) {
 				// Case when current == end()
 				// For the reverse iterator where rbegin() == end()
