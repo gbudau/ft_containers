@@ -1,5 +1,4 @@
 #pragma once
-#include <limits>
 #include <memory>
 #include "algorithm.hpp"
 #include "functional.hpp"
@@ -148,9 +147,8 @@ class bst_tree {
 	explicit bst_tree(const Compare &comp = Compare(),
 		const Allocator             &allocator = Allocator());
 	template <class InputIterator>
-	bst_tree(
-		typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
-			InputIterator>::type first,
+	bst_tree(typename ft::enable_if<!ft::is_integral<InputIterator>::value,
+				 InputIterator>::type first,
 		InputIterator last, const Compare &comp = Compare(),
 		const Allocator &allocator = Allocator());
 	bst_tree(const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x);
@@ -178,11 +176,10 @@ class bst_tree {
 	ft::pair<iterator, bool> insert(const value_type &x);
 	iterator                 insert(iterator position, const value_type &x);
 	template <class InputIterator>
-	void insert(
-		typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
-			InputIterator>::type first,
-		InputIterator            last);
-	void      erase(iterator position);
+	void insert(typename ft::enable_if<!ft::is_integral<InputIterator>::value,
+					InputIterator>::type first,
+		InputIterator                    last);
+	void erase(iterator position);
 	size_type erase(const key_type &x);
 	void      erase(iterator first, iterator last);
 	void      swap(bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x);
@@ -284,7 +281,7 @@ template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
 template <class InputIterator>
 bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_tree(
-	typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+	typename ft::enable_if<!ft::is_integral<InputIterator>::value,
 		InputIterator>::type first,
 	InputIterator last, const Compare &comp, const Allocator &allocator)
 	: m_allocator(allocator), m_size(0), m_root(NULL), m_key_compare(comp) {
@@ -443,7 +440,7 @@ template <class Key, class Value, class KeyOfValue, class Compare,
 typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator
 bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::insert(
 	iterator position, const value_type &x) {
-	// TODO Optimize
+	// TODO Optimize insert based on position
 	(void)position;
 	return insert(x).first;
 }
@@ -452,7 +449,7 @@ template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
 template <class InputIterator>
 void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::insert(
-	typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+	typename ft::enable_if<!ft::is_integral<InputIterator>::value,
 		InputIterator>::type first,
 	InputIterator            last) {
 	while (first != last) {
