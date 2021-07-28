@@ -297,6 +297,76 @@ static void test_map_begin(const Map1 &, const Value1 &, const Map2 &,
 	test_map_values("const_iterator", *it1c, *it2c, function_name, line_number);
 }
 
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_end(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+
+	add_random_map_values(m1, Value1(), m2, Value2(), generateRandomKey,
+		generateRandomMappedType, 30);
+	test_equal_map_container(m1, m2, function_name, line_number);
+	typename Map1::iterator it1 = m1.end();
+	typename Map2::iterator it2 = m2.end();
+	test_map_values("iterator", *(--it1), *(--it2), function_name, line_number);
+
+	typename Map1::const_iterator it1c = m1.end();
+	typename Map2::const_iterator it2c = m2.end();
+	test_map_values(
+		"const_iterator", *(--it1c), *(--it2c), function_name, line_number);
+}
+
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_rbegin(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+
+	add_random_map_values(m1, Value1(), m2, Value2(), generateRandomKey,
+		generateRandomMappedType, 30);
+	test_equal_map_container(m1, m2, function_name, line_number);
+	typename Map1::reverse_iterator rit1 = m1.rbegin();
+	typename Map2::reverse_iterator rit2 = m2.rbegin();
+	test_map_values("iterator", *rit1, *rit2, function_name, line_number);
+
+	typename Map1::const_reverse_iterator rit1c = m1.rbegin();
+	typename Map2::const_reverse_iterator rit2c = m2.rbegin();
+	test_map_values(
+		"const_reverse_iterator", *rit1c, *rit2c, function_name, line_number);
+}
+
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_rend(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+
+	add_random_map_values(m1, Value1(), m2, Value2(), generateRandomKey,
+		generateRandomMappedType, 30);
+	test_equal_map_container(m1, m2, function_name, line_number);
+	typename Map1::reverse_iterator rit1 = m1.rend();
+	typename Map2::reverse_iterator rit2 = m2.rend();
+	test_map_values(
+		"iterator", *(--rit1), *(--rit2), function_name, line_number);
+
+	typename Map1::const_reverse_iterator rit1c = m1.rend();
+	typename Map2::const_reverse_iterator rit2c = m2.rend();
+	test_map_values(
+		"const_iterator", *(--rit1c), *(--rit2c), function_name, line_number);
+}
+
 template <class Container1, class Container2>
 static void test_container_count_constructor(const Container1 &,
 	const Container2 &, const char *function_name, int line_number) {
@@ -1617,6 +1687,15 @@ void test_map() {
 		std::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
 	test_map_begin(ft::map<int, std::string>(), ft::pair<int, std::string>(),
+		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
+		generateRandomString, __FUNCTION__, __LINE__);
+	test_map_end(ft::map<int, std::string>(), ft::pair<int, std::string>(),
+		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
+		generateRandomString, __FUNCTION__, __LINE__);
+	test_map_rbegin(ft::map<int, std::string>(), ft::pair<int, std::string>(),
+		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
+		generateRandomString, __FUNCTION__, __LINE__);
+	test_map_rend(ft::map<int, std::string>(), ft::pair<int, std::string>(),
 		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
 		generateRandomString, __FUNCTION__, __LINE__);
 }
