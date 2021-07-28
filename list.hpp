@@ -1,5 +1,4 @@
 #pragma once
-#include <limits>
 #include <memory>
 #include "algorithm.hpp"
 #include "functional.hpp"
@@ -98,7 +97,7 @@ class list {
 	explicit list(size_type n, const T &value = T(),
 		const Allocator &allocator = Allocator());
 	template <class InputIterator>
-	list(typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+	list(typename ft::enable_if<!ft::is_integral<InputIterator>::value,
 			 InputIterator>::type first,
 		InputIterator last, const Allocator &allocator = Allocator());
 	list(const list<T, Allocator> &x);
@@ -106,10 +105,9 @@ class list {
 	list<T, Allocator> &operator=(const list<T, Allocator> &x);
 	void                assign(size_type n, const T &t);
 	template <class InputIterator>
-	void assign(
-		typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
-			InputIterator>::type first,
-		InputIterator            last);
+	void assign(typename ft::enable_if<!ft::is_integral<InputIterator>::value,
+					InputIterator>::type first,
+		InputIterator                    last);
 	allocator_type         get_allocator() const;
 
 	// iterators:
@@ -143,7 +141,7 @@ class list {
 	void insert(iterator position, size_type n, const T &value);
 	template <class InputIterator>
 	void     insert(iterator         position,
-			typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+			typename ft::enable_if<!ft::is_integral<InputIterator>::value,
             InputIterator>::type first,
 			InputIterator            last);
 	iterator erase(iterator position);
@@ -221,7 +219,7 @@ list<T, Allocator>::list(
 template <class T, class Allocator>
 template <class InputIterator>
 list<T, Allocator>::list(
-	typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+	typename ft::enable_if<!ft::is_integral<InputIterator>::value,
 		InputIterator>::type first,
 	InputIterator last, const Allocator &allocator)
 	: m_allocator(allocator), m_length(0) {
@@ -259,7 +257,7 @@ void list<T, Allocator>::assign(size_type n, const T &value) {
 template <class T, class Allocator>
 template <class InputIterator>
 void list<T, Allocator>::assign(
-	typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+	typename ft::enable_if<!ft::is_integral<InputIterator>::value,
 		InputIterator>::type first,
 	InputIterator            last) {
 	clear();
@@ -404,7 +402,7 @@ void list<T, Allocator>::insert(
 template <class T, class Allocator>
 template <class InputIterator>
 void list<T, Allocator>::insert(iterator position,
-	typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+	typename ft::enable_if<!ft::is_integral<InputIterator>::value,
 		InputIterator>::type             first,
 	InputIterator                        last) {
 	while (first != last) {

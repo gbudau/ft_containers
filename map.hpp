@@ -1,5 +1,4 @@
 #pragma once
-#include <limits>
 #include <memory>
 #include "bst_tree.hpp"
 #include "functional.hpp"
@@ -59,7 +58,7 @@ class map {
 		const Allocator        &allocator = Allocator())
 		: m_tree(comp, allocator) {}
 	template <class InputIterator>
-	map(typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+	map(typename ft::enable_if<!ft::is_integral<InputIterator>::value,
 			InputIterator>::type first,
 		InputIterator last, const Compare &comp = Compare(),
 		const Allocator &allocator = Allocator())

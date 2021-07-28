@@ -1,5 +1,4 @@
 #pragma once
-#include <limits>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -32,19 +31,17 @@ class vector {
 	explicit vector(size_type n, const T &value = T(),
 		const Allocator &allocator = Allocator());
 	template <class InputIterator>
-	vector(
-		typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
-			InputIterator>::type first,
+	vector(typename ft::enable_if<!ft::is_integral<InputIterator>::value,
+			   InputIterator>::type first,
 		InputIterator last, const Allocator &allocator = Allocator());
 	vector(const vector<T, Allocator> &x);
 	~vector();
 	vector<T, Allocator> &operator=(const vector<T, Allocator> &x);
 	void                  assign(size_type n, const T &u);
 	template <class InputIterator>
-	void assign(
-		typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
-			InputIterator>::type first,
-		InputIterator            last);
+	void assign(typename ft::enable_if<!ft::is_integral<InputIterator>::value,
+					InputIterator>::type first,
+		InputIterator                    last);
 	allocator_type         get_allocator() const;
 
 	// iterators
@@ -82,7 +79,7 @@ class vector {
 	void                   insert(iterator position, size_type n, const T &x);
 	template <class InputIterator>
 	void     insert(iterator         position,
-			typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+			typename ft::enable_if<!ft::is_integral<InputIterator>::value,
             InputIterator>::type first,
 			InputIterator            last);
 	iterator erase(iterator position);
@@ -113,7 +110,7 @@ vector<T, Allocator>::vector(
 template <class T, class Allocator>
 template <class InputIterator>
 vector<T, Allocator>::vector(
-	typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+	typename ft::enable_if<!ft::is_integral<InputIterator>::value,
 		InputIterator>::type first,
 	InputIterator last, const Allocator &allocator) {
 	const size_type n = ft::distance(first, last);
@@ -191,7 +188,7 @@ void vector<T, Allocator>::assign(size_type n, const T &u) {
 template <class T, class Allocator>
 template <class InputIterator>
 void vector<T, Allocator>::assign(
-	typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+	typename ft::enable_if<!ft::is_integral<InputIterator>::value,
 		InputIterator>::type first,
 	InputIterator            last) {
 	const size_type n = ft::distance(first, last);
@@ -440,7 +437,7 @@ void vector<T, Allocator>::insert(
 template <class T, class Allocator>
 template <class InputIterator>
 void vector<T, Allocator>::insert(iterator position,
-	typename ft::enable_if<!std::numeric_limits<InputIterator>::is_integer,
+	typename ft::enable_if<!ft::is_integral<InputIterator>::value,
 		InputIterator>::type               first,
 	InputIterator                          last) {
 	if (first == last) {
