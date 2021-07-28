@@ -7,8 +7,11 @@ CXX = clang++
 OBJ = main.o
 OBJ_FT = main_ft.o
 OBJ_STD = main_std.o
+DEPS = algorithm.hpp  bst_tree.hpp  functional.hpp  iterator.hpp \
+	   list.hpp  map.hpp  memory.hpp  queue.hpp  stack.hpp  \
+	   type_traits.hpp  utility.hpp  utils.hpp  vector.hpp
 
-%.o: %.cpp
+%.o: %.cpp $(DEPS)
 	$(CXX) $(CPPFLAGS) -c -o $@ $<
 
 .PHONY: all
