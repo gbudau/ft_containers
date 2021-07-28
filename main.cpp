@@ -6,11 +6,13 @@
 #include <queue>
 #include <stack>
 #include <string>
+#include <utility>
 #include <vector>
 #include "list.hpp"
 #include "map.hpp"
 #include "queue.hpp"
 #include "stack.hpp"
+#include "utility.hpp"
 #include "vector.hpp"
 
 static int g_errors;
@@ -140,13 +142,159 @@ static void test_container_default_constructor(const Container1 &,
 }
 
 template <class Container1, class Container2>
-static void test_container_adaptor_default_constructor(
-	const Container1 &, const Container2 &) {
+static void test_container_adaptor_default_constructor(const Container1 &,
+	const Container2 &, const char *function_name, int line_number) {
 	Container1 c1;
 	Container2 c2;
 
-	(void)c1;
-	(void)c2;
+	test_equal_size(c1, c2, function_name, line_number);
+}
+
+template <class Value1, class Value2>
+static void test_map_values(const char *message, const Value1 &value1,
+	const Value2 &value2, const char *function_name, int line_number) {
+	if (value1.first != value2.first) {
+		std::cerr << "Error: " << function_name << ": line " << line_number
+				  << ": " << message << ": " << value1.first
+				  << " != " << value2.first << '\n';
+		g_errors++;
+	}
+	if (value1.second != value2.second) {
+		std::cerr << "Error: " << function_name << ": line " << line_number
+				  << ": " << message << ": " << value1.second
+				  << " != " << value2.second << '\n';
+		g_errors++;
+	}
+}
+
+template <class Map1, class Map2>
+static void test_equal_content_map(const Map1 &c1, const Map2 &c2,
+	const char *function_name, int line_number) {
+	typename Map1::const_iterator it1 = c1.begin();
+	typename Map2::const_iterator it2 = c2.begin();
+
+	while (it1 != c1.end() && it2 != c2.end()) {
+		test_map_values("value", *it1++, *it2++, function_name, line_number);
+	}
+	test_values_message(
+		function_name, line_number, "it1 != c1.end()", it1, c1.end());
+	test_values_message(
+		function_name, line_number, "it2 != c2.end()", it2, c2.end());
+}
+
+template <class Map1, class Map2>
+static void test_equal_map_container(const Map1 &m1, const Map2 &m2,
+	const char *function_name, int line_number) {
+
+	test_equal_size(m1, m2, function_name, line_number);
+	test_equal_content_map(m1, m2, function_name, line_number);
+}
+
+template <class Map1, class Map2>
+static void test_map_default_constructor(
+	const Map1 &, const Map2 &, const char *function_name, int line_number) {
+	Map1 m1;
+	Map2 m2;
+
+	test_equal_size(m1, m2, function_name, line_number);
+}
+
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_range_constructor(const Map1 &, const Value1 &,
+	const Map2 &, const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	const int           size = 100;
+	std::vector<Value1> vec1;
+	std::vector<Value2> vec2;
+
+	for (int i = 0; i < size; ++i) {
+		Key        key = generateRandomKey();
+		MappedType mapped_type = generateRandomMappedType();
+		Value1     value1 = Value1(key, mapped_type);
+		Value2     value2 = Value2(key, mapped_type);
+		vec1.push_back(value1);
+		vec2.push_back(value2);
+	}
+	Map1 m1(vec1.begin(), vec1.end());
+	Map2 m2(vec2.begin(), vec2.end());
+	test_equal_map_container(m1, m2, function_name, line_number);
+}
+
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void add_random_map_values(Map1 &map1, const Value1 &, Map2 &map2,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), std::size_t n) {
+	while (n--) {
+		Key        key = generateRandomKey();
+		MappedType mapped_type = generateRandomMappedType();
+		Value1     value1 = Value1(key, mapped_type);
+		map1.insert(value1);
+		Value2 value2 = Value2(key, mapped_type);
+		map2.insert(value2);
+	}
+}
+
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_copy_constructor(const Map1 &, const Value1 &,
+	const Map2 &, const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+
+	add_random_map_values(m1, Value1(), m2, Value2(), generateRandomKey,
+		generateRandomMappedType, 30);
+	test_equal_map_container(m1, m2, function_name, line_number);
+}
+
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_assignment_operator(const Map1 &, const Value1 &,
+	const Map2 &, const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+
+	add_random_map_values(m1, Value1(), m2, Value2(), generateRandomKey,
+		generateRandomMappedType, 30);
+	test_equal_map_container(m1, m2, function_name, line_number);
+
+	Map1 m1_copy;
+	Map2 m2_copy;
+
+	m1_copy = m1;
+	m2_copy = m2;
+	test_equal_map_container(m1_copy, m2_copy, function_name, line_number);
+}
+
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_begin(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+
+	add_random_map_values(m1, Value1(), m2, Value2(), generateRandomKey,
+		generateRandomMappedType, 30);
+	test_equal_map_container(m1, m2, function_name, line_number);
+	typename Map1::iterator it1 = m1.begin();
+	typename Map2::iterator it2 = m2.begin();
+	test_map_values("iterator", *it1, *it2, function_name, line_number);
+
+	typename Map1::const_iterator it1c = m1.begin();
+	typename Map2::const_iterator it2c = m2.begin();
+	test_map_values("const_iterator", *it1c, *it2c, function_name, line_number);
 }
 
 template <class Container1, class Container2>
@@ -1419,7 +1567,7 @@ static void test_list() {
 
 void test_queue() {
 	test_container_adaptor_default_constructor(
-		ft::queue<int>(), std::queue<int>());
+		ft::queue<int>(), std::queue<int>(), __FUNCTION__, __LINE__);
 	test_container_adaptor_empty(
 		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
 	test_container_adaptor_size(
@@ -1438,7 +1586,7 @@ void test_queue() {
 
 void test_stack() {
 	test_container_adaptor_default_constructor(
-		ft::stack<int>(), std::stack<int>());
+		ft::stack<int>(), std::stack<int>(), __FUNCTION__, __LINE__);
 	test_container_adaptor_empty(
 		ft::stack<int>(), std::stack<int>(), std::rand, __FUNCTION__, __LINE__);
 	test_container_adaptor_size(
@@ -1453,11 +1601,33 @@ void test_stack() {
 		ft::stack<int>(), std::rand, __FUNCTION__, __LINE__);
 }
 
+void test_map() {
+	test_map_default_constructor(
+		ft::map<int, int>(), std::map<int, int>(), __FUNCTION__, __LINE__);
+	test_map_range_constructor(ft::map<int, std::string>(),
+		ft::pair<int, std::string>(), std::map<int, std::string>(),
+		std::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_copy_constructor(ft::map<int, std::string>(),
+		ft::pair<int, std::string>(), std::map<int, std::string>(),
+		std::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_assignment_operator(ft::map<int, std::string>(),
+		ft::pair<int, std::string>(), std::map<int, std::string>(),
+		std::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_begin(ft::map<int, std::string>(), ft::pair<int, std::string>(),
+		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
+		generateRandomString, __FUNCTION__, __LINE__);
+}
+
 int main() {
 	std::srand(std::time(NULL));
 	test_vector();
 	test_list();
 	test_queue();
+	test_stack();
+	test_map();
 	if (g_errors) {
 		std::cout << g_errors << " errors\n";
 	} else {
