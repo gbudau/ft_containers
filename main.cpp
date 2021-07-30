@@ -487,6 +487,73 @@ static void test_map_insert_range(const Map1 &, const Value1 &, const Map2 &,
 	test_equal_map_container(m1, m2, function_name, line_number);
 }
 
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_erase_position(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+
+	test_equal_map_container(m1, m2, function_name, line_number);
+	add_random_map_values(m1, Value1(), m2, Value2(), generateRandomKey,
+		generateRandomMappedType, 10);
+	m1.erase(m1.begin());
+	m2.erase(m2.begin());
+	test_equal_map_container(m1, m2, function_name, line_number);
+	m1.erase(ft::prev(m1.end()));
+	m2.erase(ft::prev(m2.end()));
+	test_equal_map_container(m1, m2, function_name, line_number);
+	m1.erase(ft::next(m1.begin()));
+	m2.erase(ft::next(m2.begin()));
+	test_equal_map_container(m1, m2, function_name, line_number);
+}
+
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_erase_key(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+
+	test_equal_map_container(m1, m2, function_name, line_number);
+	Key        key = generateRandomKey();
+	MappedType mapped_type = generateRandomMappedType();
+	m1.insert(Value1(key, mapped_type));
+	m2.insert(Value2(key, mapped_type));
+
+	test_values_message(
+		function_name, line_number, "erase", m1.erase(key), m2.erase(key));
+	test_equal_map_container(m1, m2, function_name, line_number);
+	test_values_message(
+		function_name, line_number, "erase", m1.erase(key), m2.erase(key));
+	test_equal_map_container(m1, m2, function_name, line_number);
+}
+
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_erase_range(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+
+	test_equal_map_container(m1, m2, function_name, line_number);
+	add_random_map_values(m1, Value1(), m2, Value2(), generateRandomKey,
+		generateRandomMappedType, 10);
+	test_equal_map_container(m1, m2, function_name, line_number);
+	m1.erase(ft::next(m1.begin()), ft::prev(m1.end()));
+	m2.erase(ft::next(m2.begin()), ft::prev(m2.end()));
+	test_equal_map_container(m1, m2, function_name, line_number);
+}
+
 template <class Container1, class Container2>
 static void test_container_count_constructor(const Container1 &,
 	const Container2 &, const char *function_name, int line_number) {
@@ -1836,6 +1903,18 @@ void test_map() {
 		std::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
 	test_map_insert_range(ft::map<int, std::string>(),
+		ft::pair<int, std::string>(), std::map<int, std::string>(),
+		std::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_erase_position(ft::map<int, std::string>(),
+		ft::pair<int, std::string>(), std::map<int, std::string>(),
+		std::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_erase_key(ft::map<int, std::string>(),
+		ft::pair<int, std::string>(), std::map<int, std::string>(),
+		std::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_erase_range(ft::map<int, std::string>(),
 		ft::pair<int, std::string>(), std::map<int, std::string>(),
 		std::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
