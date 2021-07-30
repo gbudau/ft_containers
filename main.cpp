@@ -749,6 +749,50 @@ static void test_map_lower_bound(const Map1 &, const Value1 &, const Map2 &,
 		function_name, line_number);
 }
 
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_upper_bound(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1       m1;
+	Map2       m2;
+
+	Key        key1 = generateRandomKey();
+	MappedType mapped_type1 = generateRandomMappedType();
+
+	Value1     value1a(key1, mapped_type1);
+	Value2     value2a(key1, mapped_type1);
+	m1.insert(value1a);
+	m2.insert(value2a);
+	test_equal_map_container(m1, m2, function_name, line_number);
+
+	Key key2 = generateRandomKey();
+	while (key2 <= key1) {
+		key2 = generateRandomKey();
+	}
+
+	Value1     value1b;
+	Value2     value2b;
+	MappedType mapped_type2 = generateRandomMappedType();
+	value1b = Value1(key2, mapped_type2);
+	value2b = Value2(key2, mapped_type2);
+
+	m1.insert(value1b);
+	m2.insert(value2b);
+
+	typename Map1::iterator it1 = m1.upper_bound(key1);
+	typename Map2::iterator it2 = m2.upper_bound(key1);
+	test_map_values(
+		"upper_bound iterator", *(it1), *(it2), function_name, line_number);
+
+	typename Map1::const_iterator cit1 = m1.upper_bound(key1);
+	typename Map2::const_iterator cit2 = m2.upper_bound(key1);
+	test_map_values("upper_bound const_iterator", *(cit1), *(cit2),
+		function_name, line_number);
+}
+
 template <class Container1, class Container2>
 static void test_container_count_constructor(const Container1 &,
 	const Container2 &, const char *function_name, int line_number) {
@@ -2133,6 +2177,10 @@ void test_map() {
 		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
 		generateRandomString, __FUNCTION__, __LINE__);
 	test_map_lower_bound(ft::map<int, std::string>(),
+		ft::pair<int, std::string>(), std::map<int, std::string>(),
+		std::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_upper_bound(ft::map<int, std::string>(),
 		ft::pair<int, std::string>(), std::map<int, std::string>(),
 		std::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
