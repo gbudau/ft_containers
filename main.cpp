@@ -554,6 +554,46 @@ static void test_map_erase_range(const Map1 &, const Value1 &, const Map2 &,
 	test_equal_map_container(m1, m2, function_name, line_number);
 }
 
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_swap(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1 m1a;
+	Map1 m1b;
+	Map2 m2a;
+	Map2 m2b;
+
+	add_random_map_values(m1a, Value1(), m2a, Value2(), generateRandomKey,
+		generateRandomMappedType, 10);
+	add_random_map_values(m1b, Value1(), m2b, Value2(), generateRandomKey,
+		generateRandomMappedType, 10);
+	m1a.swap(m1b);
+	m2a.swap(m2b);
+	test_equal_map_container(m1a, m2a, function_name, line_number);
+	test_equal_map_container(m2b, m2b, function_name, line_number);
+}
+
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_clear(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+
+	add_random_map_values(m1, Value1(), m2, Value2(), generateRandomKey,
+		generateRandomMappedType, 10);
+	test_equal_map_container(m1, m2, function_name, line_number);
+	m1.clear();
+	m2.clear();
+	test_equal_map_container(m1, m2, function_name, line_number);
+}
+
 template <class Container1, class Container2>
 static void test_container_count_constructor(const Container1 &,
 	const Container2 &, const char *function_name, int line_number) {
@@ -1918,6 +1958,12 @@ void test_map() {
 		ft::pair<int, std::string>(), std::map<int, std::string>(),
 		std::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
+	test_map_swap(ft::map<int, std::string>(), ft::pair<int, std::string>(),
+		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
+		generateRandomString, __FUNCTION__, __LINE__);
+	test_map_clear(ft::map<int, std::string>(), ft::pair<int, std::string>(),
+		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
+		generateRandomString, __FUNCTION__, __LINE__);
 }
 
 int main() {
