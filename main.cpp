@@ -409,6 +409,84 @@ static void test_map_element_access(const Map1 &, const Value1 &, const Map2 &,
 	test_equal_map_container(m1, m2, function_name, line_number);
 }
 
+template <class Map1, class Value1, class Map1Return, class Map2, class Value2,
+	class Map2Return, class Key, class MappedType>
+static void test_map_insert_value(const Map1 &, const Value1 &,
+	const Map1Return &, const Map2 &, const Value2 &, const Map2Return &,
+	Key (*generateRandomKey)(), MappedType (*generateRandomMappedType)(),
+	const char *function_name, int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+
+	test_equal_map_container(m1, m2, function_name, line_number);
+	Key        key = generateRandomKey();
+	MappedType mapped_type = generateRandomMappedType();
+	Map1Return m1ret = m1.insert(Value1(key, mapped_type));
+	Map2Return m2ret = m2.insert(Value2(key, mapped_type));
+	test_map_values(
+		"insert", *(m1ret.first), *(m2ret.first), function_name, line_number);
+	test_values_message(
+		function_name, line_number, "insert", m1ret.second, m2ret.second);
+	test_equal_map_container(m1, m2, function_name, line_number);
+	m1ret = m1.insert(Value1(key, mapped_type));
+	m2ret = m2.insert(Value2(key, mapped_type));
+	test_map_values(
+		"insert", *(m1ret.first), *(m2ret.first), function_name, line_number);
+	test_values_message(
+		function_name, line_number, "insert", m1ret.second, m2ret.second);
+	test_equal_map_container(m1, m2, function_name, line_number);
+}
+
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_insert_hint(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+	test_equal_map_container(m1, m2, function_name, line_number);
+	Key                     key = generateRandomKey();
+	MappedType              mapped_type = generateRandomMappedType();
+	typename Map1::iterator m1_it =
+		m1.insert(m1.begin(), Value1(key, mapped_type));
+	typename Map2::iterator m2_it =
+		m2.insert(m2.begin(), Value2(key, mapped_type));
+	test_map_values("insert", *(m1_it), *(m2_it), function_name, line_number);
+	test_equal_map_container(m1, m2, function_name, line_number);
+	m1_it = m1.insert(m1.begin(), Value1(key, mapped_type));
+	m2_it = m2.insert(m2.begin(), Value2(key, mapped_type));
+	test_map_values("insert", *(m1_it), *(m2_it), function_name, line_number);
+	test_equal_map_container(m1, m2, function_name, line_number);
+}
+
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_insert_range(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+	Map1 m1_rand;
+	Map2 m2_rand;
+
+	test_equal_map_container(m1, m2, function_name, line_number);
+	add_random_map_values(m1_rand, Value1(), m2_rand, Value2(),
+		generateRandomKey, generateRandomMappedType, 10);
+
+	m1.insert(m1_rand.begin(), m1_rand.end());
+	m2.insert(m2_rand.begin(), m2_rand.end());
+	test_equal_map_container(m1, m2, function_name, line_number);
+
+	m1.insert(m1_rand.begin(), m1_rand.end());
+	m2.insert(m2_rand.begin(), m2_rand.end());
+	test_equal_map_container(m1, m2, function_name, line_number);
+}
+
 template <class Container1, class Container2>
 static void test_container_count_constructor(const Container1 &,
 	const Container2 &, const char *function_name, int line_number) {
@@ -1744,6 +1822,20 @@ void test_map() {
 		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
 		generateRandomString, __FUNCTION__, __LINE__);
 	test_map_element_access(ft::map<int, std::string>(),
+		ft::pair<int, std::string>(), std::map<int, std::string>(),
+		std::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_insert_value(ft::map<int, std::string>(),
+		ft::pair<int, std::string>(),
+		ft::pair<ft::map<int, std::string>::iterator, bool>(),
+		std::map<int, std::string>(), std::pair<int, std::string>(),
+		std::pair<std::map<int, std::string>::iterator, bool>(), std::rand,
+		generateRandomString, __FUNCTION__, __LINE__);
+	test_map_insert_hint(ft::map<int, std::string>(),
+		ft::pair<int, std::string>(), std::map<int, std::string>(),
+		std::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_insert_range(ft::map<int, std::string>(),
 		ft::pair<int, std::string>(), std::map<int, std::string>(),
 		std::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
