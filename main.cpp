@@ -594,6 +594,64 @@ static void test_map_clear(const Map1 &, const Value1 &, const Map2 &,
 	test_equal_map_container(m1, m2, function_name, line_number);
 }
 
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_key_comp(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+
+	add_random_map_values(m1, Value1(), m2, Value2(), generateRandomKey,
+		generateRandomMappedType, 10);
+	test_equal_map_container(m1, m2, function_name, line_number);
+
+	typename Map1::value_compare m1_value_comp = m1.value_comp();
+	typename Map2::value_compare m2_value_comp = m2.value_comp();
+
+	Key                          key1 = generateRandomKey();
+	Key                          key2 = generateRandomKey();
+
+	MappedType                   mapped_type1 = generateRandomMappedType();
+	MappedType                   mapped_type2 = generateRandomMappedType();
+
+	Value1                       map1_value1(key1, mapped_type1);
+	Value1                       map1_value2(key2, mapped_type2);
+
+	Value2                       map2_value1(key1, mapped_type1);
+	Value2                       map2_value2(key2, mapped_type2);
+
+	bool                         b1 = m1_value_comp(map1_value1, map1_value2);
+	bool                         b2 = m2_value_comp(map2_value1, map2_value2);
+	test_values_message(function_name, line_number, "value_comp", b1, b2);
+}
+
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_value_comp(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+
+	add_random_map_values(m1, Value1(), m2, Value2(), generateRandomKey,
+		generateRandomMappedType, 10);
+	test_equal_map_container(m1, m2, function_name, line_number);
+
+	typename Map1::key_compare m1_key_comp = m1.key_comp();
+	typename Map2::key_compare m2_key_comp = m2.key_comp();
+
+	Key                        k1 = generateRandomKey();
+	Key                        k2 = generateRandomKey();
+	bool                       b1 = m1_key_comp(k1, k2);
+	bool                       b2 = m2_key_comp(k1, k2);
+	test_values_message(function_name, line_number, "key_comp", b1, b2);
+}
+
 template <class Container1, class Container2>
 static void test_container_count_constructor(const Container1 &,
 	const Container2 &, const char *function_name, int line_number) {
@@ -1964,6 +2022,13 @@ void test_map() {
 	test_map_clear(ft::map<int, std::string>(), ft::pair<int, std::string>(),
 		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
 		generateRandomString, __FUNCTION__, __LINE__);
+	test_map_key_comp(ft::map<int, std::string>(), ft::pair<int, std::string>(),
+		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
+		generateRandomString, __FUNCTION__, __LINE__);
+	test_map_value_comp(ft::map<int, std::string>(),
+		ft::pair<int, std::string>(), std::map<int, std::string>(),
+		std::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
 }
 
 int main() {
