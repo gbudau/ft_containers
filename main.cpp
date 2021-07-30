@@ -83,9 +83,9 @@ static void test_condition(const char *function_name, int line_number,
 	}
 }
 
-template <class T>
+template <class T, class U>
 static void test_values(const char *function_name, int line_number,
-	const char *message, const T &a, const T &b) {
+	const char *message, const T &a, const U &b) {
 	if (a != b) {
 		std::cerr << "Error: " << function_name << ": line " << line_number
 				  << ": " << message << ": " << a << " != " << b << '\n';
@@ -93,9 +93,9 @@ static void test_values(const char *function_name, int line_number,
 	}
 }
 
-template <class T>
+template <class T, class U>
 static void test_values_message(const char *function_name, int line_number,
-	const char *message, const T &a, const T &b) {
+	const char *message, const T &a, const U &b) {
 	if (a != b) {
 		std::cerr << "Error: " << function_name << ": line " << line_number
 				  << ": " << message << '\n';
@@ -650,6 +650,75 @@ static void test_map_value_comp(const Map1 &, const Value1 &, const Map2 &,
 	bool                       b1 = m1_key_comp(k1, k2);
 	bool                       b2 = m2_key_comp(k1, k2);
 	test_values_message(function_name, line_number, "key_comp", b1, b2);
+}
+
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_find(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1                          m1;
+	Map2                          m2;
+
+	Key                           key = generateRandomKey();
+
+	typename Map1::iterator       it1 = m1.find(key);
+	typename Map2::iterator       it2 = m2.find(key);
+	typename Map1::const_iterator cit1 = m1.find(key);
+	typename Map2::const_iterator cit2 = m2.find(key);
+
+	test_values_message(
+		function_name, line_number, "it1 != m1.end()", it1, m1.end());
+	test_values_message(
+		function_name, line_number, "it2 != m2.end()", it2, m2.end());
+
+	test_values_message(
+		function_name, line_number, "cit1 != m1.end()", cit1, m1.end());
+	test_values_message(
+		function_name, line_number, "cit2 != m2.end()", cit2, m2.end());
+
+	MappedType mapped_type = generateRandomMappedType();
+
+	Value1     value1(key, mapped_type);
+	Value2     value2(key, mapped_type);
+
+	m1.insert(value1);
+	m2.insert(value2);
+
+	it1 = m1.find(key);
+	it2 = m2.find(key);
+
+	cit1 = m1.find(key);
+	cit2 = m2.find(key);
+
+	test_map_values("find", *(it1), *(it2), function_name, line_number);
+	test_map_values("find", *(cit1), *(cit2), function_name, line_number);
+}
+
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_count(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1       m1;
+	Map2       m2;
+
+	Key        key = generateRandomKey();
+	MappedType mapped_type = generateRandomMappedType();
+
+	test_values_message(
+		function_name, line_number, "count", m1.count(key), m2.count(key));
+
+	m1.insert(Value1(key, mapped_type));
+	m2.insert(Value2(key, mapped_type));
+	test_equal_map_container(m1, m2, function_name, line_number);
+
+	test_values_message(
+		function_name, line_number, "count", m1.count(key), m2.count(key));
 }
 
 template <class Container1, class Container2>
@@ -2029,6 +2098,12 @@ void test_map() {
 		ft::pair<int, std::string>(), std::map<int, std::string>(),
 		std::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
+	test_map_find(ft::map<int, std::string>(), ft::pair<int, std::string>(),
+		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
+		generateRandomString, __FUNCTION__, __LINE__);
+	test_map_count(ft::map<int, std::string>(), ft::pair<int, std::string>(),
+		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
+		generateRandomString, __FUNCTION__, __LINE__);
 }
 
 int main() {
