@@ -367,6 +367,48 @@ static void test_map_rend(const Map1 &, const Value1 &, const Map2 &,
 		"const_iterator", *(--rit1c), *(--rit2c), function_name, line_number);
 }
 
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_empty(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+
+	test_equal_map_container(m1, m2, function_name, line_number);
+	test_values_message(function_name, line_number, "m1.empty() != m2.empty()",
+		m1.empty(), m2.empty());
+	add_random_map_values(m1, Value1(), m2, Value2(), generateRandomKey,
+		generateRandomMappedType, 30);
+	test_equal_map_container(m1, m2, function_name, line_number);
+	test_values_message(function_name, line_number, "m1.empty() != m2.empty()",
+		m1.empty(), m2.empty());
+}
+
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_element_access(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+
+	test_equal_map_container(m1, m2, function_name, line_number);
+	Key key = generateRandomKey();
+	test_values_message(
+		function_name, line_number, "operator[]", m1[key], m2[key]);
+	MappedType mapped_type = generateRandomMappedType();
+	m1[key] = mapped_type;
+	m2[key] = mapped_type;
+	test_values_message(
+		function_name, line_number, "operator[]", m1[key], m2[key]);
+	test_equal_map_container(m1, m2, function_name, line_number);
+}
+
 template <class Container1, class Container2>
 static void test_container_count_constructor(const Container1 &,
 	const Container2 &, const char *function_name, int line_number) {
@@ -1698,6 +1740,13 @@ void test_map() {
 	test_map_rend(ft::map<int, std::string>(), ft::pair<int, std::string>(),
 		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
 		generateRandomString, __FUNCTION__, __LINE__);
+	test_map_empty(ft::map<int, std::string>(), ft::pair<int, std::string>(),
+		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
+		generateRandomString, __FUNCTION__, __LINE__);
+	test_map_element_access(ft::map<int, std::string>(),
+		ft::pair<int, std::string>(), std::map<int, std::string>(),
+		std::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
 }
 
 int main() {
