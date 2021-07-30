@@ -721,6 +721,34 @@ static void test_map_count(const Map1 &, const Value1 &, const Map2 &,
 		function_name, line_number, "count", m1.count(key), m2.count(key));
 }
 
+template <class Map1, class Value1, class Map2, class Value2, class Key,
+	class MappedType>
+static void test_map_lower_bound(const Map1 &, const Value1 &, const Map2 &,
+	const Value2 &, Key (*generateRandomKey)(),
+	MappedType (*generateRandomMappedType)(), const char *function_name,
+	int line_number) {
+
+	Map1       m1;
+	Map2       m2;
+
+	Key        key = generateRandomKey();
+	MappedType mapped_type = generateRandomMappedType();
+
+	m1.insert(Value1(key, mapped_type));
+	m2.insert(Value2(key, mapped_type));
+	test_equal_map_container(m1, m2, function_name, line_number);
+
+	typename Map1::iterator it1 = m1.lower_bound(key);
+	typename Map2::iterator it2 = m2.lower_bound(key);
+	test_map_values(
+		"lower_bound iterator", *(it1), *(it2), function_name, line_number);
+
+	typename Map1::const_iterator cit1 = m1.lower_bound(key);
+	typename Map2::const_iterator cit2 = m2.lower_bound(key);
+	test_map_values("lower_bound const_iterator", *(cit1), *(cit2),
+		function_name, line_number);
+}
+
 template <class Container1, class Container2>
 static void test_container_count_constructor(const Container1 &,
 	const Container2 &, const char *function_name, int line_number) {
@@ -2104,6 +2132,10 @@ void test_map() {
 	test_map_count(ft::map<int, std::string>(), ft::pair<int, std::string>(),
 		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
 		generateRandomString, __FUNCTION__, __LINE__);
+	test_map_lower_bound(ft::map<int, std::string>(),
+		ft::pair<int, std::string>(), std::map<int, std::string>(),
+		std::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
 }
 
 int main() {
