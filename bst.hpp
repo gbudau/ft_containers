@@ -205,6 +205,7 @@ class bst {
 	bst_node_pointer m_allocate_bst_node() const;
 	void             m_transplant(bst_node_pointer u, bst_node_pointer v);
 	bool m_equal_keys(const value_type &x, const value_type &y) const;
+	bst_node_pointer m_copy(bst_node_pointer src, bst_node_pointer dst_parent);
 	static bst_node_pointer m_minimum(bst_node_pointer x);
 	static bst_node_pointer m_maximum(bst_node_pointer x);
 };
@@ -239,12 +240,29 @@ bst<Key, Value, KeyOfValue, Compare, Allocator>::m_maximum(bst_node_pointer x) {
 	}
 	return x;
 }
+
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
 bool bst<Key, Value, KeyOfValue, Compare, Allocator>::m_equal_keys(
 	const value_type &x, const value_type &y) const {
 	return !m_key_compare(KeyOfValue()(x), KeyOfValue()(y)) &&
 		   !m_key_compare(KeyOfValue()(y), KeyOfValue()(x));
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::bst_node_pointer
+bst<Key, Value, KeyOfValue, Compare, Allocator>::m_copy(
+	bst_node_pointer src, bst_node_pointer dst_parent) {
+	if (src == NULL) {
+		return NULL;
+	}
+	bst_node_pointer dst = m_allocate_bst_node();
+	m_allocator.construct(m_allocator.address(dst->value), src->value);
+	dst->parent = dst_parent;
+	dst->left = m_copy(src->left, dst);
+	dst->right = m_copy(src->right, dst);
+	return dst;
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
@@ -288,7 +306,8 @@ bst<Key, Value, KeyOfValue, Compare, Allocator>::bst(
 	const bst<Key, Value, KeyOfValue, Compare, Allocator> &x)
 	: m_allocator(x.get_allocator()), m_size(0), m_root(NULL),
 	  m_key_compare(x.m_key_compare) {
-	insert(x.begin(), x.end());
+	m_root = m_copy(x.m_root, NULL);
+	m_size = x.m_size;
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
@@ -304,7 +323,8 @@ bst<Key, Value, KeyOfValue, Compare, Allocator>::operator=(
 	const bst<Key, Value, KeyOfValue, Compare, Allocator> &x) {
 	if (this != &x) {
 		erase(begin(), end());
-		insert(x.begin(), x.end());
+		m_root = m_copy(x.m_root, NULL);
+		m_size = x.m_size;
 	}
 	return *this;
 }
