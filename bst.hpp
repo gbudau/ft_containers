@@ -13,7 +13,7 @@ namespace ft {
 // the first type of a pair
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-class bst_tree {
+class bst {
   protected:
 	struct bst_node;
 	typedef typename Allocator::template rebind<bst_node>::other
@@ -35,7 +35,7 @@ class bst_tree {
 	typedef Compare                                           key_compare;
 
 	template <bool isconst = false>
-	class bst_tree_iterator {
+	class bst_iterator {
 	  public:
 		typedef std::bidirectional_iterator_tag iterator_category;
 		typedef Value                           value_type;
@@ -47,11 +47,10 @@ class bst_tree {
 		typedef
 			typename ft::choose<isconst, const Value *, Value *>::type pointer;
 
-		bst_tree_iterator(
-			bst_node_pointer current = 0, bst_node_pointer root = 0)
+		bst_iterator(bst_node_pointer current = 0, bst_node_pointer root = 0)
 			: current(current), root(root) {}
 
-		bst_tree_iterator(const bst_tree_iterator<false> &rhs)
+		bst_iterator(const bst_iterator<false> &rhs)
 			: current(rhs.base()), root(rhs.getRoot()) {}
 
 		reference operator*() const {
@@ -62,7 +61,7 @@ class bst_tree {
 			return &(current->value);
 		}
 
-		bst_tree_iterator &operator++() {
+		bst_iterator &operator++() {
 			if (current->right != NULL) {
 				current = current->right;
 				while (current->left != NULL) {
@@ -79,13 +78,13 @@ class bst_tree {
 			return *this;
 		}
 
-		bst_tree_iterator operator++(int) {
-			bst_tree_iterator tmp = *this;
+		bst_iterator operator++(int) {
+			bst_iterator tmp = *this;
 			++*this;
 			return tmp;
 		}
 
-		bst_tree_iterator &operator--() {
+		bst_iterator &operator--() {
 			if (current == NULL && root) {
 				// Case when current == end()
 				// For the reverse iterator where rbegin() == end()
@@ -109,19 +108,17 @@ class bst_tree {
 			return *this;
 		}
 
-		bst_tree_iterator operator--(int) {
-			bst_tree_iterator tmp = *this;
+		bst_iterator operator--(int) {
+			bst_iterator tmp = *this;
 			--*this;
 			return tmp;
 		}
 
-		friend bool operator==(
-			const bst_tree_iterator &x, const bst_tree_iterator &y) {
+		friend bool operator==(const bst_iterator &x, const bst_iterator &y) {
 			return x.current == y.current;
 		}
 
-		friend bool operator!=(
-			const bst_tree_iterator &x, const bst_tree_iterator &y) {
+		friend bool operator!=(const bst_iterator &x, const bst_iterator &y) {
 			return !(x.current == y.current);
 		}
 
@@ -138,23 +135,23 @@ class bst_tree {
 		bst_node_pointer root;
 	};
 
-	typedef bst_tree_iterator<false>             iterator;
-	typedef bst_tree_iterator<true>              const_iterator;
+	typedef bst_iterator<false>                  iterator;
+	typedef bst_iterator<true>                   const_iterator;
 	typedef ft::reverse_iterator<iterator>       reverse_iterator;
 	typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
 	// construct/copy/destroy
-	explicit bst_tree(const Compare &comp = Compare(),
-		const Allocator             &allocator = Allocator());
+	explicit bst(const Compare &comp = Compare(),
+		const Allocator        &allocator = Allocator());
 	template <class InputIterator>
-	bst_tree(typename ft::enable_if<!ft::is_integral<InputIterator>::value,
-				 InputIterator>::type first,
+	bst(typename ft::enable_if<!ft::is_integral<InputIterator>::value,
+			InputIterator>::type first,
 		InputIterator last, const Compare &comp = Compare(),
 		const Allocator &allocator = Allocator());
-	bst_tree(const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x);
-	~bst_tree();
-	bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &operator=(
-		const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x);
+	bst(const bst<Key, Value, KeyOfValue, Compare, Allocator> &x);
+	~bst();
+	bst<Key, Value, KeyOfValue, Compare, Allocator> &operator=(
+		const bst<Key, Value, KeyOfValue, Compare, Allocator> &x);
 	allocator_type           get_allocator() const;
 
 	// iterators:
@@ -180,23 +177,23 @@ class bst_tree {
 					InputIterator>::type first,
 		InputIterator                    last);
 	void erase(iterator position);
-	size_type erase(const key_type &x);
-	void      erase(iterator first, iterator last);
-	void      swap(bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x);
-	void      clear();
+	size_type      erase(const key_type &x);
+	void           erase(iterator first, iterator last);
+	void           swap(bst<Key, Value, KeyOfValue, Compare, Allocator> &x);
+	void           clear();
 
 	// observers:
-	Compare   key_comp() const;
+	Compare        key_comp() const;
 
 	// operations:
-	iterator  find(const key_type &x);
-	const_iterator               find(const key_type &x) const;
-	size_type                    count(const key_type &x) const;
-	iterator                     lower_bound(const key_type &x);
-	const_iterator               lower_bound(const key_type &x) const;
-	iterator                     upper_bound(const key_type &x);
-	const_iterator               upper_bound(const key_type &x) const;
-	ft::pair<iterator, iterator> equal_range(const key_type &x);
+	iterator       find(const key_type &x);
+	const_iterator find(const key_type &x) const;
+	size_type      count(const key_type &x) const;
+	iterator       lower_bound(const key_type &x);
+	const_iterator lower_bound(const key_type &x) const;
+	iterator       upper_bound(const key_type &x);
+	const_iterator upper_bound(const key_type &x) const;
+	ft::pair<iterator, iterator>             equal_range(const key_type &x);
 	ft::pair<const_iterator, const_iterator> equal_range(
 		const key_type &x) const;
 
@@ -214,20 +211,19 @@ class bst_tree {
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-struct bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_node {
-	typedef bst_tree<Key, Value, KeyOfValue, Compare, Allocator> self_type;
-	self_type::bst_node_pointer                                  parent;
-	self_type::bst_node_pointer                                  left;
-	self_type::bst_node_pointer                                  right;
+struct bst<Key, Value, KeyOfValue, Compare, Allocator>::bst_node {
+	typedef bst<Key, Value, KeyOfValue, Compare, Allocator> self_type;
+	self_type::bst_node_pointer                             parent;
+	self_type::bst_node_pointer                             left;
+	self_type::bst_node_pointer                             right;
 	// Pair of key, mapped_type
-	Value                                                        value;
+	Value                                                   value;
 };
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_node_pointer
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::m_minimum(
-	bst_node_pointer x) {
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::bst_node_pointer
+bst<Key, Value, KeyOfValue, Compare, Allocator>::m_minimum(bst_node_pointer x) {
 	while (x != NULL && x->left) {
 		x = x->left;
 	}
@@ -236,9 +232,8 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::m_minimum(
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_node_pointer
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::m_maximum(
-	bst_node_pointer x) {
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::bst_node_pointer
+bst<Key, Value, KeyOfValue, Compare, Allocator>::m_maximum(bst_node_pointer x) {
 	while (x != NULL && x->right) {
 		x = x->right;
 	}
@@ -246,7 +241,7 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::m_maximum(
 }
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-bool bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::m_equal_keys(
+bool bst<Key, Value, KeyOfValue, Compare, Allocator>::m_equal_keys(
 	const value_type &x, const value_type &y) const {
 	return !m_key_compare(KeyOfValue()(x), KeyOfValue()(y)) &&
 		   !m_key_compare(KeyOfValue()(y), KeyOfValue()(x));
@@ -254,15 +249,14 @@ bool bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::m_equal_keys(
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare,
+typename bst<Key, Value, KeyOfValue, Compare,
 	Allocator>::bst_node_allocator_type
-	bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_node_allocator;
+	bst<Key, Value, KeyOfValue, Compare, Allocator>::bst_node_allocator;
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_node_pointer
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::m_allocate_bst_node()
-	const {
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::bst_node_pointer
+bst<Key, Value, KeyOfValue, Compare, Allocator>::m_allocate_bst_node() const {
 	bst_node_pointer node = bst_node_allocator.allocate(1, this);
 
 	node->parent = NULL;
@@ -273,14 +267,14 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::m_allocate_bst_node()
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_tree(
+bst<Key, Value, KeyOfValue, Compare, Allocator>::bst(
 	const Compare &comp, const Allocator &allocator)
 	: m_allocator(allocator), m_size(0), m_root(NULL), m_key_compare(comp) {}
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
 template <class InputIterator>
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_tree(
+bst<Key, Value, KeyOfValue, Compare, Allocator>::bst(
 	typename ft::enable_if<!ft::is_integral<InputIterator>::value,
 		InputIterator>::type first,
 	InputIterator last, const Compare &comp, const Allocator &allocator)
@@ -290,8 +284,8 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_tree(
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_tree(
-	const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x)
+bst<Key, Value, KeyOfValue, Compare, Allocator>::bst(
+	const bst<Key, Value, KeyOfValue, Compare, Allocator> &x)
 	: m_allocator(x.get_allocator()), m_size(0), m_root(NULL),
 	  m_key_compare(x.m_key_compare) {
 	insert(x.begin(), x.end());
@@ -299,15 +293,15 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::bst_tree(
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::~bst_tree() {
+bst<Key, Value, KeyOfValue, Compare, Allocator>::~bst() {
 	erase(begin(), end());
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::operator=(
-	const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x) {
+bst<Key, Value, KeyOfValue, Compare, Allocator> &
+bst<Key, Value, KeyOfValue, Compare, Allocator>::operator=(
+	const bst<Key, Value, KeyOfValue, Compare, Allocator> &x) {
 	if (this != &x) {
 		erase(begin(), end());
 		insert(x.begin(), x.end());
@@ -317,95 +311,92 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::operator=(
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::allocator_type
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::get_allocator() const {
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::allocator_type
+bst<Key, Value, KeyOfValue, Compare, Allocator>::get_allocator() const {
 	return m_allocator;
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::begin() {
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::iterator
+bst<Key, Value, KeyOfValue, Compare, Allocator>::begin() {
 	return iterator(m_minimum(m_root), m_root);
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::begin() const {
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::iterator
+bst<Key, Value, KeyOfValue, Compare, Allocator>::begin() const {
 	return iterator(m_minimum(m_root), m_root);
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::end() {
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::iterator
+bst<Key, Value, KeyOfValue, Compare, Allocator>::end() {
 	return iterator(NULL, m_root);
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::end() const {
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::iterator
+bst<Key, Value, KeyOfValue, Compare, Allocator>::end() const {
 	return iterator(NULL, m_root);
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::reverse_iterator
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::rbegin() {
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::reverse_iterator
+bst<Key, Value, KeyOfValue, Compare, Allocator>::rbegin() {
 	return reverse_iterator(end());
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare,
-	Allocator>::const_reverse_iterator
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::rbegin() const {
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::const_reverse_iterator
+bst<Key, Value, KeyOfValue, Compare, Allocator>::rbegin() const {
 	return reverse_iterator(end());
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::reverse_iterator
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::rend() {
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::reverse_iterator
+bst<Key, Value, KeyOfValue, Compare, Allocator>::rend() {
 	return reverse_iterator(begin());
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare,
-	Allocator>::const_reverse_iterator
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::rend() const {
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::const_reverse_iterator
+bst<Key, Value, KeyOfValue, Compare, Allocator>::rend() const {
 	return reverse_iterator(begin());
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-bool bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::empty() const {
+bool bst<Key, Value, KeyOfValue, Compare, Allocator>::empty() const {
 	return m_size == 0;
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::size_type
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::size() const {
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::size_type
+bst<Key, Value, KeyOfValue, Compare, Allocator>::size() const {
 	return m_size;
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::size_type
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::max_size() const {
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::size_type
+bst<Key, Value, KeyOfValue, Compare, Allocator>::max_size() const {
 	return bst_node_allocator.max_size();
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-ft::pair<
-	typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator,
+ft::pair<typename bst<Key, Value, KeyOfValue, Compare, Allocator>::iterator,
 	bool>
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::insert(
+bst<Key, Value, KeyOfValue, Compare, Allocator>::insert(
 	const value_type &value) {
 	bst_node_pointer traverse = m_root;
 	bst_node_pointer trailing = NULL;
@@ -437,8 +428,8 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::insert(
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::insert(
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::iterator
+bst<Key, Value, KeyOfValue, Compare, Allocator>::insert(
 	iterator position, const value_type &x) {
 	// TODO Optimize insert based on position
 	(void)position;
@@ -448,7 +439,7 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::insert(
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
 template <class InputIterator>
-void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::insert(
+void bst<Key, Value, KeyOfValue, Compare, Allocator>::insert(
 	typename ft::enable_if<!ft::is_integral<InputIterator>::value,
 		InputIterator>::type first,
 	InputIterator            last) {
@@ -461,7 +452,7 @@ void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::insert(
 // And descendent->parent point to current->parent;
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::m_transplant(
+void bst<Key, Value, KeyOfValue, Compare, Allocator>::m_transplant(
 	bst_node_pointer current, bst_node_pointer descendent) {
 	if (current->parent == NULL) {
 		m_root = descendent;
@@ -478,8 +469,7 @@ void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::m_transplant(
 // From https://www.cs.dartmouth.edu/~thc/cs10/lectures/0428/0428.html
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::erase(
-	iterator position) {
+void bst<Key, Value, KeyOfValue, Compare, Allocator>::erase(iterator position) {
 	bst_node_pointer node = position.base();
 
 	if (node->left == NULL) {
@@ -504,8 +494,8 @@ void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::erase(
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::size_type
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::erase(const key_type &x) {
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::size_type
+bst<Key, Value, KeyOfValue, Compare, Allocator>::erase(const key_type &x) {
 	iterator it = find(x);
 
 	if (it == end()) {
@@ -517,7 +507,7 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::erase(const key_type &x) {
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::erase(
+void bst<Key, Value, KeyOfValue, Compare, Allocator>::erase(
 	iterator first, iterator last) {
 	while (first != last) {
 		erase(first++);
@@ -526,8 +516,8 @@ void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::erase(
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::swap(
-	bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x) {
+void bst<Key, Value, KeyOfValue, Compare, Allocator>::swap(
+	bst<Key, Value, KeyOfValue, Compare, Allocator> &x) {
 	ft::swap(m_allocator, x.m_allocator);
 	ft::swap(m_size, x.m_size);
 	ft::swap(m_root, x.m_root);
@@ -536,22 +526,21 @@ void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::swap(
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-void bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::clear() {
+void bst<Key, Value, KeyOfValue, Compare, Allocator>::clear() {
 	erase(begin(), end());
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::key_compare
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::key_comp() const {
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::key_compare
+bst<Key, Value, KeyOfValue, Compare, Allocator>::key_comp() const {
 	return m_key_compare;
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::find(
-	const key_type &key) {
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::iterator
+bst<Key, Value, KeyOfValue, Compare, Allocator>::find(const key_type &key) {
 	bst_node_pointer traverse = m_root;
 
 	while (traverse != NULL) {
@@ -568,8 +557,8 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::find(
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::const_iterator
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::find(
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::const_iterator
+bst<Key, Value, KeyOfValue, Compare, Allocator>::find(
 	const key_type &key) const {
 	bst_node_pointer traverse = m_root;
 
@@ -587,16 +576,16 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::find(
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::size_type
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::count(
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::size_type
+bst<Key, Value, KeyOfValue, Compare, Allocator>::count(
 	const key_type &key) const {
 	return find(key) == end() ? 0 : 1;
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::lower_bound(
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::iterator
+bst<Key, Value, KeyOfValue, Compare, Allocator>::lower_bound(
 	const key_type &key) {
 	bst_node_pointer trailing = NULL;
 	bst_node_pointer traverse = m_root;
@@ -614,8 +603,8 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::lower_bound(
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::const_iterator
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::lower_bound(
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::const_iterator
+bst<Key, Value, KeyOfValue, Compare, Allocator>::lower_bound(
 	const key_type &key) const {
 	bst_node_pointer trailing = NULL;
 	bst_node_pointer traverse = m_root;
@@ -633,8 +622,8 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::lower_bound(
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::upper_bound(
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::iterator
+bst<Key, Value, KeyOfValue, Compare, Allocator>::upper_bound(
 	const key_type &key) {
 	bst_node_pointer trailing = NULL;
 	bst_node_pointer traverse = m_root;
@@ -652,8 +641,8 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::upper_bound(
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::const_iterator
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::upper_bound(
+typename bst<Key, Value, KeyOfValue, Compare, Allocator>::const_iterator
+bst<Key, Value, KeyOfValue, Compare, Allocator>::upper_bound(
 	const key_type &key) const {
 	bst_node_pointer trailing = NULL;
 	bst_node_pointer traverse = m_root;
@@ -667,76 +656,74 @@ bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::upper_bound(
 		}
 	}
 	return const_iterator(trailing);
+}
+
+template <class Key, class Value, class KeyOfValue, class Compare,
+	class Allocator>
+ft::pair<typename bst<Key, Value, KeyOfValue, Compare, Allocator>::iterator,
+	typename bst<Key, Value, KeyOfValue, Compare, Allocator>::iterator>
+bst<Key, Value, KeyOfValue, Compare, Allocator>::equal_range(
+	const key_type &key) {
+	return ft::make_pair(lower_bound(key), upper_bound(key));
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
 ft::pair<
-	typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator,
-	typename bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::iterator>
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::equal_range(
-	const key_type &key) {
-	return ft::make_pair(lower_bound(key), upper_bound(key));
-}
-
-template <class Key, class Value, class KeyOfValue, class Compare,
-	class Allocator>
-ft::pair<typename bst_tree<Key, Value, KeyOfValue, Compare,
-			 Allocator>::const_iterator,
-	typename bst_tree<Key, Value, KeyOfValue, Compare,
-		Allocator>::const_iterator>
-bst_tree<Key, Value, KeyOfValue, Compare, Allocator>::equal_range(
+	typename bst<Key, Value, KeyOfValue, Compare, Allocator>::const_iterator,
+	typename bst<Key, Value, KeyOfValue, Compare, Allocator>::const_iterator>
+bst<Key, Value, KeyOfValue, Compare, Allocator>::equal_range(
 	const key_type &key) const {
 	return ft::make_pair(lower_bound(key), upper_bound(key));
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-bool operator==(const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x,
-	const bst_tree<Key, Value, KeyOfValue, Compare, Allocator>             &y) {
+bool operator==(const bst<Key, Value, KeyOfValue, Compare, Allocator> &x,
+	const bst<Key, Value, KeyOfValue, Compare, Allocator>             &y) {
 	return x.size() == y.size() && ft::equal(x.begin(), x.end(), y.begin());
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-bool operator!=(const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x,
-	const bst_tree<Key, Value, KeyOfValue, Compare, Allocator>             &y) {
+bool operator!=(const bst<Key, Value, KeyOfValue, Compare, Allocator> &x,
+	const bst<Key, Value, KeyOfValue, Compare, Allocator>             &y) {
 	return !(x == y);
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-bool operator<(const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x,
-	const bst_tree<Key, Value, KeyOfValue, Compare, Allocator>            &y) {
+bool operator<(const bst<Key, Value, KeyOfValue, Compare, Allocator> &x,
+	const bst<Key, Value, KeyOfValue, Compare, Allocator>            &y) {
 	return ft::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end());
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-bool operator>(const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x,
-	const bst_tree<Key, Value, KeyOfValue, Compare, Allocator>            &y) {
+bool operator>(const bst<Key, Value, KeyOfValue, Compare, Allocator> &x,
+	const bst<Key, Value, KeyOfValue, Compare, Allocator>            &y) {
 	return y < x;
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-bool operator<=(const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x,
-	const bst_tree<Key, Value, KeyOfValue, Compare, Allocator>             &y) {
+bool operator<=(const bst<Key, Value, KeyOfValue, Compare, Allocator> &x,
+	const bst<Key, Value, KeyOfValue, Compare, Allocator>             &y) {
 	return !(y < x);
 }
 
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-bool operator>=(const bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x,
-	const bst_tree<Key, Value, KeyOfValue, Compare, Allocator>             &y) {
+bool operator>=(const bst<Key, Value, KeyOfValue, Compare, Allocator> &x,
+	const bst<Key, Value, KeyOfValue, Compare, Allocator>             &y) {
 	return !(x < y);
 }
 
 // specialized algorithms:
 template <class Key, class Value, class KeyOfValue, class Compare,
 	class Allocator>
-void swap(bst_tree<Key, Value, KeyOfValue, Compare, Allocator> &x,
-	bst_tree<Key, Value, KeyOfValue, Compare, Allocator>       &y) {
+void swap(bst<Key, Value, KeyOfValue, Compare, Allocator> &x,
+	bst<Key, Value, KeyOfValue, Compare, Allocator>       &y) {
 	x.swap(y);
 }
 

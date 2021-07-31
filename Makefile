@@ -5,7 +5,7 @@ CPPFLAGS = -Wall -Werror -Wextra -std=c++98 -ansi
 CXX = clang++
 
 OBJ = main.o
-DEPS = algorithm.hpp  bst_tree.hpp  functional.hpp  iterator.hpp \
+DEPS = algorithm.hpp  bst.hpp  functional.hpp  iterator.hpp \
 	   list.hpp  map.hpp  memory.hpp  queue.hpp  stack.hpp  \
 	   type_traits.hpp  utility.hpp  utils.hpp  vector.hpp
 

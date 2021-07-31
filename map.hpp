@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "bst_tree.hpp"
+#include "bst.hpp"
 #include "functional.hpp"
 #include "iterator.hpp"
 #include "type_traits.hpp"
@@ -25,7 +25,7 @@ class map {
 	typedef typename Allocator::const_pointer   const_pointer;
 
   private:
-	typedef bst_tree<key_type, value_type, select_first<value_type, key_type>,
+	typedef bst<key_type, value_type, select_first<value_type, key_type>,
 		key_compare, allocator_type>
 			 rep_type;
 	rep_type m_tree;
