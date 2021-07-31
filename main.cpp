@@ -259,6 +259,10 @@ static void test_map_copy_constructor(const Map1 &, const Value1 &,
 	add_random_map_values(m1, Value1(), m2, Value2(), generateRandomKey,
 		generateRandomMappedType, 30);
 	test_equal_map_container(m1, m2, function_name, line_number);
+
+	Map1 m1_copy(m1);
+	Map2 m2_copy(m2);
+	test_equal_map_container(m1_copy, m2_copy, function_name, line_number);
 }
 
 template <class Map1, class Value1, class Map2, class Value2, class Key,
