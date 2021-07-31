@@ -228,7 +228,7 @@ template <class Map1, class Value1, class Map2, class Value2, class Key,
 static void add_random_map_values(Map1 &map1, const Value1 &, Map2 &map2,
 	const Value2 &, Key (*generateRandomKey)(),
 	MappedType (*generateRandomMappedType)(), std::size_t n) {
-	while (n--) {
+	while (map1.size() < n && map2.size() < n) {
 		Key        key = generateRandomKey();
 		MappedType mapped_type = generateRandomMappedType();
 		Value1     value1 = Value1(key, mapped_type);
@@ -791,6 +791,29 @@ static void test_map_upper_bound(const Map1 &, const Value1 &, const Map2 &,
 	typename Map1::const_iterator cit1 = m1.upper_bound(lesser_key);
 	typename Map2::const_iterator cit2 = m2.upper_bound(lesser_key);
 	test_map_values("upper_bound const_iterator", *(cit1), *(cit2),
+		function_name, line_number);
+}
+
+template <class Map1, class Value1, class Map1Return, class Map2, class Value2,
+	class Map2Return, class Key, class MappedType>
+static void test_map_equal_range(const Map1 &, const Value1 &,
+	const Map1Return &, const Map2 &, const Value2 &, const Map2Return &,
+	Key (*generateRandomKey)(), MappedType (*generateRandomMappedType)(),
+	const char *function_name, int line_number) {
+
+	Map1 m1;
+	Map2 m2;
+
+	add_random_map_values(m1, Value1(), m2, Value2(), generateRandomKey,
+		generateRandomMappedType, 10);
+	test_equal_map_container(m1, m2, function_name, line_number);
+
+	Map1Return map1_return = m1.equal_range(m1.begin()->first);
+	Map2Return map2_return = m2.equal_range(m2.begin()->first);
+
+	test_map_values("equal_range", *(map1_return.first), *(map2_return.first),
+		function_name, line_number);
+	test_map_values("equal_range", *(map1_return.second), *(map2_return.second),
 		function_name, line_number);
 }
 
@@ -2185,6 +2208,22 @@ void test_map() {
 		ft::pair<int, std::string>(), std::map<int, std::string>(),
 		std::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
+	test_map_equal_range(ft::map<int, std::string>(),
+		ft::pair<int, std::string>(),
+		ft::pair<ft::map<int, std::string>::iterator,
+			ft::map<int, std::string>::iterator>(),
+		std::map<int, std::string>(), std::pair<int, std::string>(),
+		std::pair<std::map<int, std::string>::iterator,
+			std::map<int, std::string>::iterator>(),
+		std::rand, generateRandomString, __FUNCTION__, __LINE__);
+	test_map_equal_range(ft::map<int, std::string>(),
+		ft::pair<int, std::string>(),
+		ft::pair<ft::map<int, std::string>::const_iterator,
+			ft::map<int, std::string>::const_iterator>(),
+		std::map<int, std::string>(), std::pair<int, std::string>(),
+		std::pair<std::map<int, std::string>::const_iterator,
+			std::map<int, std::string>::const_iterator>(),
+		std::rand, generateRandomString, __FUNCTION__, __LINE__);
 }
 
 int main() {
