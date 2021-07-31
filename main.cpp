@@ -15,6 +15,14 @@
 #include "utility.hpp"
 #include "vector.hpp"
 
+#ifndef NAMESPACE1
+#	define NAMESPACE1 ft
+#endif
+
+#ifndef NAMESPACE2
+#	define NAMESPACE2 std
+#endif
+
 static int g_errors;
 
 template <class Container>
@@ -1938,343 +1946,386 @@ static void test_container_sort_compare(const Container1 &, const Container2 &,
 }
 
 static void test_vector() {
-	test_container_default_constructor(
-		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
-	test_container_count_constructor(
-		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
-	test_container_range_constructor(ft::vector<int>(), std::vector<int>(),
-		std::rand, __FUNCTION__, __LINE__);
-	test_container_copy_constructor(ft::vector<int>(5), __FUNCTION__, __LINE__);
+	test_container_default_constructor(NAMESPACE1::vector<int>(),
+		NAMESPACE2::vector<int>(), __FUNCTION__, __LINE__);
+	test_container_count_constructor(NAMESPACE1::vector<int>(),
+		NAMESPACE2::vector<int>(), __FUNCTION__, __LINE__);
+	test_container_range_constructor(NAMESPACE1::vector<int>(),
+		NAMESPACE2::vector<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_copy_constructor(
+		NAMESPACE1::vector<int>(5), __FUNCTION__, __LINE__);
 	test_container_assignment_operator(
-		ft::vector<std::string>(10), __FUNCTION__, __LINE__);
-	test_container_assign_count(
-		ft::vector<int>(), std::vector<int>(), 4, __FUNCTION__, __LINE__);
-	test_container_assign_range(ft::vector<float>(10, 100.0f),
-		std::vector<float>(10, 100.0f), __FUNCTION__, __LINE__);
-	test_container_get_allocator(
-		ft::vector<char>(), std::vector<char>(), __FUNCTION__, __LINE__);
-	test_container_begin(
-		ft::vector<double>(), std::vector<double>(), __FUNCTION__, __LINE__);
-	test_container_end(ft::vector<std::string>(), std::vector<std::string>(),
+		NAMESPACE1::vector<std::string>(10), __FUNCTION__, __LINE__);
+	test_container_assign_count(NAMESPACE1::vector<int>(),
+		NAMESPACE2::vector<int>(), 4, __FUNCTION__, __LINE__);
+	test_container_assign_range(NAMESPACE1::vector<float>(10, 100.0f),
+		NAMESPACE2::vector<float>(10, 100.0f), __FUNCTION__, __LINE__);
+	test_container_get_allocator(NAMESPACE1::vector<char>(),
+		NAMESPACE2::vector<char>(), __FUNCTION__, __LINE__);
+	test_container_begin(NAMESPACE1::vector<double>(),
+		NAMESPACE2::vector<double>(), __FUNCTION__, __LINE__);
+	test_container_end(NAMESPACE1::vector<std::string>(),
+		NAMESPACE2::vector<std::string>(), __FUNCTION__, __LINE__);
+	test_container_rbegin(NAMESPACE1::vector<int>(), NAMESPACE2::vector<int>(),
 		__FUNCTION__, __LINE__);
-	test_container_rbegin(
-		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
-	test_container_rend(
-		ft::vector<char>(), std::vector<char>(), __FUNCTION__, __LINE__);
-	test_container_max_size(
-		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
-	test_container_resize(ft::vector<char>(1, 'a'), std::vector<char>(1, 'a'),
+	test_container_rend(NAMESPACE1::vector<char>(), NAMESPACE2::vector<char>(),
 		__FUNCTION__, __LINE__);
-	test_container_empty(
-		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
-	test_container_not_empty(
-		ft::vector<int>(1, 1), std::vector<int>(1, 1), __FUNCTION__, __LINE__);
-	test_container_array_subscript(
-		ft::vector<int>(), std::vector<int>(), 1, __FUNCTION__, __LINE__);
-	test_container_at(
-		ft::vector<int>(), std::vector<int>(), 1, __FUNCTION__, __LINE__);
-	test_container_front(
-		ft::vector<int>(), std::vector<int>(), 123, __FUNCTION__, __LINE__);
-	test_container_back(
-		ft::vector<int>(), std::vector<int>(), 123, __FUNCTION__, __LINE__);
-	test_container_reserve(ft::vector<int>(10, 42), std::vector<int>(10, 42),
+	test_container_max_size(NAMESPACE1::vector<int>(),
+		NAMESPACE2::vector<int>(), __FUNCTION__, __LINE__);
+	test_container_resize(NAMESPACE1::vector<char>(1, 'a'),
+		NAMESPACE2::vector<char>(1, 'a'), __FUNCTION__, __LINE__);
+	test_container_empty(NAMESPACE1::vector<int>(), NAMESPACE2::vector<int>(),
 		__FUNCTION__, __LINE__);
-	test_container_push_back(
-		ft::vector<int>(), std::vector<int>(), 123, __FUNCTION__, __LINE__);
-	test_container_pop_back(
-		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
-	test_container_insert_one(
-		ft::vector<int>(), std::vector<int>(), 1, __FUNCTION__, __LINE__);
-	test_container_insert_count(
-		ft::vector<int>(), std::vector<int>(), 42, __FUNCTION__, __LINE__);
-	test_container_insert_range(
-		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
-	test_container_erase_position(ft::vector<int>(), std::vector<int>(),
-		std::rand, __FUNCTION__, __LINE__);
-	test_container_erase_range(ft::vector<int>(), std::vector<int>(), std::rand,
+	test_container_not_empty(NAMESPACE1::vector<int>(1, 1),
+		NAMESPACE2::vector<int>(1, 1), __FUNCTION__, __LINE__);
+	test_container_array_subscript(NAMESPACE1::vector<int>(),
+		NAMESPACE2::vector<int>(), 1, __FUNCTION__, __LINE__);
+	test_container_at(NAMESPACE1::vector<int>(), NAMESPACE2::vector<int>(), 1,
 		__FUNCTION__, __LINE__);
-	test_container_swap(
-		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
-	test_container_clear(
-		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
-	test_container_equal_operator(
-		ft::vector<int>(), std::vector<int>(), 123, __FUNCTION__, __LINE__);
-	test_container_notequal_operator(
-		ft::vector<int>(), std::vector<int>(), 123, __FUNCTION__, __LINE__);
-	test_container_less_operator(ft::vector<std::string>(),
-		std::vector<std::string>(), std::string("abcd"), std::string("bcde"),
+	test_container_front(NAMESPACE1::vector<int>(), NAMESPACE2::vector<int>(),
+		123, __FUNCTION__, __LINE__);
+	test_container_back(NAMESPACE1::vector<int>(), NAMESPACE2::vector<int>(),
+		123, __FUNCTION__, __LINE__);
+	test_container_reserve(NAMESPACE1::vector<int>(10, 42),
+		NAMESPACE2::vector<int>(10, 42), __FUNCTION__, __LINE__);
+	test_container_push_back(NAMESPACE1::vector<int>(),
+		NAMESPACE2::vector<int>(), 123, __FUNCTION__, __LINE__);
+	test_container_pop_back(NAMESPACE1::vector<int>(),
+		NAMESPACE2::vector<int>(), __FUNCTION__, __LINE__);
+	test_container_insert_one(NAMESPACE1::vector<int>(),
+		NAMESPACE2::vector<int>(), 1, __FUNCTION__, __LINE__);
+	test_container_insert_count(NAMESPACE1::vector<int>(),
+		NAMESPACE2::vector<int>(), 42, __FUNCTION__, __LINE__);
+	test_container_insert_range(NAMESPACE1::vector<int>(),
+		NAMESPACE2::vector<int>(), __FUNCTION__, __LINE__);
+	test_container_erase_position(NAMESPACE1::vector<int>(),
+		NAMESPACE2::vector<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_erase_range(NAMESPACE1::vector<int>(),
+		NAMESPACE2::vector<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_swap(NAMESPACE1::vector<int>(), NAMESPACE2::vector<int>(),
 		__FUNCTION__, __LINE__);
-	test_container_greater_operator(ft::vector<std::string>(),
-		std::vector<std::string>(), std::string("abcd"), std::string("bcde"),
+	test_container_clear(NAMESPACE1::vector<int>(), NAMESPACE2::vector<int>(),
 		__FUNCTION__, __LINE__);
-	test_container_lessequal_operator(ft::vector<std::string>(),
-		std::vector<std::string>(), std::string("abcd"), std::string("bcde"),
-		__FUNCTION__, __LINE__);
-	test_container_greaterequal_operator(ft::vector<std::string>(),
-		std::vector<std::string>(), std::string("abcd"), std::string("bcde"),
-		__FUNCTION__, __LINE__);
-	test_container_swap_overload(
-		ft::vector<int>(), std::vector<int>(), __FUNCTION__, __LINE__);
+	test_container_equal_operator(NAMESPACE1::vector<int>(),
+		NAMESPACE2::vector<int>(), 123, __FUNCTION__, __LINE__);
+	test_container_notequal_operator(NAMESPACE1::vector<int>(),
+		NAMESPACE2::vector<int>(), 123, __FUNCTION__, __LINE__);
+	test_container_less_operator(NAMESPACE1::vector<std::string>(),
+		NAMESPACE2::vector<std::string>(), std::string("abcd"),
+		std::string("bcde"), __FUNCTION__, __LINE__);
+	test_container_greater_operator(NAMESPACE1::vector<std::string>(),
+		NAMESPACE2::vector<std::string>(), std::string("abcd"),
+		std::string("bcde"), __FUNCTION__, __LINE__);
+	test_container_lessequal_operator(NAMESPACE1::vector<std::string>(),
+		NAMESPACE2::vector<std::string>(), std::string("abcd"),
+		std::string("bcde"), __FUNCTION__, __LINE__);
+	test_container_greaterequal_operator(NAMESPACE1::vector<std::string>(),
+		NAMESPACE2::vector<std::string>(), std::string("abcd"),
+		std::string("bcde"), __FUNCTION__, __LINE__);
+	test_container_swap_overload(NAMESPACE1::vector<int>(),
+		NAMESPACE2::vector<int>(), __FUNCTION__, __LINE__);
 }
 
 static void test_list() {
-	test_container_default_constructor(
-		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
-	test_container_count_constructor(
-		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
-	test_container_range_constructor(
-		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_container_copy_constructor(ft::list<int>(5), __FUNCTION__, __LINE__);
+	test_container_default_constructor(NAMESPACE1::list<int>(),
+		NAMESPACE2::list<int>(), __FUNCTION__, __LINE__);
+	test_container_count_constructor(NAMESPACE1::list<int>(),
+		NAMESPACE2::list<int>(), __FUNCTION__, __LINE__);
+	test_container_range_constructor(NAMESPACE1::list<int>(),
+		NAMESPACE2::list<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_copy_constructor(
+		NAMESPACE1::list<int>(5), __FUNCTION__, __LINE__);
 	test_container_assignment_operator(
-		ft::list<std::string>(5), __FUNCTION__, __LINE__);
-	test_container_assign_count(
-		ft::list<int>(), std::list<int>(), 4, __FUNCTION__, __LINE__);
-	test_container_assign_range(ft::list<float>(10, 100.0f),
-		std::list<float>(10, 100.0f), __FUNCTION__, __LINE__);
-	test_container_get_allocator(
-		ft::list<char>(), std::list<char>(), __FUNCTION__, __LINE__);
-	test_container_begin(
-		ft::list<double>(), std::list<double>(), __FUNCTION__, __LINE__);
-	test_container_end(ft::list<std::string>(), std::list<std::string>(),
+		NAMESPACE1::list<std::string>(5), __FUNCTION__, __LINE__);
+	test_container_assign_count(NAMESPACE1::list<int>(),
+		NAMESPACE2::list<int>(), 4, __FUNCTION__, __LINE__);
+	test_container_assign_range(NAMESPACE1::list<float>(10, 100.0f),
+		NAMESPACE2::list<float>(10, 100.0f), __FUNCTION__, __LINE__);
+	test_container_get_allocator(NAMESPACE1::list<char>(),
+		NAMESPACE2::list<char>(), __FUNCTION__, __LINE__);
+	test_container_begin(NAMESPACE1::list<double>(), NAMESPACE2::list<double>(),
 		__FUNCTION__, __LINE__);
-	test_container_rbegin(
-		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
-	test_container_rend(
-		ft::list<char>(), std::list<char>(), __FUNCTION__, __LINE__);
-	test_container_empty(
-		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
-	test_container_not_empty(
-		ft::list<int>(1, 1), std::list<int>(1, 1), __FUNCTION__, __LINE__);
-	test_container_max_size(
-		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
-	test_container_resize(ft::list<char>(1, 'a'), std::list<char>(1, 'a'),
+	test_container_end(NAMESPACE1::list<std::string>(),
+		NAMESPACE2::list<std::string>(), __FUNCTION__, __LINE__);
+	test_container_rbegin(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
 		__FUNCTION__, __LINE__);
-	test_container_front(
-		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
-	test_container_back(
-		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
-	test_container_push_front(
-		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
-	test_container_pop_front(
-		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
-	test_container_push_back(
-		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
-	test_container_pop_back(
-		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
-	test_container_insert_one(
-		ft::list<int>(), std::list<int>(), 1, __FUNCTION__, __LINE__);
-	test_container_insert_count(
-		ft::list<int>(), std::list<int>(), 42, __FUNCTION__, __LINE__);
-	test_container_insert_range(
-		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
-	test_container_erase_position(
-		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_container_erase_range(
-		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_container_swap(
-		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
-	test_container_clear(
-		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
-	test_list_splice_entire_list(
-		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_list_splice_one_iterator(
-		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_list_splice_range(
-		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_list_remove(
-		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_list_remove_if(ft::list<int>(), std::list<int>(), std::rand, is_even,
+	test_container_rend(NAMESPACE1::list<char>(), NAMESPACE2::list<char>(),
 		__FUNCTION__, __LINE__);
-	test_list_unique(
-		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_list_unique_predicate(ft::list<int>(), std::list<int>(), std::rand,
-		both_numbers_are_even, __FUNCTION__, __LINE__);
-	test_list_merge(
-		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_list_merge_compare(ft::list<int>(), std::list<int>(), std::rand,
-		ft::less<int>(), __FUNCTION__, __LINE__);
-	test_container_sort(
-		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_container_sort_compare(ft::list<int>(), std::list<int>(), std::rand,
-		ft::less<int>(), __FUNCTION__, __LINE__);
-	test_list_reverse(
-		ft::list<int>(), std::list<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_container_equal_operator(
-		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
-	test_container_notequal_operator(
-		ft::list<int>(), std::list<int>(), 123, __FUNCTION__, __LINE__);
-	test_container_less_operator(ft::list<std::string>(),
-		std::list<std::string>(), std::string("abcd"), std::string("bcde"),
+	test_container_empty(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
 		__FUNCTION__, __LINE__);
-	test_container_greater_operator(ft::list<std::string>(),
-		std::list<std::string>(), std::string("abcd"), std::string("bcde"),
+	test_container_not_empty(NAMESPACE1::list<int>(1, 1),
+		NAMESPACE2::list<int>(1, 1), __FUNCTION__, __LINE__);
+	test_container_max_size(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
 		__FUNCTION__, __LINE__);
-	test_container_lessequal_operator(ft::list<std::string>(),
-		std::list<std::string>(), std::string("abcd"), std::string("bcde"),
+	test_container_resize(NAMESPACE1::list<char>(1, 'a'),
+		NAMESPACE2::list<char>(1, 'a'), __FUNCTION__, __LINE__);
+	test_container_front(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(), 123,
 		__FUNCTION__, __LINE__);
-	test_container_greaterequal_operator(ft::list<std::string>(),
-		std::list<std::string>(), std::string("abcd"), std::string("bcde"),
+	test_container_back(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(), 123,
 		__FUNCTION__, __LINE__);
-	test_container_swap_overload(
-		ft::list<int>(), std::list<int>(), __FUNCTION__, __LINE__);
+	test_container_push_front(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
+		123, __FUNCTION__, __LINE__);
+	test_container_pop_front(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
+		__FUNCTION__, __LINE__);
+	test_container_push_back(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
+		123, __FUNCTION__, __LINE__);
+	test_container_pop_back(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
+		__FUNCTION__, __LINE__);
+	test_container_insert_one(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
+		1, __FUNCTION__, __LINE__);
+	test_container_insert_count(NAMESPACE1::list<int>(),
+		NAMESPACE2::list<int>(), 42, __FUNCTION__, __LINE__);
+	test_container_insert_range(NAMESPACE1::list<int>(),
+		NAMESPACE2::list<int>(), __FUNCTION__, __LINE__);
+	test_container_erase_position(NAMESPACE1::list<int>(),
+		NAMESPACE2::list<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_erase_range(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
+		std::rand, __FUNCTION__, __LINE__);
+	test_container_swap(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
+		__FUNCTION__, __LINE__);
+	test_container_clear(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
+		__FUNCTION__, __LINE__);
+	test_list_splice_entire_list(NAMESPACE1::list<int>(),
+		NAMESPACE2::list<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_list_splice_one_iterator(NAMESPACE1::list<int>(),
+		NAMESPACE2::list<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_list_splice_range(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
+		std::rand, __FUNCTION__, __LINE__);
+	test_list_remove(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
+		std::rand, __FUNCTION__, __LINE__);
+	test_list_remove_if(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
+		std::rand, is_even, __FUNCTION__, __LINE__);
+	test_list_unique(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
+		std::rand, __FUNCTION__, __LINE__);
+	test_list_unique_predicate(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
+		std::rand, both_numbers_are_even, __FUNCTION__, __LINE__);
+	test_list_merge(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(), std::rand,
+		__FUNCTION__, __LINE__);
+	test_list_merge_compare(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
+		std::rand, NAMESPACE1::less<int>(), __FUNCTION__, __LINE__);
+	test_container_sort(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
+		std::rand, __FUNCTION__, __LINE__);
+	test_container_sort_compare(NAMESPACE1::list<int>(),
+		NAMESPACE2::list<int>(), std::rand, NAMESPACE1::less<int>(),
+		__FUNCTION__, __LINE__);
+	test_list_reverse(NAMESPACE1::list<int>(), NAMESPACE2::list<int>(),
+		std::rand, __FUNCTION__, __LINE__);
+	test_container_equal_operator(NAMESPACE1::list<int>(),
+		NAMESPACE2::list<int>(), 123, __FUNCTION__, __LINE__);
+	test_container_notequal_operator(NAMESPACE1::list<int>(),
+		NAMESPACE2::list<int>(), 123, __FUNCTION__, __LINE__);
+	test_container_less_operator(NAMESPACE1::list<std::string>(),
+		NAMESPACE2::list<std::string>(), std::string("abcd"),
+		std::string("bcde"), __FUNCTION__, __LINE__);
+	test_container_greater_operator(NAMESPACE1::list<std::string>(),
+		NAMESPACE2::list<std::string>(), std::string("abcd"),
+		std::string("bcde"), __FUNCTION__, __LINE__);
+	test_container_lessequal_operator(NAMESPACE1::list<std::string>(),
+		NAMESPACE2::list<std::string>(), std::string("abcd"),
+		std::string("bcde"), __FUNCTION__, __LINE__);
+	test_container_greaterequal_operator(NAMESPACE1::list<std::string>(),
+		NAMESPACE2::list<std::string>(), std::string("abcd"),
+		std::string("bcde"), __FUNCTION__, __LINE__);
+	test_container_swap_overload(NAMESPACE1::list<int>(),
+		NAMESPACE2::list<int>(), __FUNCTION__, __LINE__);
 }
 
 void test_queue() {
-	test_container_adaptor_default_constructor(
-		ft::queue<int>(), std::queue<int>(), __FUNCTION__, __LINE__);
-	test_container_adaptor_empty(
-		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_container_adaptor_size(
-		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_container_adaptor_front(
-		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_container_adaptor_back(
-		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_queue_push(
-		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_queue_pop(
-		ft::queue<int>(), std::queue<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_adaptor_default_constructor(NAMESPACE1::queue<int>(),
+		NAMESPACE2::queue<int>(), __FUNCTION__, __LINE__);
+	test_container_adaptor_empty(NAMESPACE1::queue<int>(),
+		NAMESPACE2::queue<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_adaptor_size(NAMESPACE1::queue<int>(),
+		NAMESPACE2::queue<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_adaptor_front(NAMESPACE1::queue<int>(),
+		NAMESPACE2::queue<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_adaptor_back(NAMESPACE1::queue<int>(),
+		NAMESPACE2::queue<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_queue_push(NAMESPACE1::queue<int>(), NAMESPACE2::queue<int>(),
+		std::rand, __FUNCTION__, __LINE__);
+	test_queue_pop(NAMESPACE1::queue<int>(), NAMESPACE2::queue<int>(),
+		std::rand, __FUNCTION__, __LINE__);
 	test_container_adaptor_comparison_operators(
-		ft::queue<int>(), std::rand, __FUNCTION__, __LINE__);
+		NAMESPACE1::queue<int>(), std::rand, __FUNCTION__, __LINE__);
 }
 
 void test_stack() {
-	test_container_adaptor_default_constructor(
-		ft::stack<int>(), std::stack<int>(), __FUNCTION__, __LINE__);
-	test_container_adaptor_empty(
-		ft::stack<int>(), std::stack<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_container_adaptor_size(
-		ft::stack<int>(), std::stack<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_container_adaptor_top(
-		ft::stack<int>(), std::stack<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_stack_push(
-		ft::stack<int>(), std::stack<int>(), std::rand, __FUNCTION__, __LINE__);
-	test_stack_pop(
-		ft::stack<int>(), std::stack<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_adaptor_default_constructor(NAMESPACE1::stack<int>(),
+		NAMESPACE2::stack<int>(), __FUNCTION__, __LINE__);
+	test_container_adaptor_empty(NAMESPACE1::stack<int>(),
+		NAMESPACE2::stack<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_adaptor_size(NAMESPACE1::stack<int>(),
+		NAMESPACE2::stack<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_container_adaptor_top(NAMESPACE1::stack<int>(),
+		NAMESPACE2::stack<int>(), std::rand, __FUNCTION__, __LINE__);
+	test_stack_push(NAMESPACE1::stack<int>(), NAMESPACE2::stack<int>(),
+		std::rand, __FUNCTION__, __LINE__);
+	test_stack_pop(NAMESPACE1::stack<int>(), NAMESPACE2::stack<int>(),
+		std::rand, __FUNCTION__, __LINE__);
 	test_container_adaptor_comparison_operators(
-		ft::stack<int>(), std::rand, __FUNCTION__, __LINE__);
+		NAMESPACE1::stack<int>(), std::rand, __FUNCTION__, __LINE__);
 }
 
 void test_map() {
-	test_map_default_constructor(
-		ft::map<int, int>(), std::map<int, int>(), __FUNCTION__, __LINE__);
-	test_map_range_constructor(ft::map<int, std::string>(),
-		ft::pair<int, std::string>(), std::map<int, std::string>(),
-		std::pair<int, std::string>(), std::rand, generateRandomString,
+	test_map_default_constructor(NAMESPACE1::map<int, int>(),
+		NAMESPACE2::map<int, int>(), __FUNCTION__, __LINE__);
+	test_map_range_constructor(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
-	test_map_copy_constructor(ft::map<int, std::string>(),
-		ft::pair<int, std::string>(), std::map<int, std::string>(),
-		std::pair<int, std::string>(), std::rand, generateRandomString,
+	test_map_copy_constructor(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
-	test_map_assignment_operator(ft::map<int, std::string>(),
-		ft::pair<int, std::string>(), std::map<int, std::string>(),
-		std::pair<int, std::string>(), std::rand, generateRandomString,
+	test_map_assignment_operator(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
-	test_map_begin(ft::map<int, std::string>(), ft::pair<int, std::string>(),
-		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
-		generateRandomString, __FUNCTION__, __LINE__);
-	test_map_end(ft::map<int, std::string>(), ft::pair<int, std::string>(),
-		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
-		generateRandomString, __FUNCTION__, __LINE__);
-	test_map_rbegin(ft::map<int, std::string>(), ft::pair<int, std::string>(),
-		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
-		generateRandomString, __FUNCTION__, __LINE__);
-	test_map_rend(ft::map<int, std::string>(), ft::pair<int, std::string>(),
-		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
-		generateRandomString, __FUNCTION__, __LINE__);
-	test_map_empty(ft::map<int, std::string>(), ft::pair<int, std::string>(),
-		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
-		generateRandomString, __FUNCTION__, __LINE__);
-	test_map_element_access(ft::map<int, std::string>(),
-		ft::pair<int, std::string>(), std::map<int, std::string>(),
-		std::pair<int, std::string>(), std::rand, generateRandomString,
+	test_map_begin(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
-	test_map_insert_value(ft::map<int, std::string>(),
-		ft::pair<int, std::string>(),
-		ft::pair<ft::map<int, std::string>::iterator, bool>(),
-		std::map<int, std::string>(), std::pair<int, std::string>(),
-		std::pair<std::map<int, std::string>::iterator, bool>(), std::rand,
-		generateRandomString, __FUNCTION__, __LINE__);
-	test_map_insert_hint(ft::map<int, std::string>(),
-		ft::pair<int, std::string>(), std::map<int, std::string>(),
-		std::pair<int, std::string>(), std::rand, generateRandomString,
+	test_map_end(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
-	test_map_insert_range(ft::map<int, std::string>(),
-		ft::pair<int, std::string>(), std::map<int, std::string>(),
-		std::pair<int, std::string>(), std::rand, generateRandomString,
+	test_map_rbegin(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
-	test_map_erase_position(ft::map<int, std::string>(),
-		ft::pair<int, std::string>(), std::map<int, std::string>(),
-		std::pair<int, std::string>(), std::rand, generateRandomString,
+	test_map_rend(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
-	test_map_erase_key(ft::map<int, std::string>(),
-		ft::pair<int, std::string>(), std::map<int, std::string>(),
-		std::pair<int, std::string>(), std::rand, generateRandomString,
+	test_map_empty(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
-	test_map_erase_range(ft::map<int, std::string>(),
-		ft::pair<int, std::string>(), std::map<int, std::string>(),
-		std::pair<int, std::string>(), std::rand, generateRandomString,
+	test_map_element_access(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
-	test_map_swap(ft::map<int, std::string>(), ft::pair<int, std::string>(),
-		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
-		generateRandomString, __FUNCTION__, __LINE__);
-	test_map_clear(ft::map<int, std::string>(), ft::pair<int, std::string>(),
-		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
-		generateRandomString, __FUNCTION__, __LINE__);
-	test_map_key_comp(ft::map<int, std::string>(), ft::pair<int, std::string>(),
-		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
-		generateRandomString, __FUNCTION__, __LINE__);
-	test_map_value_comp(ft::map<int, std::string>(),
-		ft::pair<int, std::string>(), std::map<int, std::string>(),
-		std::pair<int, std::string>(), std::rand, generateRandomString,
-		__FUNCTION__, __LINE__);
-	test_map_find(ft::map<int, std::string>(), ft::pair<int, std::string>(),
-		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
-		generateRandomString, __FUNCTION__, __LINE__);
-	test_map_count(ft::map<int, std::string>(), ft::pair<int, std::string>(),
-		std::map<int, std::string>(), std::pair<int, std::string>(), std::rand,
-		generateRandomString, __FUNCTION__, __LINE__);
-	test_map_lower_bound(ft::map<int, std::string>(),
-		ft::pair<int, std::string>(), std::map<int, std::string>(),
-		std::pair<int, std::string>(), std::rand, generateRandomString,
-		__FUNCTION__, __LINE__);
-	test_map_upper_bound(ft::map<int, std::string>(),
-		ft::pair<int, std::string>(), std::map<int, std::string>(),
-		std::pair<int, std::string>(), std::rand, generateRandomString,
-		__FUNCTION__, __LINE__);
-	test_map_equal_range(ft::map<int, std::string>(),
-		ft::pair<int, std::string>(),
-		ft::pair<ft::map<int, std::string>::iterator,
-			ft::map<int, std::string>::iterator>(),
-		std::map<int, std::string>(), std::pair<int, std::string>(),
-		std::pair<std::map<int, std::string>::iterator,
-			std::map<int, std::string>::iterator>(),
+	test_map_insert_value(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE1::pair<NAMESPACE1::map<int, std::string>::iterator, bool>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(),
+		NAMESPACE2::pair<NAMESPACE2::map<int, std::string>::iterator, bool>(),
 		std::rand, generateRandomString, __FUNCTION__, __LINE__);
-	test_map_equal_range(ft::map<int, std::string>(),
-		ft::pair<int, std::string>(),
-		ft::pair<ft::map<int, std::string>::const_iterator,
-			ft::map<int, std::string>::const_iterator>(),
-		std::map<int, std::string>(), std::pair<int, std::string>(),
-		std::pair<std::map<int, std::string>::const_iterator,
-			std::map<int, std::string>::const_iterator>(),
+	test_map_insert_hint(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_insert_range(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_erase_position(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_erase_key(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_erase_range(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_swap(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_clear(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_key_comp(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_value_comp(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_find(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_count(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_lower_bound(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_upper_bound(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
+		__FUNCTION__, __LINE__);
+	test_map_equal_range(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE1::pair<NAMESPACE1::map<int, std::string>::iterator,
+			NAMESPACE1::map<int, std::string>::iterator>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(),
+		NAMESPACE2::pair<NAMESPACE2::map<int, std::string>::iterator,
+			NAMESPACE2::map<int, std::string>::iterator>(),
 		std::rand, generateRandomString, __FUNCTION__, __LINE__);
-	test_map_comparison_operators(ft::map<int, std::string>(),
-		ft::pair<int, std::string>(), std::map<int, std::string>(),
-		std::pair<int, std::string>(), std::rand, generateRandomString,
+	test_map_equal_range(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE1::pair<NAMESPACE1::map<int, std::string>::const_iterator,
+			NAMESPACE1::map<int, std::string>::const_iterator>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(),
+		NAMESPACE2::pair<NAMESPACE2::map<int, std::string>::const_iterator,
+			NAMESPACE2::map<int, std::string>::const_iterator>(),
+		std::rand, generateRandomString, __FUNCTION__, __LINE__);
+	test_map_comparison_operators(NAMESPACE1::map<int, std::string>(),
+		NAMESPACE1::pair<int, std::string>(),
+		NAMESPACE2::map<int, std::string>(),
+		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
 }
 
 int main() {
 	std::srand(std::time(NULL));
+	std::clock_t start_time = std::clock();
 	test_vector();
 	test_list();
 	test_queue();
 	test_stack();
 	test_map();
+	std::clock_t end_time = std::clock();
 	if (g_errors) {
 		std::cout << g_errors << " errors\n";
 	} else {
 		std::cout << "All tests passed!\n";
 	}
+	double time_elapsed = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+	std::cout << "Time elapsed: " << time_elapsed << " seconds\n";
 	return g_errors ? 1 : 0;
 }
