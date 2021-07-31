@@ -764,31 +764,32 @@ static void test_map_upper_bound(const Map1 &, const Value1 &, const Map2 &,
 
 	Value1     value1a(key1, mapped_type1);
 	Value2     value2a(key1, mapped_type1);
+
 	m1.insert(value1a);
 	m2.insert(value2a);
 	test_equal_map_container(m1, m2, function_name, line_number);
 
 	Key key2 = generateRandomKey();
-	while (key2 <= key1) {
+	while (key2 == key1) {
 		key2 = generateRandomKey();
 	}
 
-	Value1     value1b;
-	Value2     value2b;
 	MappedType mapped_type2 = generateRandomMappedType();
-	value1b = Value1(key2, mapped_type2);
-	value2b = Value2(key2, mapped_type2);
+	Value1     value1b(key2, mapped_type2);
+	Value2     value2b(key2, mapped_type2);
 
 	m1.insert(value1b);
 	m2.insert(value2b);
+	test_equal_map_container(m1, m2, function_name, line_number);
 
-	typename Map1::iterator it1 = m1.upper_bound(key1);
-	typename Map2::iterator it2 = m2.upper_bound(key1);
+	Key                     lesser_key = ft::min(key1, key2);
+	typename Map1::iterator it1 = m1.upper_bound(lesser_key);
+	typename Map2::iterator it2 = m2.upper_bound(lesser_key);
 	test_map_values(
 		"upper_bound iterator", *(it1), *(it2), function_name, line_number);
 
-	typename Map1::const_iterator cit1 = m1.upper_bound(key1);
-	typename Map2::const_iterator cit2 = m2.upper_bound(key1);
+	typename Map1::const_iterator cit1 = m1.upper_bound(lesser_key);
+	typename Map2::const_iterator cit2 = m2.upper_bound(lesser_key);
 	test_map_values("upper_bound const_iterator", *(cit1), *(cit2),
 		function_name, line_number);
 }
