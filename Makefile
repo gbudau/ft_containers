@@ -1,7 +1,7 @@
 NAME = test
 NAME_FT = test_ft
 NAME_STD = test_std
-CPPFLAGS = -Wall -Werror -Wextra -std=c++98 -ansi
+CPPFLAGS = -Wall -Werror -Wextra -std=c++98
 CXX = clang++
 
 OBJ = main.o
