@@ -10,6 +10,16 @@ struct enable_if<true, T> {
 	typedef T type;
 };
 
+template <class T>
+struct remove_const {
+	typedef T type;
+};
+
+template <class T>
+struct remove_const<const T> {
+	typedef T type;
+};
+
 template <class T, T val>
 struct integral_constant {
 	typedef integral_constant<T, val> type;

@@ -829,23 +829,26 @@ static void test_map_equal_range(const Map1 &, const Value1 &,
 		function_name, line_number);
 }
 
-template <class Map1, class Value1, class Map2, class Value2, class Key,
-	class MappedType>
-static void test_map_comparison_operators(const Map1 &, const Value1 &,
-	const Map2 &, const Value2 &, Key (*generateRandomKey)(),
-	MappedType (*generateRandomMappedType)(), const char *function_name,
-	int line_number) {
+template <class Map1, class Map2>
+static void test_map_comparison_operators(const Map1 &, const Map2 &,
+	typename ft::remove_const<typename Map1::value_type::first_type>::type (
+		*generateRandomKey)(),
+	typename ft::remove_const<typename Map1::value_type::second_type>::type (
+		*generateRandomMappedType)(),
+	const char *function_name, int line_number) {
 
 	Map1 m1a;
 	Map1 m1b;
 	Map2 m2a;
 	Map2 m2b;
 
-	add_random_map_values(m1a, Value1(), m2a, Value2(), generateRandomKey,
+	add_random_map_values(m1a, typename Map1::value_type(), m2a,
+		typename Map2::value_type(), generateRandomKey,
 		generateRandomMappedType, 10);
 	test_equal_map_container(m1a, m2a, function_name, line_number);
 
-	add_random_map_values(m1b, Value1(), m2b, Value2(), generateRandomKey,
+	add_random_map_values(m1b, typename Map1::value_type(), m2b,
+		typename Map2::value_type(), generateRandomKey,
 		generateRandomMappedType, 10);
 	test_equal_map_container(m1b, m2b, function_name, line_number);
 
@@ -2309,9 +2312,7 @@ void test_map() {
 			NAMESPACE2::map<int, std::string>::const_iterator>(),
 		std::rand, generateRandomString, __FUNCTION__, __LINE__);
 	test_map_comparison_operators(NAMESPACE1::map<int, std::string>(),
-		NAMESPACE1::pair<int, std::string>(),
-		NAMESPACE2::map<int, std::string>(),
-		NAMESPACE2::pair<int, std::string>(), std::rand, generateRandomString,
+		NAMESPACE2::map<int, std::string>(), std::rand, generateRandomString,
 		__FUNCTION__, __LINE__);
 }
 
